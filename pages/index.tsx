@@ -119,7 +119,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths }) => {
             </Block>
           </Box>
           <Box width={['100%', '100%', 1/2]} p={5}>
-            <Block title="Tartunnat terveydenhoitopiireittäin" footer="Helsingin ja Uudenmaan sairaanhoitopiiri on esitetty muodossa HUS">
+            <Block title="Tartunnat sairaanhoitopiireittäin" footer="Helsingin ja Uudenmaan sairaanhoitopiiri on esitetty muodossa HUS">
               <ResponsiveContainer width={'100%'} height={350}>
                 <BarChart
                   data={infectionsByDistrict}
