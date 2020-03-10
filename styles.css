@@ -9,7 +9,7 @@ html, body {
   font-family: 'Space Grotesk Regular';
   font-style: normal;
   font-weight: normal;
-  src: local('Space Grotesk Regular'), url('/public/fonts/SpaceGrotesk-Regular.woff') format('woff');
+  src: local('Space Grotesk Regular'), url('/fonts/SpaceGrotesk-Regular.woff') format('woff');
 }
   
   
@@ -17,7 +17,7 @@ html, body {
   font-family: 'Space Grotesk Light';
   font-style: normal;
   font-weight: normal;
-  src: local('Space Grotesk Light'), url('/public/fonts/SpaceGrotesk-Light.woff') format('woff');
+  src: local('Space Grotesk Light'), url('/fonts/SpaceGrotesk-Light.woff') format('woff');
 }
   
   
@@ -25,7 +25,7 @@ html, body {
   font-family: 'Space Grotesk Medium';
   font-style: normal;
   font-weight: normal;
-  src: local('Space Grotesk Medium'), url('/public/fonts/SpaceGrotesk-Medium.woff') format('woff');
+  src: local('Space Grotesk Medium'), url('/fonts/SpaceGrotesk-Medium.woff') format('woff');
 }
   
   
@@ -33,7 +33,7 @@ html, body {
   font-family: 'Space Grotesk SemiBold';
   font-style: normal;
   font-weight: normal;
-  src: local('Space Grotesk SemiBold'), url('/public/fonts/SpaceGrotesk-SemiBold.woff') format('woff');
+  src: local('Space Grotesk SemiBold'), url('/fonts/SpaceGrotesk-SemiBold.woff') format('woff');
 }
   
   
@@ -41,12 +41,12 @@ html, body {
   font-family: 'Space Grotesk Bold';
   font-style: normal;
   font-weight: normal;
-  src: local('Space Grotesk Bold'), url('/public/fonts/SpaceGrotesk-Bold.woff') format('woff');
+  src: local('Space Grotesk Bold'), url('/fonts/SpaceGrotesk-Bold.woff') format('woff');
 }
 
 @font-face {
-  font-family: 'Space Mono Regular';
+  font-family: 'Space Mono';
   font-style: normal;
   font-weight: normal;
-  src: local('Space Mono Regular'), url('/public/fonts/SpaceMono-Regular.woff') format('woff');
+  src: local('Space Mono Regular'), url('/fonts/SpaceMono-Regular.woff') format('woff');
 }

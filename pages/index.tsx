@@ -97,7 +97,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths }) => {
               <ResponsiveContainer width={'100%'} height={350}>
                 <AreaChart
                   data={infectionDevelopmentData30Days}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                  margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
                 >
                   <defs>
                     <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
@@ -124,7 +124,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths }) => {
                 <BarChart
                   data={infectionsByDistrict}
                   margin={{
-                    top: 5, right: 30, left: 0, bottom: 85,
+                    top: 20, right: 30, left: 0, bottom: 85,
                   }}
                 >
                   <XAxis interval={0} dataKey="name" tick={<CustomizedAxisTick />} />
@@ -148,7 +148,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths }) => {
                 <BarChart
                   data={infectionsBySourceCountry}
                   margin={{
-                    top: 5, right: 30, left: 0, bottom: 85,
+                    top: 20, right: 30, left: 0, bottom: 85,
                   }}
                 >
                   <XAxis interval={0} dataKey="name" tick={<CustomizedAxisTick />} />
