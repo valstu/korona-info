@@ -1,12 +1,12 @@
-# koronainfo.kans.io
+# korona.kans.io
 
-> Corona virus information for people in Finland
+> Corona virus information for people in Finland [https://korona.kans.io/](korona.kans.io)
 
-Check out live version [here](https://koronainfo.kans.io/)
+Check out live version [here](https://korona.kans.io/)
 
 ## Development
 
-This app has been bootstrapped with [Next.js][https://nextjs.org/] read the documentation [here][https://nextjs.org/docs/getting-started].
+This app has been bootstrapped with [Next.js](https://nextjs.org/) read the documentation [here](https://nextjs.org/docs/getting-started).
 
 Clone the repo and install `node_modules` using `yarn` or `npm install`.
 
