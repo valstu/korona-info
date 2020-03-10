@@ -2,7 +2,7 @@ import { Box, Text, Link } from '@chakra-ui/core';
 
 const Copyright: React.FC = props => (
   <>
-    <Text mb="20px" my={5} fontSize="1em">Contribute on GitHub: <Link href="https://github.com/valstu/korona-info" isExternal color="teal.500">https://github.com/valstu/korona-info</Link></Text>
+    <Text mb="20px" my={5} fontSize="1em">Fork me at GitHub: <Link href="https://github.com/valstu/korona-info" isExternal color="teal.500">https://github.com/valstu/korona-info</Link> / Twitter: <Link href="https://twitter.com/valtterikaresto" isExternal color="teal.500">@valtterikaresto</Link> </Text>
     <Box p={5} color="gray.500" m={0} fontSize="sm" mb={10} mt={0} textAlign="center" maxWidth="1040px">
       <p><strong>MIT License</strong></p><br />
       <p>Copyright (c) 2020 Helsingin Sanomat</p>
