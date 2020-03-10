@@ -1,6 +1,6 @@
 # korona.kans.io
 
-> Corona virus information for people in Finland [https://korona.kans.io/](korona.kans.io)
+> Corona virus information for people in Finland [korona.kans.io](https://korona.kans.io/)
 
 Check out live version [here](https://korona.kans.io/)
 
