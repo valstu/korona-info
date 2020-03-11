@@ -1,9 +1,13 @@
 
-import { Heading, Box, Text, Link, List, ListItem, Icon } from '@chakra-ui/core';
+import { Heading, Box, Text, Link, List, ListItem, Icon, Tag, TagLabel, TagIcon } from '@chakra-ui/core';
 
 const Header: React.FC = () => (
   <Box p={[2, 4, 5]} width={['100%', '100%', 2/3, 2/3]} textAlign="center">
     <Heading fontSize="70px" m={[3, 3, 3]} mb={1} textAlign="center">🦠</Heading>
+    <Tag variantColor="red" fontFamily="Space Mono Bold">
+      <TagIcon icon="check-circle" size="12px" />
+      <TagLabel>LIVE</TagLabel>
+    </Tag>
     <Heading as="h1" color="rgb(51, 68, 85)" m={[3, 3, 6]} mb={3} textAlign="center">Suomen koronavirus-tartuntatilanne</Heading>
     <Text mb={5} fontFamily="Space Mono" color="rgb(51, 68, 85, 0.8)">Sivun tiedot pohjautuvat Helsingin Sanomien julkaisemaan <Link color="teal.500" href="https://github.com/HS-Datadesk/koronavirus-avoindata" isExternal>avoimeen dataan</Link> Suomen koronavirus-tartunnoista. HS on kerännyt aineiston julkisista lähteistä: tiedotustilaisuuksista, mediasta ja haastatteluista. Dataa päivitetään aina kun uusia tietoja tulee. Voit lukea lisätietoja koronaviruksesta alla olevista linkeistä:</Text>
 

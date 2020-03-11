@@ -19,7 +19,7 @@ interface StatBlock {
 }
 
 const StatBlock: React.FC<StatBlock> = ({ count, helpText }) => (
-  <Stat m={0} p={0} textAlign="center">
+  <Stat m={0} p={0} textAlign="center" marginTop="-20px">
     <StatNumber bg="white" pt={0} pb={0} fontSize={70} mb={0} fontFamily="Space Mono" fontWeight="normal">{count}</StatNumber>
     <StatHelpText mb={3}>&nbsp;{helpText}&nbsp;</StatHelpText>
   </Stat>
