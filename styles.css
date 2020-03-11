@@ -50,3 +50,10 @@ html, body {
   font-weight: normal;
   src: local('Space Mono Regular'), url('/fonts/SpaceMono-Regular.woff') format('woff');
 }
+
+@font-face {
+  font-family: 'Space Mono Bold';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Space Mono Bold'), url('/fonts/SpaceMono-Bold.woff') format('woff');
+}

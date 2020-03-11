@@ -158,7 +158,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
             </Block>
           </Box>
           <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
-            <Block title="Tartunnat sairaanhoitopiireittän / sairaanhoitopiirin koko" footer="Tartuntojen %-osuus / sairaanhoitopiiriin koko">
+            <Block title="Tartunnat sairaanhoitopiireittäin / sairaanhoitopiirin koko" footer="Sairaanhoitopiirin tartunnat / sairaanhoitopiirin koko">
               <ResponsiveContainer width={'100%'} height={350}>
                 <BarChart
                   data={infectionsByDistrictPercentage}
@@ -168,7 +168,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
                 >
                   <XAxis interval={0} dataKey="name" tick={<CustomizedAxisTick />} />
                   <YAxis unit=" %" dataKey="perDistrict" tick={{ fontSize: 12 }} />
-                  <Tooltip formatter={(value, name) => [`${value} %`, '%-osuus sairaahoitopiiristä:']} />
+                  <Tooltip formatter={(value, name) => [`${value} %`, '%-osuus väestöstä:']} />
                   <Bar dataKey="perDistrict">
                     {
                       areas.map((area, index) => (
