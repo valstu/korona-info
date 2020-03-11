@@ -11,7 +11,9 @@ import StatBlock from '../components/StatBlock';
 import Block from '../components/Block';
 import Copyright from '../components/Copyright';
 import Header from '../components/Header';
-import { getTimeSeriesData, getTnfectionsByDistrict, getInfectionsBySourceCountry } from '../utils/chartDataHelper';
+import NetworkGraph from '../components/NetworkGraph';
+
+import { getTimeSeriesData, getTnfectionsByDistrict, getInfectionsBySourceCountry, getNetworkGraphData, colors } from '../utils/chartDataHelper';
 
 export interface KoronaData {
   confirmed: Confirmed[];
@@ -23,24 +25,13 @@ export interface Confirmed {
   date: Date;
   healthCareDistrict: string;
   infectionSource: InfectionSourceEnum | number;
+  infectionSourceCountry: string | null;
 }
 
 export enum InfectionSourceEnum {
   RelatedToEarlier = "related to earlier",
   Unknown = "unknown",
 }
-
-const colors = [
-  '#003f5c',
-  '#2fab8e',
-  '#665191',
-  '#a05195',
-  '#d45087',
-  '#f95d6a',
-  '#ff7c43',
-  '#ffa600',
-  '#ee2320',
-];
 
 const CustomizedAxisTick: React.FC<any> = (props) => {
   const {
@@ -54,6 +45,8 @@ const CustomizedAxisTick: React.FC<any> = (props) => {
   );
 }
 
+const isServer = () => typeof window === `undefined`;
+
 const Index: NextPage<KoronaData> = ({ confirmed, deaths }) => {
 
   // Map some data for stats blocks
@@ -66,6 +59,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths }) => {
   const { infectionDevelopmentData, infectionDevelopmentData30Days } = getTimeSeriesData(confirmed);
   const { infectionsByDistrict, areas } = getTnfectionsByDistrict(confirmed);
   const { infectionsBySourceCountry } = getInfectionsBySourceCountry(confirmed);
+  const networkGraphData = getNetworkGraphData(confirmed)
 
   return (
     <Layout>
@@ -164,6 +158,11 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths }) => {
                     </Bar>
                 </BarChart>
               </ResponsiveContainer>
+            </Block>
+          </Box>
+          <Box width={['100%', '100%', '100%']} p={5}>
+            <Block title="Tartuntaketjut" footer="Kuvio esittää tartunnat verkostona. Numero on tartunnan järjestysnumero. Mikäli suoraa tartuttajaa ei tiedetä linkitetään tartunta alkuperämaahan. Kuvasta on jätetty pois tartunnat joiden suoraa aiheuttajaa tai alkuperämaata ei ole tiedossa. Suomeen merkatut tartunnat liittyvät suurella todennäköisyydellä muihin tartuntaverkostoihin. Solun väri kertoo maan jossa tartunta on todennäköisesti tapahtunut.">
+              {isServer() ? null : <NetworkGraph data={networkGraphData} />}
             </Block>
           </Box>
         </Flex>
