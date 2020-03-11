@@ -1,4 +1,4 @@
-import { format, sub, eachDayOfInterval, isSameDay } from 'date-fns';
+import { format, sub, eachDayOfInterval, isSameDay, isToday } from 'date-fns';
 import groupBy from 'lodash.groupby'
 import sortBy from 'lodash.sortby'
 import { Confirmed } from '../pages';
@@ -98,6 +98,11 @@ const getGroup = (infection: Confirmed, confirmed: Confirmed[]): string | null =
     }
   }
   return infection.infectionSourceCountry;
+}
+
+export const getInfectionsToday = (confirmed:Confirmed[]) => {
+  const infectionsToday = confirmed.filter(infection => isToday(new Date(infection.date)));
+  return infectionsToday.length || 0;
 }
 
 export const getNetworkGraphData = (confirmed:Confirmed[]) => {

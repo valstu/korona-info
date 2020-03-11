@@ -4,7 +4,7 @@ import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
 import { format } from 'date-fns';
 import { Area, AreaChart, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, BarChart, Bar, Cell, LabelList,} from 'recharts';
-import { Flex, Box, PseudoBox } from '@chakra-ui/core';
+import { Flex, Box, Text } from '@chakra-ui/core';
 
 import Layout from '../components/Layout';
 import StatBlock from '../components/StatBlock';
@@ -13,10 +13,11 @@ import Copyright from '../components/Copyright';
 import Header from '../components/Header';
 import NetworkGraph from '../components/NetworkGraph';
 
-import { getTimeSeriesData, getTnfectionsByDistrict, getInfectionsBySourceCountry, getNetworkGraphData, colors } from '../utils/chartDataHelper';
+import { getTimeSeriesData, getTnfectionsByDistrict, getInfectionsBySourceCountry, getNetworkGraphData, colors, getInfectionsToday } from '../utils/chartDataHelper';
 
 export interface KoronaData {
   confirmed: Confirmed[];
+  recovered: Recovered[];
   deaths: any[];
 }
 
@@ -26,6 +27,12 @@ export interface Confirmed {
   healthCareDistrict: string;
   infectionSource: InfectionSourceEnum | number;
   infectionSourceCountry: string | null;
+}
+
+export interface Recovered {
+  id: number;
+  date: Date;
+  healthCareDistrict: string;
 }
 
 export enum InfectionSourceEnum {
@@ -47,13 +54,16 @@ const CustomizedAxisTick: React.FC<any> = (props) => {
 
 const isServer = () => typeof window === `undefined`;
 
-const Index: NextPage<KoronaData> = ({ confirmed, deaths }) => {
+const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
 
   // Map some data for stats blocks
   const latestInfection = format(new Date(confirmed[confirmed.length - 1].date), 'd.M.yyyy');
   const latestInfectionDistrict = confirmed[confirmed.length - 1].healthCareDistrict;
   const latestDeath = deaths.length ? format(new Date(deaths[deaths.length - 1].date), 'd.M.yyyy') : null;
   const latestDeathDistrict = deaths.length ? deaths[deaths.length - 1].healthCareDistrict : null;
+  const latestRecoveredDistrict = recovered.length ? recovered[recovered.length - 1].healthCareDistrict : null;
+  const latestRecovered = recovered.length ? format(new Date(recovered[recovered.length - 1].date), 'd.M.yyyy') : null;
+  const infectionsToday = getInfectionsToday(confirmed);
 
   // Map data to show development of infections
   const { infectionDevelopmentData, infectionDevelopmentData30Days } = getTimeSeriesData(confirmed);
@@ -76,14 +86,19 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths }) => {
       <Flex alignItems="center" flexDirection="column" flex="1" width={"100%"} maxWidth="1440px" margin="auto">
         <Header />
         <Flex flexWrap="wrap" flexDirection="row" justifyContent="center" alignItems="stretch" flex="1" width={"100%"}>
-          <Box width={['100%', '100%', 1/2]} p={5}>
-            <Block title="Tartunnat" footer={`Viimeisin tartunta ${latestInfection} (${latestInfectionDistrict})`}>
-              <StatBlock count={confirmed.length} />
+          <Box width={['100%', '100%', 1/3, 1/3]} p={5}>
+            <Block title="Tartunnat" textAlign="center" extraInfo={`Uudet tartunnat tänään ${infectionsToday}kpl`} footer={`Viimeisin tartunta ${latestInfection} (${latestInfectionDistrict})`}>
+              <StatBlock count={confirmed.length} helpText={`Uudet tartunnat tänään: ${infectionsToday}kpl`} />
             </Block>
           </Box>
-          <Box width={['100%', '100%', 1/2]} p={5}>
-            <Block title="Menehtyneet" footer={latestDeath ? `Viimeisin kuolema ${latestDeath} (${latestDeathDistrict})` : ' '}>
+          <Box width={['100%', '100%', 1/3, 1/3]} p={5}>
+            <Block title="Menehtyneet" footer={latestDeath ? `Viimeisin kuolema ${latestDeath} (${latestDeathDistrict})` : 'Ei menehtyneitä'}>
               <StatBlock count={deaths.length || 0} />
+            </Block>
+          </Box>
+          <Box width={['100%', '100%', 1/3, 1/3]} p={5}>
+            <Block title="Parantuneet" footer={latestRecovered ? `Viimeisin parantuminen ${latestRecovered} (${latestRecoveredDistrict})` : ' '}>
+              <StatBlock count={recovered.length || 0} />
             </Block>
           </Box>
           <Box width={['100%']} p={5}>

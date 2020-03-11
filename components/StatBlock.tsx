@@ -15,11 +15,13 @@ import Block from './Block';
 
 interface StatBlock {
   count: number;
+  helpText?: string;
 }
 
-const StatBlock: React.FC<StatBlock> = ({ count }) => (
+const StatBlock: React.FC<StatBlock> = ({ count, helpText }) => (
   <Stat m={0} p={0} textAlign="center">
-    <StatNumber bg="white" pt={0} pb={3} fontSize={70} fontFamily="Space Mono" fontWeight="normal">{count}</StatNumber>
+    <StatNumber bg="white" pt={0} pb={0} fontSize={70} mb={0} fontFamily="Space Mono" fontWeight="normal">{count}</StatNumber>
+    <StatHelpText mb={3}>&nbsp;{helpText}&nbsp;</StatHelpText>
   </Stat>
 );
 
