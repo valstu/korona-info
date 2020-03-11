@@ -29,6 +29,12 @@ export interface Confirmed {
   infectionSourceCountry: string | null;
 }
 
+export interface Deaths {
+  id: string;
+  date: Date;
+  healthCareDistrict: string;
+}
+
 export interface Recovered {
   id: number;
   date: Date;
