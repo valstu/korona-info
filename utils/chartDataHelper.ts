@@ -58,11 +58,11 @@ export const getTnfectionsByDistrict = (confirmed:Confirmed[]) => {
   };
 }
 
-export const getTnfectionsBySourceCountry = (confirmed:Confirmed[]) => {
+export const getInfectionsBySourceCountry = (confirmed:Confirmed[]) => {
   const groupedData = groupBy(confirmed, 'infectionSourceCountry');
 
   const infectionsBySourceCountry = Object.entries(groupedData).map((value) => ({
-    name: value[0],
+    name: value[0] === 'null' ? 'Ei tiedossa' : value[0],
     infections: value[1].length
   }))
 

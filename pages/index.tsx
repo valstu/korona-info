@@ -11,7 +11,7 @@ import StatBlock from '../components/StatBlock';
 import Block from '../components/Block';
 import Copyright from '../components/Copyright';
 import Header from '../components/Header';
-import { getTimeSeriesData, getTnfectionsByDistrict, getTnfectionsBySourceCountry } from '../utils/chartDataHelper';
+import { getTimeSeriesData, getTnfectionsByDistrict, getInfectionsBySourceCountry } from '../utils/chartDataHelper';
 
 export interface KoronaData {
   confirmed: Confirmed[];
@@ -65,7 +65,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths }) => {
   // Map data to show development of infections
   const { infectionDevelopmentData, infectionDevelopmentData30Days } = getTimeSeriesData(confirmed);
   const { infectionsByDistrict, areas } = getTnfectionsByDistrict(confirmed);
-  const { infectionsBySourceCountry } = getTnfectionsBySourceCountry(confirmed);
+  const { infectionsBySourceCountry } = getInfectionsBySourceCountry(confirmed);
 
   return (
     <Layout>
