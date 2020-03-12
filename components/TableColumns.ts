@@ -16,7 +16,7 @@ export const infectionColumns = [
     accessor: 'healthCareDistrict',
   },
   {
-    Header: 'Tartuntamaa',
+    Header: 'Maa',
     accessor: 'infectionSourceCountry',
   },
   {
