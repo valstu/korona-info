@@ -119,11 +119,11 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
           </Box>
           <Box width={['100%']} p={3}>
             <Block title="Kumulatiivinen kehitys (30 pv)" footer="Tartuntojen, parantuneiden ja menehtyneiden kumulatiivinen kehitys viimeisen 30 päivän aikana">
-            <ButtonGroup spacing={0} alignSelf="center" display="flex" justifyContent="center" marginTop="-10px">
-              <Button size="sm" borderRadius="4px 0px 0px 4px" isActive={cumulativeChartScale === 'linear'} onClick={() => setCumulativeChartScale('linear')}>
+            <ButtonGroup spacing={0} alignSelf="center" display="flex" justifyContent="center" marginTop="-15px">
+              <Button size="xs" fontFamily="Space Grotesk Regular" px={3} letterSpacing="1px" borderRadius="4px 0px 0px 4px" borderWidth="0px" isActive={cumulativeChartScale === 'linear'} onClick={() => setCumulativeChartScale('linear')}>
                 Lineaarinen
               </Button>
-              <Button size="sm" borderRadius="0px 4px 4px 0px" isActive={cumulativeChartScale === 'log'}  onClick={() => setCumulativeChartScale('log')}>
+              <Button size="xs" fontFamily="Space Grotesk Regular" px={3} letterSpacing="1px" borderRadius="0px 4px 4px 0px" borderWidth="0px" isActive={cumulativeChartScale === 'log'}  onClick={() => setCumulativeChartScale('log')}>
                 Logaritminen
               </Button>
             </ButtonGroup>
@@ -151,8 +151,8 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
                   <CartesianGrid opacity={0.2} />
                   <Tooltip labelFormatter={v => format(new Date(v), 'dd.MM.yyyy')} />
                   <Area type="monotone" unit=" kpl" name="Tartunnat" dataKey="infections" stroke={colors[8]} fillOpacity={1} fill="url(#colorInfection)" />
-                  <Area type="monotone" unit=" kpl" name="Menehtyneet" dataKey="deaths" stroke={colors[0]} fillOpacity={1} fill="url(#colorDeaths)" />
                   <Area type="monotone" unit=" kpl" name="Parantuneet" dataKey="recovered" stroke={colors[7]} fillOpacity={1} fill="url(#colorRecovered)" />
+                  <Area type="monotone" unit=" kpl" name="Menehtyneet" dataKey="deaths" stroke={colors[0]} fillOpacity={1} fill="url(#colorDeaths)" />
                 </AreaChart>
               </ResponsiveContainer>
             </Block>
@@ -230,7 +230,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
             </Block>
           </Box>
           <Box width={['100%', '100%', '100%', '100%', 1/2]} p={3}>
-            <Block title="Tartuntalogi" footer="Kaikki suomen tartunnat listana, uusimmat ensin. Id ei suoraan kerro järjestystä">
+            <Block title="Tartuntaloki" footer="Kaikki suomen tartunnat listana, uusimmat ensin. Id ei suoraan kerro järjestystä">
               <Table height={350} data={reversedConfirmed} columns={useMemo(() => infectionColumns, [])} />
             </Block>
           </Box>
