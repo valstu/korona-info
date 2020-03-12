@@ -30,7 +30,7 @@ const Header: React.FC = () => (
       <meta name="apple-mobile-web-app-capable" content="yes" />
     </Head>
     <Box p={[2, 4, 5]} width={['100%', '100%', 2/3, 2/3]} textAlign="center">
-      <Image src="/images/corona-virus-small.png" mb={0} alt="Kuvituskuva koronaviruksesta" borderWidth="0px" width="90px" />
+      <Image src="/images/corona-virus-small.png" mb={0} title="CDC/ Alissa Eckert, MS; Dan Higgins, MAM / Public domain" alt="Kuvituskuva koronaviruksesta" borderWidth="0px" width="90px" />
       <Heading as="h1" color="rgb(51, 68, 85)" mb={[3, 3, 5]} mt={[3, 3, 2]} textAlign="center">Suomen koronavirus-tartuntatilanne</Heading>
       <Text mb={5} fontFamily="Space Mono" color="rgb(51, 68, 85, 0.8)">Sivun tiedot pohjautuvat Helsingin Sanomien julkaisemaan <Link color="teal.500" href="https://github.com/HS-Datadesk/koronavirus-avoindata" isExternal>avoimeen dataan</Link> Suomen koronavirus-tartunnoista. HS on kerännyt aineiston julkisista lähteistä: tiedotustilaisuuksista, mediasta ja haastatteluista. Dataa päivitetään aina kun uusia tietoja tulee. Voit lukea lisätietoja koronaviruksesta alla olevista linkeistä:</Text>
       <List styleType="none" mb={4} fontFamily="Space Mono" color="rgb(51, 68, 85, 0.8)">
