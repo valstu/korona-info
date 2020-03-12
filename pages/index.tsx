@@ -1,4 +1,5 @@
 
+import { useMemo } from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
@@ -12,6 +13,8 @@ import Block from '../components/Block';
 import Copyright from '../components/Copyright';
 import Header from '../components/Header';
 import NetworkGraph from '../components/NetworkGraph';
+import Table from '../components/Table';
+import { infectionColumns } from '../components/TableColumns'
 
 import { getTimeSeriesData, getTnfectionsByDistrict, getInfectionsBySourceCountry, getNetworkGraphData, colors, getInfectionsToday } from '../utils/chartDataHelper';
 
@@ -57,8 +60,6 @@ const CustomizedAxisTick: React.FC<any> = (props) => {
     </g>
   );
 }
-
-const isServer = () => typeof window === `undefined`;
 
 const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
 
@@ -181,7 +182,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
               </ResponsiveContainer>
             </Block>
           </Box>
-          <Box width={['100%', '100%', '100%', '100%', '100%']} p={3}>
+          <Box width={['100%', '100%', '100%', '100%', 1/2]} p={3}>
             <Block title="Tartuntojen alkuperämaat" footer="Suomen tartuntojen lukumäärät alkuperämaittain">
               <ResponsiveContainer width={'100%'} height={350}>
                 <BarChart
@@ -205,9 +206,14 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
               </ResponsiveContainer>
             </Block>
           </Box>
+          <Box width={['100%', '100%', '100%', '100%', 1/2]} p={3}>
+            <Block title="Tartuntalogi" footer="Kaikki suomen tartunnat listana, uusimmat ensin">
+              <Table height={350} data={confirmed.reverse()} columns={useMemo(() => infectionColumns, [])} />
+            </Block>
+          </Box>
           <Box width={['100%']} p={3}>
             <Block title="Tartuntaverkostot" footer="Kuvio esittää tartunnat verkostona. Numero on tartunnan järjestysnumero. Mikäli suoraa tartuttajaa ei tiedetä linkitetään tartunta alkuperämaahan. Kuvasta on jätetty pois tartunnat joiden suoraa aiheuttajaa tai alkuperämaata ei ole tiedossa. Suomeen merkatut tartunnat liittyvät suurella todennäköisyydellä muihin tartuntaverkostoihin. Solun väri kertoo maan jossa tartunta on todennäköisesti tapahtunut.">
-              {isServer() ? null : <NetworkGraph data={networkGraphData} />}
+              <NetworkGraph data={networkGraphData} />
             </Block>
           </Box>
         </Flex>
