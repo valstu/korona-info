@@ -64,7 +64,7 @@ const CustomizedAxisTick: React.FC<any> = (props) => {
 const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
 
   // Map some data for stats blocks
-  const latestInfection = format(new Date(confirmed[confirmed.length - 1].date), 'd.M.yyyy');
+  const latestInfection = format(new Date(confirmed[confirmed.length - 1].date), 'd.M.yyyy - HH:mm');
   const latestInfectionDistrict = confirmed[confirmed.length - 1].healthCareDistrict;
   const latestDeath = deaths.length ? format(new Date(deaths[deaths.length - 1].date), 'd.M.yyyy') : null;
   const latestDeathDistrict = deaths.length ? deaths[deaths.length - 1].healthCareDistrict : null;
@@ -208,7 +208,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
             </Block>
           </Box>
           <Box width={['100%', '100%', '100%', '100%', 1/2]} p={3}>
-            <Block title="Tartuntalogi" footer="Kaikki suomen tartunnat listana, uusimmat ensin">
+            <Block title="Tartuntalogi" footer="Kaikki suomen tartunnat listana, uusimmat ensin. Id ei suoraan kerro järjestystä">
               <Table height={350} data={reversedConfirmed} columns={useMemo(() => infectionColumns, [])} />
             </Block>
           </Box>
