@@ -76,7 +76,8 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
   const { infectionDevelopmentData, infectionDevelopmentData30Days } = getTimeSeriesData(confirmed);
   const { infectionsByDistrict, infectionsByDistrictPercentage, areas } = getTnfectionsByDistrict(confirmed);
   const { infectionsBySourceCountry } = getInfectionsBySourceCountry(confirmed);
-  const networkGraphData = getNetworkGraphData(confirmed)
+  const networkGraphData = getNetworkGraphData(confirmed);
+  const reversedConfirmed = confirmed.slice().reverse()
 
   return (
     <Layout>
@@ -208,7 +209,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
           </Box>
           <Box width={['100%', '100%', '100%', '100%', 1/2]} p={3}>
             <Block title="Tartuntalogi" footer="Kaikki suomen tartunnat listana, uusimmat ensin">
-              <Table height={350} data={confirmed.reverse()} columns={useMemo(() => infectionColumns, [])} />
+              <Table height={350} data={reversedConfirmed} columns={useMemo(() => infectionColumns, [])} />
             </Block>
           </Box>
           <Box width={['100%']} p={3}>
