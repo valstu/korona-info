@@ -4,7 +4,7 @@ import { NextPage } from 'next';
 import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
 import { format } from 'date-fns';
-import { Area, AreaChart, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, BarChart, Bar, Cell, LabelList, Legend } from 'recharts';
+import { Area, AreaChart, ReferenceLine, ComposedChart, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, BarChart, Bar, Cell, LabelList, Legend } from 'recharts';
 import { Flex, Box, Button, ButtonGroup } from '@chakra-ui/core';
 
 import Layout from '../components/Layout';
@@ -16,7 +16,7 @@ import NetworkGraph from '../components/NetworkGraph';
 import Table from '../components/Table';
 import { infectionColumns } from '../components/TableColumns'
 
-import { getTimeSeriesData, getTnfectionsByDistrict, getInfectionsBySourceCountry, getNetworkGraphData, colors, getInfectionsToday } from '../utils/chartDataHelper';
+import { getTimeSeriesData, getPredictionData, getTnfectionsByDistrict, getInfectionsBySourceCountry, getNetworkGraphData, colors, getInfectionsToday } from '../utils/chartDataHelper';
 
 export interface KoronaData {
   confirmed: Confirmed[];
@@ -73,9 +73,11 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
   const infectionsToday = getInfectionsToday(confirmed);
 
   const [cumulativeChartScale, setCumulativeChartScale] = useState<'linear' | 'log'>('linear')
+  const [forecastChartScale, setForecaseChartScale] = useState<'linear' | 'log'>('linear')
 
   // Map data to show development of infections
   const { infectionDevelopmentData, infectionDevelopmentData30Days } = getTimeSeriesData(confirmed, recovered, deaths);
+  const { prediction60Days, today } = getPredictionData(confirmed, deaths, recovered);
   const maxValues = infectionDevelopmentData30Days[infectionDevelopmentData30Days.length - 1];
   const dataMaxValue = Math.max(maxValues.deaths, maxValues.infections, maxValues.infections);
   const { infectionsByDistrict, infectionsByDistrictPercentage, areas } = getTnfectionsByDistrict(confirmed);
@@ -127,7 +129,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
               </Button>
             </ButtonGroup>
               <ResponsiveContainer width={'100%'} height={380}>
-                <AreaChart
+                <ComposedChart
                   data={infectionDevelopmentData30Days}
                   margin={{ top: 20, right: 30, left: 0, bottom: 30 }}
                 >
@@ -149,10 +151,49 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
                   <YAxis scale={cumulativeChartScale} dataKey="infections" domain={['dataMin', dataMaxValue + 10]} unit=" kpl" tick={{ fontSize: 12 }} name="Tartunnat" />
                   <CartesianGrid opacity={0.2} />
                   <Tooltip labelFormatter={v => format(new Date(v), 'dd.MM.yyyy')} />
-                  <Area type="monotone" unit=" kpl" name="Tartunnat" dataKey="infections" stroke={colors[8]} fillOpacity={1} fill="url(#colorInfection)" />
-                  <Area type="monotone" unit=" kpl" name="Parantuneet" dataKey="recovered" stroke={colors[7]} fillOpacity={1} fill="url(#colorRecovered)" />
-                  <Area type="monotone" unit=" kpl" name="Menehtyneet" dataKey="deaths" stroke={colors[0]} fillOpacity={1} fill="url(#colorDeaths)" />
+                  <Bar fill={colors[1]} opacity={0.4} dataKey="infectionsDaily" name="Päivän tartunnat" unit=" kpl" />
+                  <Area type="monotone" unit=" kpl" name="Tartunnat yht." dataKey="infections" stroke={colors[8]} fillOpacity={1} fill="url(#colorInfection)" />
+                  <Area type="monotone" unit=" kpl" name="Parantuneet yht." dataKey="recovered" stroke={colors[7]} fillOpacity={1} fill="url(#colorRecovered)" />
+                  <Area type="monotone" unit=" kpl" name="Menehtyneet yht." dataKey="deaths" stroke={colors[0]} fillOpacity={1} fill="url(#colorDeaths)" />
                   <Legend wrapperStyle={{bottom: '10px'}} />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </Block>
+          </Box>
+
+          <Box width={['100%']} p={3}>
+            <Block title="Tartuntojen kumulatiivinen ennustemalli" footer={`Tartuntojen kehityksen ennustemalli 60 päivää. Laskee ennustetun eksponentiaalisen kasvun käyttämällä aiemmin luotuja tietoja.  Käytetty <a style="color: #319795;" href="https://github.com/mljs/regression-exponential" target="_blank">exponential-regression</a> kirjastoa.`}>
+              <ButtonGroup spacing={0} alignSelf="center" display="flex" justifyContent="center" marginTop="-15px">
+                <Button size="xs" fontFamily="Space Grotesk Regular" px={3} letterSpacing="1px" borderRadius="4px 0px 0px 4px" borderWidth="0px" isActive={forecastChartScale === 'linear'} onClick={() => setForecaseChartScale('linear')}>
+                  Lineaarinen
+                </Button>
+                <Button size="xs" fontFamily="Space Grotesk Regular" px={3} letterSpacing="1px" borderRadius="0px 4px 4px 0px" borderWidth="0px" isActive={forecastChartScale === 'log'}  onClick={() => setForecaseChartScale('log')}>
+                  Logaritminen
+                </Button>
+              </ButtonGroup>
+              <ResponsiveContainer width={'100%'} height={350}>
+                <AreaChart
+                    data={prediction60Days}
+                    margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
+                >
+                  <defs>
+                    <linearGradient id="colorInfection" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor={colors[8]} stopOpacity={0.6} />
+                      <stop offset="95%" stopColor={colors[8]} stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis tickFormatter={d => format(new Date(d), 'd.M.')} tick={<CustomizedAxisTick isDate />} dataKey="date" domain={['dataMin', 'dataMax']} type="number" scale="time" />
+                  <YAxis scale={forecastChartScale} dataKey="infections" domain={['auto', 'auto']} unit=" kpl" tick={{ fontSize: 12 }} name="Tartunnat" />
+
+                  <CartesianGrid opacity={0.2} />
+                  <ReferenceLine
+                    x={today}
+                    stroke="rgba(0,0,0,.5)"
+                    // @ts-ignore
+                    label={{ position: 'top', value: 'Nyt', fill: 'rgba(0,0,0,0.5)', fontSize: 12 }}
+                    strokeDasharray="3 3" />
+                  <Tooltip labelFormatter={v => format(new Date(v), 'dd.MM.yyyy')} />
+                  <Area type="monotone" name="Ennuste" unit=" kpl" dataKey="infections" stroke={colors[8]} fillOpacity={1} fill="url(#colorInfection)" />
                 </AreaChart>
               </ResponsiveContainer>
             </Block>
