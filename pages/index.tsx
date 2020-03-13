@@ -78,11 +78,10 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
   const { infectionDevelopmentData, infectionDevelopmentData30Days } = getTimeSeriesData(confirmed, recovered, deaths);
   const maxValues = infectionDevelopmentData30Days[infectionDevelopmentData30Days.length - 1];
   const dataMaxValue = Math.max(maxValues.deaths, maxValues.infections, maxValues.infections);
-  console.log(dataMaxValue)
   const { infectionsByDistrict, infectionsByDistrictPercentage, areas } = getTnfectionsByDistrict(confirmed);
   const { infectionsBySourceCountry } = getInfectionsBySourceCountry(confirmed);
   const networkGraphData = getNetworkGraphData(confirmed);
-  const reversedConfirmed = confirmed.slice().reverse()
+  const reversedConfirmed = confirmed.map((i, index) => ({index: index+1, ...i})).reverse()
 
   return (
     <Layout>

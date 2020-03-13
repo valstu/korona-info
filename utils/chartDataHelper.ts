@@ -156,9 +156,10 @@ export const getNetworkGraphData = (confirmed: Confirmed[]) => {
   const uniqueCountries = Array.from(new Set(confirmed.filter(i => !!i.infectionSourceCountry).map(inff => inff.infectionSourceCountry)));
 
   const allNodes = confirmed.map((infection, index) => ({
+    index: index + 1,
     ...infection,
     id: Number(infection.id),
-    label: `#${infection.id}`,
+    label: `#0${index + 1}`,
     // group: getGroup(infection, confirmed),
     color: `${colors[uniqueCountries.indexOf(infection.infectionSourceCountry)]}`,
   }));
