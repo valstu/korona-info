@@ -118,7 +118,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
               <StatBlock count={recovered.length || 0} />
             </Block>
           </Box>
-          {/* 
+          
           <Box width={['100%']} p={3}>
             <Block title="Kumulatiivinen kehitys (30 pv)" footer="Tartuntojen, parantuneiden ja menehtyneiden kumulatiivinen kehitys viimeisen 30 päivän aikana">
             <ButtonGroup spacing={0} alignSelf="center" display="flex" justifyContent="center" marginTop="-15px">
@@ -161,7 +161,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
               </ResponsiveContainer>
             </Block>
           </Box>
-          */}
+          {/*
           <Box width={['100%']} p={3}>
             <Block title="Tartuntojen kumulatiivinen ennustemalli" footer={`Tartuntojen kehityksen ennustemalli 60 päivää. Laskee ennustetun eksponentiaalisen kasvun käyttämällä aiemmin luotuja tietoja.  Käytetty <a style="color: #319795;" href="https://github.com/mljs/regression-exponential" target="_blank">exponential-regression</a> kirjastoa.`}>
               <ButtonGroup spacing={0} alignSelf="center" display="flex" justifyContent="center" marginTop="-15px">
@@ -199,6 +199,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
               </ResponsiveContainer>
             </Block>
           </Box>
+           */}
           <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
             <Block title="Tartunnat sairaanhoitopiireittäin" footer="Helsingin ja Uudenmaan sairaanhoitopiiri on esitetty muodossa HUS">
               <ResponsiveContainer width={'100%'} height={350}>
