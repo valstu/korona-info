@@ -2,8 +2,19 @@ import { format } from 'date-fns';
 
 export const infectionColumns = [
   {
+    Header: 'Jär.nro',
+    accessor: 'index',
+    Cell: ({ cell: { value } }: any) => {
+      return value
+    }
+  },
+  {
     Header: 'Id',
     accessor: 'id',
+    Cell: ({ cell }: any) => {
+      return `#0${cell.value}`
+    }
+      
   },
   {
     Header: 'Päiväys',
@@ -12,7 +23,7 @@ export const infectionColumns = [
     Cell: ({ cell: { value } }: any) => format(new Date(value), 'dd.MM.yyyy - HH:mm')
   },
   {
-    Header: 'Sairaanhoitopiiri',
+    Header: 'Sair.hoitopiiri',
     accessor: 'healthCareDistrict',
   },
   {
@@ -22,5 +33,14 @@ export const infectionColumns = [
   {
     Header: 'Tartunnan lähde',
     accessor: 'infectionSource',
+    Cell: ({ cell: { value } }: any) => {
+      if (value === 'unknown') {
+        return 'Ei tiedossa';
+      }
+      if (value === 'related to earlier') {
+        return 'Liityy aiempaan'
+      }
+      return `#0${value}`
+    }
   },
 ]
