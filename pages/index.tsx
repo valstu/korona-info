@@ -1,11 +1,11 @@
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
 import { format } from 'date-fns';
-import { Area, AreaChart, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, BarChart, Bar, Cell, LabelList, PieChart, Pie, Sector } from 'recharts';
-import { Flex, Box, Text } from '@chakra-ui/core';
+import { Area, AreaChart, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, BarChart, Bar, Cell, LabelList, Legend } from 'recharts';
+import { Flex, Box, Button, ButtonGroup } from '@chakra-ui/core';
 
 import Layout from '../components/Layout';
 import StatBlock from '../components/StatBlock';
@@ -72,23 +72,30 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
   const latestRecovered = recovered.length ? format(new Date(recovered[recovered.length - 1].date), 'd.M.yyyy') : null;
   const infectionsToday = getInfectionsToday(confirmed);
 
+  const [cumulativeChartScale, setCumulativeChartScale] = useState<'linear' | 'log'>('linear')
+
   // Map data to show development of infections
-  const { infectionDevelopmentData, infectionDevelopmentData30Days } = getTimeSeriesData(confirmed);
+  const { infectionDevelopmentData, infectionDevelopmentData30Days } = getTimeSeriesData(confirmed, recovered, deaths);
+  const maxValues = infectionDevelopmentData30Days[infectionDevelopmentData30Days.length - 1];
+  const dataMaxValue = Math.max(maxValues.deaths, maxValues.infections, maxValues.infections);
   const { infectionsByDistrict, infectionsByDistrictPercentage, areas } = getTnfectionsByDistrict(confirmed);
   const { infectionsBySourceCountry } = getInfectionsBySourceCountry(confirmed);
   const networkGraphData = getNetworkGraphData(confirmed);
-  const reversedConfirmed = confirmed.slice().reverse()
+  const reversedConfirmed = confirmed.map((i, index) => ({index: index+1, ...i})).reverse()
 
   return (
     <Layout>
       <Head>
-        <title>🦠 Suomen koronavirus-tartuntatilanne – tartunnat: {confirmed.length || 0} - parantuneet: {recovered.length || 0} - menehtyneet: {deaths.length || 0}</title>
+        <title>Suomen koronavirus-tartuntatilanne – tartunnat: {confirmed.length || 0} - parantuneet: {recovered.length || 0} - menehtyneet: {deaths.length || 0}</title>
         <meta name="description" content={`Suomen koronavirus-tartuntatilanne – tartunnat: ${confirmed.length || 0} - parantuneet: ${recovered.length || 0} - menehtyneet: ${deaths.length || 0}`} />
         <meta property="og:title" content={`Suomen koronavirus-tartuntatilanne`} />
         <meta property="og:description" content={`Tartuntoja tällä hetkellä: ${confirmed.length || 0} - parantuneet: ${recovered.length || 0} - menehtyneet: ${deaths.length || 0}`} />
         <meta property="og:site_name" content="Suomen koronavirus-tartuntatilanne" />
         <meta property="og:locale" content="fi_FI" />
         <meta property="og:type" content="website" />
+        <meta property="og:image" content="/images/corona-virus.png" />
+        <meta property="og:image:width" content="1920" />
+        <meta property="og:image:height" content="1928" />
         <meta property="og:url" content="https://korona.kans.io" />
       </Head>
       <Flex alignItems="center" flexDirection="column" flex="1" width={"100%"} maxWidth="1440px" margin="auto">
@@ -110,27 +117,42 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
             </Block>
           </Box>
           <Box width={['100%']} p={3}>
-            <Block title="Tartuntojen lukumäärä (kumulatiivinen)" footer="Tartuntojen kumulatiivinen kehitys viimeisen 30 päivän aikana">
-              <ResponsiveContainer width={'100%'} height={350}>
+            <Block title="Kumulatiivinen kehitys (30 pv)" footer="Tartuntojen, parantuneiden ja menehtyneiden kumulatiivinen kehitys viimeisen 30 päivän aikana">
+            <ButtonGroup spacing={0} alignSelf="center" display="flex" justifyContent="center" marginTop="-15px">
+              <Button size="xs" fontFamily="Space Grotesk Regular" px={3} letterSpacing="1px" borderRadius="4px 0px 0px 4px" borderWidth="0px" isActive={cumulativeChartScale === 'linear'} onClick={() => setCumulativeChartScale('linear')}>
+                Lineaarinen
+              </Button>
+              <Button size="xs" fontFamily="Space Grotesk Regular" px={3} letterSpacing="1px" borderRadius="0px 4px 4px 0px" borderWidth="0px" isActive={cumulativeChartScale === 'log'}  onClick={() => setCumulativeChartScale('log')}>
+                Logaritminen
+              </Button>
+            </ButtonGroup>
+              <ResponsiveContainer width={'100%'} height={380}>
                 <AreaChart
                   data={infectionDevelopmentData30Days}
-                  margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
+                  margin={{ top: 20, right: 30, left: 0, bottom: 30 }}
                 >
                   <defs>
-                    <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#fbdd74" stopOpacity={0.8} />
-                      <stop offset="95%" stopColor="#fbdd74" stopOpacity={0} />
+                    <linearGradient id="colorInfection" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor={colors[8]} stopOpacity={0.6} />
+                      <stop offset="95%" stopColor={colors[8]} stopOpacity={0} />
                     </linearGradient>
-                    <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={colors[6]} stopOpacity={0.8} />
-                      <stop offset="95%" stopColor={colors[6]} stopOpacity={0} />
+                    <linearGradient id="colorRecovered" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor={colors[7]} stopOpacity={0.6} />
+                      <stop offset="95%" stopColor={colors[7]} stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="colorDeaths" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor={colors[0]} stopOpacity={0.6} />
+                      <stop offset="95%" stopColor={colors[0]} stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <XAxis tickFormatter={d => format(new Date(d), 'd.M.')} tick={<CustomizedAxisTick isDate />} dataKey="date" domain={['dataMin', 'dataMax']} type="number" scale="time" />
-                  <YAxis unit=" kpl" tick={{ fontSize: 12 }} name="Tartunnat" tickCount={Math.round(infectionDevelopmentData30Days[infectionDevelopmentData30Days.length - 1].infections / 4)} />
+                  <YAxis scale={cumulativeChartScale} dataKey="infections" domain={['dataMin', dataMaxValue + 10]} unit=" kpl" tick={{ fontSize: 12 }} name="Tartunnat" />
                   <CartesianGrid opacity={0.2} />
-                  <Tooltip formatter={(value, name) => [`${value} kpl`, 'Tartunnat']} labelFormatter={v => format(new Date(v), 'dd.MM.yyyy')} />
-                  <Area type="monotone" dataKey="infections" stroke={colors[6]} fillOpacity={1} fill="url(#colorPv)" />
+                  <Tooltip labelFormatter={v => format(new Date(v), 'dd.MM.yyyy')} />
+                  <Area type="monotone" unit=" kpl" name="Tartunnat" dataKey="infections" stroke={colors[8]} fillOpacity={1} fill="url(#colorInfection)" />
+                  <Area type="monotone" unit=" kpl" name="Parantuneet" dataKey="recovered" stroke={colors[7]} fillOpacity={1} fill="url(#colorRecovered)" />
+                  <Area type="monotone" unit=" kpl" name="Menehtyneet" dataKey="deaths" stroke={colors[0]} fillOpacity={1} fill="url(#colorDeaths)" />
+                  <Legend wrapperStyle={{bottom: '10px'}} />
                 </AreaChart>
               </ResponsiveContainer>
             </Block>
@@ -146,8 +168,8 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
                 >
                   <XAxis interval={0} dataKey="name" tick={<CustomizedAxisTick />} />
                   <YAxis yAxisId="left" unit=" kpl" dataKey="infections" tick={{ fontSize: 12 }} />
-                  <Tooltip formatter={(value, name) => [`${value} kpl`, 'Tartunnat']} />
-                  <Bar dataKey="infections" yAxisId="left">
+                  <Tooltip />
+                  <Bar dataKey="infections" name="Tartunnat" unit=" kpl" yAxisId="left">
                     {
                       areas.map((area, index) => (
                         <Cell key={area} fill={colors[index % colors.length]} />
@@ -170,8 +192,8 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
                 >
                   <XAxis interval={0} dataKey="name" tick={<CustomizedAxisTick />} />
                   <YAxis unit=" %" dataKey="perDistrict" tick={{ fontSize: 12 }} />
-                  <Tooltip formatter={(value, name) => [`${value} %`, '%-osuus väestöstä:']} />
-                  <Bar dataKey="perDistrict">
+                  <Tooltip />
+                  <Bar dataKey="perDistrict" name="%-osuus väestöstä" unit=" %">
                     {
                       areas.map((area, index) => (
                         <Cell key={area} fill={colors[index % colors.length]} />
@@ -194,8 +216,8 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
                 >
                   <XAxis interval={0} dataKey="name" tick={<CustomizedAxisTick />} />
                   <YAxis unit=" kpl" dataKey="infections" tick={{ fontSize: 12 }} />
-                  <Tooltip formatter={(value, name) => [`${value} kpl`, 'Tartunnat']} />
-                  <Bar dataKey="infections">
+                  <Tooltip />
+                  <Bar dataKey="infections" name="Tartunnat" unit=" kpl">
                     {
                       areas.map((area, index) => (
                         <Cell key={area} fill={colors[index % colors.length]} />
@@ -208,7 +230,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
             </Block>
           </Box>
           <Box width={['100%', '100%', '100%', '100%', 1/2]} p={3}>
-            <Block title="Tartuntalogi" footer="Kaikki suomen tartunnat listana, uusimmat ensin. Id ei suoraan kerro järjestystä">
+            <Block title="Tartuntaloki" footer="Kaikki suomen tartunnat listana, uusimmat ensin. Jokin id saattaa puuttua välistä">
               <Table height={350} data={reversedConfirmed} columns={useMemo(() => infectionColumns, [])} />
             </Block>
           </Box>
