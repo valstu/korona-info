@@ -3,7 +3,6 @@ import groupBy from 'lodash.groupby'
 import sortBy from 'lodash.sortby'
 import ExponentialRegression from 'ml-regression-exponential'
 import { Confirmed, Recovered, Deaths } from '../pages';
-import { InfectionSourceEnum } from '../pages/index';
 
 // Map data to show development of infections
 export const colors = [
@@ -45,10 +44,21 @@ const peopleTotal = healtCareDistricts.reduce((acc, curr) => curr.people + acc, 
 
 interface InfectionDevelopmentDataItem {
   date: number;
-  infections: number,
-  deaths: number,
-  recovered: number
+  infections: number;
+  deaths: number;
+  recovered: number;
+  infectionsDaily: number;
 };
+
+interface InfectionDevelopment60DaysDataItem {
+  date: number;
+  infections: number | null;
+};
+
+interface InfectionDevelopmentDataObj {
+  prediction60Days: InfectionDevelopment60DaysDataItem[];
+  today: number;
+}
 
 export const getTimeSeriesData = (confirmed: Confirmed[], recovered: Recovered[], deaths: Deaths[]): {
   infectionDevelopmentData: InfectionDevelopmentDataItem[]
@@ -71,7 +81,7 @@ export const getTimeSeriesData = (confirmed: Confirmed[], recovered: Recovered[]
     acc.infections = acc.infections + items.length;
     acc.recovered = acc.recovered + itemsRecovered.length;
     
-    infectionDevelopmentData.push({date: curr.getTime(), ...acc})
+    infectionDevelopmentData.push({date: curr.getTime(), infectionsDaily: items.length,...acc})
 
     return acc
   }, {infections: 0, deaths: 0, recovered: 0})
@@ -87,26 +97,26 @@ export const getTimeSeriesData = (confirmed: Confirmed[], recovered: Recovered[]
 
 }
 
-export const getPredictionData = (confirmed: Confirmed[]): {
-  infectionDevelopmentData60Days: InfectionDevelopmentDataItem[]
-} => {
+export const getPredictionData = (confirmed: Confirmed[], deaths: Deaths[], recovered: Recovered[]): InfectionDevelopmentDataObj => {
 
-  const currentData30Days = getTimeSeriesData(confirmed).infectionDevelopmentData30Days
+  const currentData30Days = getTimeSeriesData(confirmed, recovered, deaths).infectionDevelopmentData30Days
 
-  const x = currentData30Days.map((d, i) => i + 1)
-  const y = currentData30Days.map(d => d.infections)
+  const indexes = currentData30Days.map((d,i) => i + 1);
+  const infections = currentData30Days.map(d => d.infections);
+
+  const x = indexes
+  const y = infections
 
   const regression = new ExponentialRegression(x, y);
 
   const prediction60Days = Array.from(new Array(60)).map((x,i) => {
     const date = new Date(currentData30Days[0].date)
-    date.setDate(date.getDate() + i)
-    return {date: date.getTime(), infections: Math.round(regression.predict(i))}
 
+    date.setDate(date.getDate() + i)
+    return {date: date.getTime(), infections: Math.round(regression.predict(i)) === 0 ? null : Math.round(regression.predict(i))}
   })
 
-
-  return {infectionDevelopmentData60Days: prediction60Days}
+  return { prediction60Days, today: prediction60Days[29].date }
 
 }
 
