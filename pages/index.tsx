@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
-import { format } from 'date-fns';
+import { format, utcToZonedTime } from 'date-fns-tz';
 import { Area, AreaChart, ReferenceLine, ComposedChart, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, BarChart, Bar, Cell, LabelList, Legend } from 'recharts';
 import { Flex, Box, Button, ButtonGroup } from '@chakra-ui/core';
 
@@ -61,15 +61,19 @@ const CustomizedAxisTick: React.FC<any> = (props) => {
   );
 }
 
-const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
 
+
+const timeZone = 'Europe/Helsinki'
+
+const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
   // Map some data for stats blocks
-  const latestInfection = format(new Date(confirmed[confirmed.length - 1].date), 'd.M.yyyy - HH:mm');
+  const date = new Date('2018-09-01Z16:01:36.386Z')
+  const latestInfection = format(utcToZonedTime(new Date(confirmed[confirmed.length - 1].date), timeZone), 'dd.MM.yyyy - HH:mm', { timeZone });
   const latestInfectionDistrict = confirmed[confirmed.length - 1].healthCareDistrict;
-  const latestDeath = deaths.length ? format(new Date(deaths[deaths.length - 1].date), 'd.M.yyyy') : null;
+  const latestDeath = deaths.length ? format(utcToZonedTime(new Date(deaths[deaths.length - 1].date), timeZone), 'd.M.yyyy') : null;
   const latestDeathDistrict = deaths.length ? deaths[deaths.length - 1].healthCareDistrict : null;
   const latestRecoveredDistrict = recovered.length ? recovered[recovered.length - 1].healthCareDistrict : null;
-  const latestRecovered = recovered.length ? format(new Date(recovered[recovered.length - 1].date), 'd.M.yyyy') : null;
+  const latestRecovered = recovered.length ? format(utcToZonedTime(new Date(recovered[recovered.length - 1].date), timeZone), 'd.M.yyyy') : null;
   const infectionsToday = getInfectionsToday(confirmed);
 
   const [cumulativeChartScale, setCumulativeChartScale] = useState<'linear' | 'log'>('linear')
@@ -292,8 +296,8 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
 
 Index.getInitialProps = async function () {
   const res = await fetch('https://w3qa5ydb4l.execute-api.eu-west-1.amazonaws.com/prod/finnishCoronaData');
+  console.log(process.env.TZ)
   const data = await res.json();
-
   return data;
 };
 

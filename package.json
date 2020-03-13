@@ -29,6 +29,7 @@
     "@types/react-table": "^7.0.10",
     "@types/recharts": "^1.8.7",
     "date-fns": "^2.10.0",
+    "date-fns-tz": "^1.0.10",
     "emotion-theming": "^10.0.27",
     "isomorphic-unfetch": "^3.0.0",
     "lodash.groupby": "^4.6.0",
