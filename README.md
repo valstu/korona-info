@@ -21,6 +21,11 @@ Other technologies used:
 - Chakra-UI 
 - etc.
 
+## Contributors
+Following people have also contributed to this project: 
+  - [miikkajs](https://github.com/valstu/korona-info/pulls/miikkajs) (infection predictions)
+
+
 ## License
 
 MIT
