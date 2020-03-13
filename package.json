@@ -33,6 +33,7 @@
     "isomorphic-unfetch": "^3.0.0",
     "lodash.groupby": "^4.6.0",
     "lodash.sortby": "^4.7.0",
+    "ml-regression-exponential": "^2.0.0",
     "next": "^9.3.0",
     "next-fonts": "^1.0.3",
     "react": "^16.13.0",

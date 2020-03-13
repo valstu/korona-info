@@ -16,7 +16,7 @@ import NetworkGraph from '../components/NetworkGraph';
 import Table from '../components/Table';
 import { infectionColumns } from '../components/TableColumns'
 
-import { getTimeSeriesData, getTnfectionsByDistrict, getInfectionsBySourceCountry, getNetworkGraphData, colors, getInfectionsToday } from '../utils/chartDataHelper';
+import { getTimeSeriesData, getPredictionData, getTnfectionsByDistrict, getInfectionsBySourceCountry, getNetworkGraphData, colors, getInfectionsToday } from '../utils/chartDataHelper';
 
 export interface KoronaData {
   confirmed: Confirmed[];
@@ -74,6 +74,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
 
   // Map data to show development of infections
   const { infectionDevelopmentData, infectionDevelopmentData30Days } = getTimeSeriesData(confirmed);
+  const { infectionDevelopmentData60Days } = getPredictionData(confirmed);
   const { infectionsByDistrict, infectionsByDistrictPercentage, areas } = getTnfectionsByDistrict(confirmed);
   const { infectionsBySourceCountry } = getInfectionsBySourceCountry(confirmed);
   const networkGraphData = getNetworkGraphData(confirmed);
@@ -128,6 +129,32 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
                   </defs>
                   <XAxis tickFormatter={d => format(new Date(d), 'd.M.')} tick={<CustomizedAxisTick isDate />} dataKey="date" domain={['dataMin', 'dataMax']} type="number" scale="time" />
                   <YAxis unit=" kpl" tick={{ fontSize: 12 }} name="Tartunnat" tickCount={Math.round(infectionDevelopmentData30Days[infectionDevelopmentData30Days.length - 1].infections / 4)} />
+                  <CartesianGrid opacity={0.2} />
+                  <Tooltip formatter={(value, name) => [`${value} kpl`, 'Tartunnat']} labelFormatter={v => format(new Date(v), 'dd.MM.yyyy')} />
+                  <Area type="monotone" dataKey="infections" stroke={colors[6]} fillOpacity={1} fill="url(#colorPv)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </Block>
+          </Box>
+          <Box width={['100%']} p={3}>
+            <Block title="Tartuntojen lukumäärä ennustemalli (uusia tartuntoja per päivä)" footer="Tartuntojen kehityksen ennustemalli 60 päivää">
+              <ResponsiveContainer width={'100%'} height={350}>
+                <AreaChart
+                    data={infectionDevelopmentData60Days}
+                    margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
+                >
+                  <defs>
+                    <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#fbdd74" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#fbdd74" stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor={colors[6]} stopOpacity={0.8} />
+                      <stop offset="95%" stopColor={colors[6]} stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis tickFormatter={d => format(new Date(d), 'd.M.')} tick={<CustomizedAxisTick isDate />} dataKey="date" domain={['dataMin', 'dataMax']} type="number" scale="time" />
+                  <YAxis unit=" kpl" tick={{ fontSize: 12 }} name="Tartunnat" tickCount={Math.round(infectionDevelopmentData60Days[infectionDevelopmentData60Days.length - 1].infections / 4)} />
                   <CartesianGrid opacity={0.2} />
                   <Tooltip formatter={(value, name) => [`${value} kpl`, 'Tartunnat']} labelFormatter={v => format(new Date(v), 'dd.MM.yyyy')} />
                   <Area type="monotone" dataKey="infections" stroke={colors[6]} fillOpacity={1} fill="url(#colorPv)" />

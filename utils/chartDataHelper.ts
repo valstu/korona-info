@@ -2,6 +2,8 @@ import { format, sub, eachDayOfInterval, isSameDay, isToday } from 'date-fns';
 import groupBy from 'lodash.groupby'
 import sortBy from 'lodash.sortby'
 import { Confirmed } from '../pages';
+// @ts-ignore
+import ExponentialRegression from 'ml-regression-exponential'
 import { InfectionSourceEnum } from '../pages/index';
 
 // Map data to show development of infections
@@ -76,6 +78,29 @@ export const getTimeSeriesData = (confirmed: Confirmed[]): {
     infectionDevelopmentData,
     infectionDevelopmentData30Days,
   };
+
+}
+
+export const getPredictionData = (confirmed: Confirmed[]): {
+  infectionDevelopmentData60Days: InfectionDevelopmentDataItem[]
+} => {
+
+  const currentData30Days = getTimeSeriesData(confirmed).infectionDevelopmentData30Days
+
+  const x = currentData30Days.map((d, i) => i + 1)
+  const y = currentData30Days.map(d => d.infections)
+
+  const regression = new ExponentialRegression(x, y);
+
+  const prediction60Days = Array.from(new Array(60)).map((x,i) => {
+    const date = new Date(currentData30Days[0].date)
+    date.setDate(date.getDate() + i)
+    return {date: date.getTime(), infections: Math.round(regression.predict(i))}
+
+  })
+
+
+  return {infectionDevelopmentData60Days: prediction60Days}
 
 }
 
