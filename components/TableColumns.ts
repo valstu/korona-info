@@ -1,10 +1,11 @@
 import { format } from 'date-fns';
 
 export const infectionColumns = [
-  {
-    Header: 'Id',
-    accessor: 'id',
-  },
+  // {
+  //   Header: 'Id',
+  //   accessor: 'id',
+  //   Cell: ({ cell: { value } }: any) => `#${value}`
+  // },
   {
     Header: 'Päiväys',
     accessor: 'date',

@@ -231,7 +231,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
             </Block>
           </Box>
           <Box width={['100%', '100%', '100%', '100%', 1/2]} p={3}>
-            <Block title="Tartuntaloki" footer="Kaikki suomen tartunnat listana, uusimmat ensin. Id ei suoraan kerro järjestystä">
+            <Block title="Tartuntaloki" footer="Kaikki suomen tartunnat listana, uusimmat ensin. Jokin id saattaa puuttua välistä">
               <Table height={350} data={reversedConfirmed} columns={useMemo(() => infectionColumns, [])} />
             </Block>
           </Box>
