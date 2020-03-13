@@ -4,8 +4,8 @@ import { NextPage } from 'next';
 import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
 import { format } from 'date-fns';
-import { Area, AreaChart, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, BarChart, Bar, Cell, LabelList, PieChart, Pie, Sector } from 'recharts';
-import { Flex, Box, Text, Button, ButtonGroup } from '@chakra-ui/core';
+import { Area, AreaChart, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, BarChart, Bar, Cell, LabelList, Legend } from 'recharts';
+import { Flex, Box, Button, ButtonGroup } from '@chakra-ui/core';
 
 import Layout from '../components/Layout';
 import StatBlock from '../components/StatBlock';
@@ -127,10 +127,10 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
                 Logaritminen
               </Button>
             </ButtonGroup>
-              <ResponsiveContainer width={'100%'} height={350}>
+              <ResponsiveContainer width={'100%'} height={380}>
                 <AreaChart
                   data={infectionDevelopmentData30Days}
-                  margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
+                  margin={{ top: 20, right: 30, left: 0, bottom: 30 }}
                 >
                   <defs>
                     <linearGradient id="colorInfection" x1="0" y1="0" x2="0" y2="1">
@@ -153,6 +153,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
                   <Area type="monotone" unit=" kpl" name="Tartunnat" dataKey="infections" stroke={colors[8]} fillOpacity={1} fill="url(#colorInfection)" />
                   <Area type="monotone" unit=" kpl" name="Parantuneet" dataKey="recovered" stroke={colors[7]} fillOpacity={1} fill="url(#colorRecovered)" />
                   <Area type="monotone" unit=" kpl" name="Menehtyneet" dataKey="deaths" stroke={colors[0]} fillOpacity={1} fill="url(#colorDeaths)" />
+                  <Legend wrapperStyle={{bottom: '10px'}} />
                 </AreaChart>
               </ResponsiveContainer>
             </Block>
