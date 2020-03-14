@@ -1,5 +1,5 @@
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useContext } from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
@@ -15,6 +15,7 @@ import Header from '../components/Header';
 import NetworkGraph from '../components/NetworkGraph';
 import Table from '../components/Table';
 import { infectionColumns } from '../components/TableColumns'
+import { UserContext } from './_app';
 
 import { getTimeSeriesData, getPredictionData, getTnfectionsByDistrict, getInfectionsBySourceCountry, getNetworkGraphData, colors, getInfectionsToday } from '../utils/chartDataHelper';
 
@@ -88,13 +89,15 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
   const { infectionsBySourceCountry } = getInfectionsBySourceCountry(confirmed);
   const networkGraphData = getNetworkGraphData(confirmed);
   const reversedConfirmed = confirmed.map((i, index) => ({index: index+1, ...i})).reverse()
+  
+  const { t } = useContext(UserContext);
 
   return (
     <Layout>
       <Head>
-        <title>Suomen koronavirus-tartuntatilanne – tartunnat: {confirmed.length || 0} - parantuneet: {recovered.length || 0} - menehtyneet: {deaths.length || 0}</title>
+        <title>{t('finland corona status')} - {t('cases')} : {confirmed.length || 0} - {t('recovered')}: {recovered.length || 0} - {t('dead')}: {deaths.length || 0}</title>
         <meta name="description" content={`Suomen koronavirus-tartuntatilanne – tartunnat: ${confirmed.length || 0} - parantuneet: ${recovered.length || 0} - menehtyneet: ${deaths.length || 0}`} />
-        <meta property="og:title" content={`Suomen koronavirus-tartuntatilanne`} />
+        <meta property="og:title" content={t('finland corona status')} />
         <meta property="og:description" content={`Tartuntoja tällä hetkellä: ${confirmed.length || 0} - parantuneet: ${recovered.length || 0} - menehtyneet: ${deaths.length || 0}`} />
         <meta property="og:site_name" content="Suomen koronavirus-tartuntatilanne" />
         <meta property="og:locale" content="fi_FI" />
@@ -108,17 +111,17 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
         <Header />
         <Flex flexWrap="wrap" flexDirection="row" justifyContent="center" alignItems="stretch" flex="1" width={"100%"}>
           <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
-            <Block title="Tartunnat" textAlign="center" extraInfo={`Uudet tartunnat tänään ${infectionsToday}kpl`} footer={`Viimeisin tartunta ${latestInfection} (${latestInfectionDistrict})`}>
-              <StatBlock count={confirmed.length} helpText={`Uudet tartunnat tänään: ${infectionsToday}kpl`} />
+            <Block title={t('cases')} textAlign="center" extraInfo={`${t('New cases today')} ${infectionsToday}kpl`} footer={`Viimeisin tartunta ${latestInfection} (${latestInfectionDistrict})`}>
+              <StatBlock count={confirmed.length} helpText={`${t('New cases today')}: ${infectionsToday}kpl`} />
             </Block>
           </Box>
           <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
-            <Block title="Menehtyneet" footer={latestDeath ? `Viimeisin kuolema ${latestDeath} (${latestDeathDistrict})` : 'Ei menehtyneitä'}>
+            <Block title={t('deaths')} footer={latestDeath ? `Viimeisin kuolema ${latestDeath} (${latestDeathDistrict})` : 'Ei menehtyneitä'}>
               <StatBlock count={deaths.length || 0} />
             </Block>
           </Box>
           <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
-            <Block title="Parantuneet" footer={latestRecovered ? `Viimeisin parantuminen ${latestRecovered} (${latestRecoveredDistrict})` : ' '}>
+            <Block title={t('recovered')} footer={latestRecovered ? `Viimeisin parantuminen ${latestRecovered} (${latestRecoveredDistrict})` : ' '}>
               <StatBlock count={recovered.length || 0} />
             </Block>
           </Box>
