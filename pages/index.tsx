@@ -115,7 +115,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
             </Block>
           </Box>
           <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
-            <Block title={t('deaths')} footer={latestDeath ? `Viimeisin kuolema ${latestDeath} (${latestDeathDistrict})` : t('no death')}>
+      <Block title={t('deaths')} footer={latestDeath ? `${t('last death')} ${latestDeath} (${latestDeathDistrict})` : t('no death')}>
               <StatBlock count={deaths.length || 0} />
             </Block>
           </Box>
@@ -126,13 +126,13 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
           </Box>
           
           <Box width={['100%']} p={3}>
-            <Block title="Kumulatiivinen kehitys (30 pv)" footer="Tartuntojen, parantuneiden ja menehtyneiden kumulatiivinen kehitys viimeisen 30 päivän aikana">
+      <Block title={t('accumulated change')} footer={t("cases recovered and death in past 30 days")}>
             <ButtonGroup spacing={0} alignSelf="center" display="flex" justifyContent="center" marginTop="-15px">
               <Button size="xs" fontFamily="Space Grotesk Regular" px={3} letterSpacing="1px" borderRadius="4px 0px 0px 4px" borderWidth="0px" isActive={cumulativeChartScale === 'linear'} onClick={() => setCumulativeChartScale('linear')}>
-                Lineaarinen
+              {t('linear')}
               </Button>
               <Button size="xs" fontFamily="Space Grotesk Regular" px={3} letterSpacing="1px" borderRadius="0px 4px 4px 0px" borderWidth="0px" isActive={cumulativeChartScale === 'log'}  onClick={() => setCumulativeChartScale('log')}>
-                Logaritminen
+                {t('logarithmic')}
               </Button>
             </ButtonGroup>
               <ResponsiveContainer width={'100%'} height={380}>
@@ -155,13 +155,13 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
                     </linearGradient>
                   </defs>
                   <XAxis tickFormatter={d => format(new Date(d), 'd.M.')} tick={<CustomizedAxisTick isDate />} dataKey="date" domain={['dataMin', 'dataMax']} type="number" scale="time" />
-                  <YAxis scale={cumulativeChartScale} dataKey="infections" domain={['dataMin', dataMaxValue + 10]} unit=" kpl" tick={{ fontSize: 12 }} name="Tartunnat" />
+                  <YAxis scale={cumulativeChartScale} dataKey="infections" domain={['dataMin', dataMaxValue + 10]} unit={' ' + t('person') } tick={{ fontSize: 12 }} name={t("cases")} />
                   <CartesianGrid opacity={0.2} />
                   <Tooltip labelFormatter={v => format(new Date(v), 'dd.MM.yyyy')} />
-                  <Bar fill={colors[1]} opacity={0.4} dataKey="infectionsDaily" name="Päivän tartunnat" unit=" kpl" />
-                  <Area type="monotone" unit=" kpl" name="Tartunnat yht." dataKey="infections" stroke={colors[8]} fillOpacity={1} fill="url(#colorInfection)" />
-                  <Area type="monotone" unit=" kpl" name="Parantuneet yht." dataKey="recovered" stroke={colors[7]} fillOpacity={1} fill="url(#colorRecovered)" />
-                  <Area type="monotone" unit=" kpl" name="Menehtyneet yht." dataKey="deaths" stroke={colors[0]} fillOpacity={1} fill="url(#colorDeaths)" />
+                  <Bar fill={colors[1]} opacity={0.4} dataKey="infectionsDaily" name={t('cases today')} unit={' ' + t('person') } />
+                  <Area type="monotone" unit={' ' + t('person') } name={t('total cases')} dataKey="infections" stroke={colors[8]} fillOpacity={1} fill="url(#colorInfection)" />
+                  <Area type="monotone" unit={' ' + t('person') } name={t('total recovered')} dataKey="recovered" stroke={colors[7]} fillOpacity={1} fill="url(#colorRecovered)" />
+                  <Area type="monotone" unit={' ' + t('person') } name={t('total deaths')} dataKey="deaths" stroke={colors[0]} fillOpacity={1} fill="url(#colorDeaths)" />
                   <Legend wrapperStyle={{bottom: '10px'}} />
                 </ComposedChart>
               </ResponsiveContainer>
@@ -190,7 +190,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
                     </linearGradient>
                   </defs>
                   <XAxis tickFormatter={d => format(new Date(d), 'd.M.')} tick={<CustomizedAxisTick isDate />} dataKey="date" domain={['dataMin', 'dataMax']} type="number" scale="time" />
-                  <YAxis scale={forecastChartScale} dataKey="infections" domain={['auto', 'auto']} unit=" kpl" tick={{ fontSize: 12 }} name="Tartunnat" />
+                  <YAxis scale={forecastChartScale} dataKey="infections" domain={['auto', 'auto']} unit={' ' + t('person') } tick={{ fontSize: 12 }} name="Tartunnat" />
 
                   <CartesianGrid opacity={0.2} />
                   <ReferenceLine
@@ -200,14 +200,14 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
                     label={{ position: 'top', value: 'Nyt', fill: 'rgba(0,0,0,0.5)', fontSize: 12 }}
                     strokeDasharray="3 3" />
                   <Tooltip labelFormatter={v => format(new Date(v), 'dd.MM.yyyy')} />
-                  <Area type="monotone" name="Ennuste" unit=" kpl" dataKey="infections" stroke={colors[8]} fillOpacity={1} fill="url(#colorInfection)" />
+                  <Area type="monotone" name="Ennuste" unit={' ' + t('person') } dataKey="infections" stroke={colors[8]} fillOpacity={1} fill="url(#colorInfection)" />
                 </AreaChart>
               </ResponsiveContainer>
             </Block>
           </Box>
            */}
           <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
-            <Block title="Tartunnat sairaanhoitopiireittäin" footer="Helsingin ja Uudenmaan sairaanhoitopiiri on esitetty muodossa HUS">
+          <Block title={t('Cases by district')} footer={t('Helsinki metropolitan area is shown as HUS')}>
               <ResponsiveContainer width={'100%'} height={350}>
                 <BarChart
                   data={infectionsByDistrict}
@@ -216,9 +216,9 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
                   }}
                 >
                   <XAxis interval={0} dataKey="name" tick={<CustomizedAxisTick />} />
-                  <YAxis yAxisId="left" unit=" kpl" dataKey="infections" tick={{ fontSize: 12 }} />
+                  <YAxis yAxisId="left" unit={" " + t("person")} dataKey="infections" tick={{ fontSize: 12 }} />
                   <Tooltip />
-                  <Bar dataKey="infections" name="Tartunnat" unit=" kpl" yAxisId="left">
+                  <Bar dataKey="infections" name={t("cases")} unit={" " + t("person")} yAxisId="left">
                     {
                       areas.map((area, index) => (
                         <Cell key={area} fill={colors[index % colors.length]} />
@@ -255,7 +255,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
             </Block>
           </Box>
           <Box width={['100%', '100%', '100%', '100%', 1/2]} p={3}>
-            <Block title="Tartuntojen alkuperämaat" footer="Suomen tartuntojen lukumäärät alkuperämaittain">
+      <Block title={t('Origin country of the cases')} footer="Suomen tartuntojen lukumäärät alkuperämaittain">
               <ResponsiveContainer width={'100%'} height={350}>
                 <BarChart
                   data={infectionsBySourceCountry}
@@ -264,9 +264,9 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
                   }}
                 >
                   <XAxis interval={0} dataKey="name" tick={<CustomizedAxisTick />} />
-                  <YAxis unit=" kpl" dataKey="infections" tick={{ fontSize: 12 }} />
+                  <YAxis unit={' ' + t('person') } dataKey="infections" tick={{ fontSize: 12 }} />
                   <Tooltip />
-                  <Bar dataKey="infections" name="Tartunnat" unit=" kpl">
+                  <Bar dataKey="infections" name="Tartunnat" unit={' ' + t('person') }>
                     {
                       areas.map((area, index) => (
                         <Cell key={area} fill={colors[index % colors.length]} />
