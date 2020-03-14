@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "next",
-    "build": "next build",
-    "start": "next start"
+    "dev": "nodemon --exec ts-node --project tsconfig.server.json server.ts",
+    "build": "next build && tsc --project tsconfig.server.json",
+    "start": "NODE_ENV=production node .build/server.ts",
+    "type-check": "tsc"
   },
   "repository": {
     "type": "git",
@@ -31,12 +32,14 @@
     "date-fns": "^2.10.0",
     "date-fns-tz": "^1.0.10",
     "emotion-theming": "^10.0.27",
+    "express": "^4.17.1",
     "isomorphic-unfetch": "^3.0.0",
     "lodash.groupby": "^4.6.0",
     "lodash.sortby": "^4.7.0",
     "ml-regression-exponential": "^2.0.0",
     "next": "^9.3.0",
     "next-fonts": "^1.0.3",
+    "next-i18next": "^4.2.1",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-graph-vis": "^1.0.5",
@@ -44,8 +47,11 @@
     "recharts": "^2.0.0-beta.1"
   },
   "devDependencies": {
+    "@types/express": "^4.17.3",
     "@types/node": "^13.9.0",
     "@types/react": "^16.9.23",
+    "nodemon": "^2.0.2",
+    "ts-node": "^8.6.2",
     "typescript": "^3.8.3"
   }
 }

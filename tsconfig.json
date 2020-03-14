@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "esnext",
     "lib": [
       "dom",
       "dom.iterable",
@@ -14,6 +14,7 @@
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
+    "noImplicitAny": false,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve"
@@ -23,7 +24,9 @@
   ],
   "include": [
     "next-env.d.ts",
+    "next.config.js",
     "**/*.ts",
-    "**/*.tsx", "components/NetworkGraph.js"
+    "**/*.tsx",
+    "components/NetworkGraph.js"
   ]
 }
