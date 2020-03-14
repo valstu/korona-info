@@ -8,7 +8,11 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     cases: 'Tartunnat',
     recovered: 'Parantuneet',
     deaths: 'Menehtyneet',
-    'New cases today': 'Uudet tartunnat tänään'
+    'New cases today': 'Uudet tartunnat tänään',
+      'person': 'kpl',
+      'no death': 'Ei menehtyneitä',
+      'latest recovery': 'Viimeisin parantuminen',
+      'latest case': 'Viimeisin tartunta',
   },
   en: {
     language: 'English',
@@ -16,7 +20,8 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     cases: 'Cases',
     recovered: 'Recovered',
     deaths: 'Deaths',
-    'New cases today': 'New cases today'
+    'New cases today': 'New cases today',
+    'person': ''
   },
   fa: {
     language: 'Farsi',
@@ -24,7 +29,8 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     cases: 'موارد',
     recovered: 'بهبودیافتگان',
     deaths: 'درگذشتگان',
-    'New cases today': 'بیماران جدید امروز'
+    'New cases today': 'بیماران جدید امروز',
+    'person': ''
   }
 };
 

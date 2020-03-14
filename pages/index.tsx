@@ -110,17 +110,17 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
         <Header />
         <Flex flexWrap="wrap" flexDirection="row" justifyContent="center" alignItems="stretch" flex="1" width={"100%"}>
           <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
-            <Block title={t('cases')} textAlign="center" extraInfo={`${t('New cases today')} ${infectionsToday}kpl`} footer={`Viimeisin tartunta ${latestInfection} (${latestInfectionDistrict})`}>
-              <StatBlock count={confirmed.length} helpText={`${t('New cases today')}: ${infectionsToday}kpl`} />
+      <Block title={t('cases')} textAlign="center" extraInfo={`${t('New cases today')} ${infectionsToday} ${t('person')}`} footer={`${t('latest case')} ${latestInfection} (${latestInfectionDistrict})`}>
+              <StatBlock count={confirmed.length} helpText={`${t('New cases today')}: ${infectionsToday} ${t('person')}`} />
             </Block>
           </Box>
           <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
-            <Block title={t('deaths')} footer={latestDeath ? `Viimeisin kuolema ${latestDeath} (${latestDeathDistrict})` : 'Ei menehtyneitä'}>
+            <Block title={t('deaths')} footer={latestDeath ? `Viimeisin kuolema ${latestDeath} (${latestDeathDistrict})` : t('no death')}>
               <StatBlock count={deaths.length || 0} />
             </Block>
           </Box>
           <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
-            <Block title={t('recovered')} footer={latestRecovered ? `Viimeisin parantuminen ${latestRecovered} (${latestRecoveredDistrict})` : ' '}>
+      <Block title={t('recovered')} footer={latestRecovered ? `${t('latest recovery')} ${latestRecovered} (${latestRecoveredDistrict})` : ' '}>
               <StatBlock count={recovered.length || 0} />
             </Block>
           </Box>
