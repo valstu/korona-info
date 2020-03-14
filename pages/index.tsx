@@ -158,7 +158,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
                   <YAxis scale={cumulativeChartScale} dataKey="infections" domain={['dataMin', dataMaxValue + 10]} unit={' ' + t('person') } tick={{ fontSize: 12 }} name={t("cases")} />
                   <CartesianGrid opacity={0.2} />
                   <Tooltip labelFormatter={v => format(new Date(v), 'dd.MM.yyyy')} />
-                  <Bar fill={colors[1]} opacity={0.4} dataKey="infectionsDaily" name={t('cases today')} unit={' ' + t('person') } />
+                  <Bar fill={colors[1]} opacity={0.4} dataKey="infectionsDaily" name={t('cases of the day')} unit={' ' + t('person') } />
                   <Area type="monotone" unit={' ' + t('person') } name={t('total cases')} dataKey="infections" stroke={colors[8]} fillOpacity={1} fill="url(#colorInfection)" />
                   <Area type="monotone" unit={' ' + t('person') } name={t('total recovered')} dataKey="recovered" stroke={colors[7]} fillOpacity={1} fill="url(#colorRecovered)" />
                   <Area type="monotone" unit={' ' + t('person') } name={t('total deaths')} dataKey="deaths" stroke={colors[0]} fillOpacity={1} fill="url(#colorDeaths)" />
