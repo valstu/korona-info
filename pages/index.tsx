@@ -1,11 +1,10 @@
-
 import { useMemo, useState, useContext } from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
 import { format, utcToZonedTime } from 'date-fns-tz';
 import { Area, AreaChart, ReferenceLine, ComposedChart, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, BarChart, Bar, Cell, LabelList, Legend } from 'recharts';
-import { Flex, Box, Button, ButtonGroup } from '@chakra-ui/core';
+import { Flex,Button, ButtonGroup, Box } from '@chakra-ui/core';
 
 import Layout from '../components/Layout';
 import StatBlock from '../components/StatBlock';
@@ -285,6 +284,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
             </Block>
           </Box>
           <Box width={['100%']} p={3}>
+
             <Block title="Tartuntaverkostot" footer="Kuvio esittää tartunnat verkostona. Numero on tartunnan järjestysnumero. Mikäli suoraa tartuttajaa ei tiedetä linkitetään tartunta alkuperämaahan. Kuvasta on jätetty pois tartunnat joiden suoraa aiheuttajaa tai alkuperämaata ei ole tiedossa. Suomeen merkatut tartunnat liittyvät suurella todennäköisyydellä muihin tartuntaverkostoihin. Solun väri kertoo maan jossa tartunta on todennäköisesti tapahtunut.">
               <NetworkGraph data={networkGraphData} />
             </Block>

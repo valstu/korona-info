@@ -1,9 +1,15 @@
-import { Box, Text, Link } from '@chakra-ui/core';
+import { Flex,Button, ButtonGroup, Heading, Box, Text, Link, List, ListItem, Icon, Image } from '@chakra-ui/core';
 
 const Copyright: React.FC = props => (
   <>
     <Text mb="20px" my={5} px={5} fontSize="1em">Fork me at GitHub: <Link href="https://github.com/valstu/korona-info" isExternal color="teal.500">https://github.com/valstu/korona-info</Link> / Twitter: <Link href="https://twitter.com/valtterikaresto" isExternal color="teal.500">@valtterikaresto</Link> </Text>
     <Box p={5} color="gray.500" m={0} fontSize="sm" mb={10} mt={0} textAlign="center" maxWidth="1040px">
+
+          <Text mb={5} fontFamily="Space Mono" color="rgb(51, 68, 85, 0.8)">Sivun tiedot pohjautuvat Helsingin Sanomien julkaisemaan <Link color="teal.500" href="https://github.com/HS-Datadesk/koronavirus-avoindata" isExternal>avoimeen dataan</Link> Suomen koronavirus-tartunnoista. HS on kerännyt aineiston julkisista lähteistä: tiedotustilaisuuksista, mediasta ja haastatteluista. Dataa päivitetään aina kun uusia tietoja tulee. Voit lukea lisätietoja koronaviruksesta alla olevista linkeistä:</Text>
+          <List styleType="none" mb={4} fontFamily="Space Mono" color="rgb(51, 68, 85, 0.8)">
+            <ListItem mb={1}><Link color="teal.500" href="https://thl.fi/fi/web/infektiotaudit-ja-rokotukset/taudit-ja-torjunta/taudit-ja-taudinaiheuttajat-a-o/koronavirus-covid-19">Mikä on koronavirus?<Icon name="external-link" mx="5px" /></Link></ListItem>
+            <ListItem><Link color="teal.500" href="https://www.ttl.fi/toimintaohje-tyontekijoille-wuhanin-koronaviruksen-tartunnan-ehkaisyyn/">Toimintaohjeet koronaviruksen tartunnan ehkäisyyn<Icon name="external-link" mx="5px" /></Link></ListItem>
+          </List>
       <p><a title="CDC/ Alissa Eckert, MS; Dan Higgins, MAM / Public domain" href="https://commons.wikimedia.org/wiki/File:2019-nCoV-CDC-23312_without_background.png">Corona virus image is a work of the Centers for Disease Control and Prevention, part of the United States Department of Health and Human Services, taken or made as part of an employee's official duties. As a work of the U.S. federal government, the image is in the public domain.<br /> <strong>Author: CDC/ Alissa Eckert, MS; Dan Higgins, MAM (Public Domain)</strong></a></p>
       <br />
       <p><strong>MIT License</strong></p><br />
