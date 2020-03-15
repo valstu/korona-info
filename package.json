@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --exec ts-node --project tsconfig.server.json server.ts",
     "build": "next build && tsc --project tsconfig.server.json",
-    "start": "NODE_ENV=production node .build/server.ts",
+    "start": "NODE_ENV=production node .build/server.js",
     "type-check": "tsc"
   },
   "repository": {
