@@ -296,7 +296,6 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
 
 Index.getInitialProps = async function () {
   const res = await fetch('https://w3qa5ydb4l.execute-api.eu-west-1.amazonaws.com/prod/finnishCoronaData');
-  console.log(process.env.TZ)
   const data = await res.json();
   const confirmed = data.confirmed.map((i:Confirmed) => ({...i, infectionSourceCountry: i.infectionSourceCountry === "" ? null : i.infectionSourceCountry}))
   return {...data, confirmed};
