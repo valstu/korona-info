@@ -262,7 +262,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
             </Block>
           </Box>
           <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
-            <Block title="Tartunnat sairaanhoitopiireittäin / sairaanhoitopiirin koko" footer="Sairaanhoitopiirin tartunnat / sairaanhoitopiirin koko">
+            <Block title={t('infectionsPerDisrictAndSize')} footer={t('infectionsPerDisrictAndSize')}>
               <ResponsiveContainer width={'100%'} height={350}>
                 <BarChart
                   data={infectionsByDistrictPercentage}
@@ -286,7 +286,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
             </Block>
           </Box>
           <Box width={['100%', '100%', '100%', '100%', 1/2]} p={3}>
-      <Block title={t('Origin country of the cases')} footer="Suomen tartuntojen lukumäärät alkuperämaittain">
+      <Block title={t('Origin country of the cases')} footer={t('originCountryFooter')}>
               <ResponsiveContainer width={'100%'} height={350}>
                 <BarChart
                   data={infectionsBySourceCountry}
@@ -310,12 +310,12 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
             </Block>
           </Box>
           <Box width={['100%', '100%', '100%', '100%', 1/2]} p={3}>
-            <Block title="Tartuntaloki" footer="Kaikki suomen tartunnat listana, uusimmat ensin. Jokin id saattaa puuttua välistä">
+            <Block title={t('log')} footer={t('logFooter')}>
               <Table height={350} data={reversedConfirmed} columns={useMemo(() => infectionColumns, [])} />
             </Block>
           </Box>
           <Box width={['100%']} p={3}>
-            <Block title="Tartuntaverkostot" footer="Kuvio esittää tartunnat verkostona. Numero on tartunnan järjestysnumero. Mikäli suoraa tartuttajaa ei tiedetä linkitetään tartunta alkuperämaahan. Kuvasta on jätetty pois tartunnat joiden suoraa aiheuttajaa tai alkuperämaata ei ole tiedossa. Suomeen merkatut tartunnat liittyvät suurella todennäköisyydellä muihin tartuntaverkostoihin. Solun väri kertoo maan jossa tartunta on todennäköisesti tapahtunut.">
+            <Block title={t('infectionNetwork')} footer={t('infectionNetworkFooter')}>
               <NetworkGraph data={networkGraphData} />
             </Block>
           </Box>
