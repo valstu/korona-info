@@ -25,10 +25,6 @@
     "@chakra-ui/core": "^0.6.1",
     "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27",
-    "@types/lodash.groupby": "^4.6.6",
-    "@types/lodash.sortby": "^4.7.6",
-    "@types/react-table": "^7.0.10",
-    "@types/recharts": "^1.8.7",
     "date-fns": "^2.10.0",
     "date-fns-tz": "^1.0.10",
     "emotion-theming": "^10.0.27",
@@ -52,6 +48,10 @@
     "@types/react": "^16.9.23",
     "nodemon": "^2.0.2",
     "ts-node": "^8.6.2",
+    "@types/lodash.groupby": "^4.6.6",
+    "@types/lodash.sortby": "^4.7.6",
+    "@types/react-table": "^7.0.12",
+    "@types/recharts": "^1.8.7",
     "typescript": "^3.8.3"
   }
 }
