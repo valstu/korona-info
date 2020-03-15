@@ -25,7 +25,10 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     'total deaths': 'Menehtyneet yht.',
     'Cases by district': 'Tartunnat sairaanhoitopiireittäin',
     'Helsinki metropolitan area is shown as HUS': "Helsingin ja Uudenmaan sairaanhoitopiiri on esitetty muodossa HUS",
-    'Origin country of the cases': "Tartuntojen alkuperämaat"
+      'Origin country of the cases': "Tartuntojen alkuperämaat",
+      'note the testing strategy change': 'HUOM! Testaustavan muutos vaikeuttaa tilannekuvan saamista',
+      'less people will be tested': 'Lukujen luotettavuuteen vaikuttaa mm. pääkaupunkiseudun sairaanhoitopiirin Husin päätös rajoittaa testaamista vain tiettyihin tärkeisiin avainryhmiin. Entistä pienempi osa Husin alueella sairastuneista varmistetaan laboratoriossa.',
+      'read more': 'Lue lisää'
   },
   en: {
     language: 'English',
@@ -50,7 +53,10 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     'total deaths': 'Total Deaths',
     'Cases by district': 'Cases by district',
     'Helsinki metropolitan area is shown as HUS': "Helsinki metropolitan area is shown as HUS",
-    'Origin country of the cases': "Origin country of the cases"
+    'Origin country of the cases': "Origin country of the cases",
+    'note the testing strategy change': 'NOTE! the change in testing strategy might change stats',
+    'less people will be tested': 'the stats reliability might change as in some distrcit for exmaple in Helsinki metropolian area it is decided that only special groups like health system workers etc. will be tested for COVID-19',
+      'read more': 'Lue lisää'
   },
   fa: {
     language: 'فارسی',

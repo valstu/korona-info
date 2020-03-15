@@ -133,10 +133,10 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
         <Alert status="error" my={3} maxWidth={1040} flexDirection="column" px={10} py={5} mx={3} textAlign="center" borderRadius="4px">
           <Flex>
             <AlertIcon mt={3} />
-            <AlertTitle mr={2} ml={0} mt={3} mb={5}>HUOM! Testaustavan muutos vaikeuttaa tilannekuvan saamista</AlertTitle>
+            <AlertTitle mr={2} ml={0} mt={3} mb={5}>{t('note the testing strategy change')}</AlertTitle>
           </Flex>
           <Flex>
-            <AlertDescription>Lukujen luotettavuuteen vaikuttaa mm. pääkaupunkiseudun sairaanhoitopiirin Husin päätös rajoittaa testaamista vain tiettyihin tärkeisiin avainryhmiin. Entistä pienempi osa Husin alueella sairastuneista varmistetaan laboratoriossa.<br /><br /> <Link color="teal.500" href="https://www.hs.fi/kotimaa/art-2000006440293.html" isExternal>Lue lisää</Link></AlertDescription>
+            <AlertDescription>{t('less people will be tested')}<br /><br /> <Link color="teal.500" href="https://www.hs.fi/kotimaa/art-2000006440293.html" isExternal>{t('read more')}</Link></AlertDescription>
           </Flex>
         </Alert>
         <Flex flexWrap="wrap" flexDirection="row" justifyContent="center" alignItems="stretch" flex="1" width={"100%"}>
