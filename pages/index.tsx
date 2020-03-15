@@ -1,11 +1,11 @@
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
 import { format, utcToZonedTime } from 'date-fns-tz';
 import { Area, AreaChart, ReferenceLine, ComposedChart, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, BarChart, Bar, Cell, LabelList, Legend } from 'recharts';
-import { Flex, Box, Button, ButtonGroup } from '@chakra-ui/core';
+import { Flex, Box, Button, ButtonGroup, Alert, AlertIcon, AlertTitle, AlertDescription, CloseButton, Link } from '@chakra-ui/core';
 
 import Layout from '../components/Layout';
 import StatBlock from '../components/StatBlock';
@@ -63,7 +63,28 @@ const CustomizedAxisTick: React.FC<any> = (props) => {
 
 
 
-const timeZone = 'Europe/Helsinki'
+const timeZone = 'Europe/Helsinki';
+
+export interface ConditionallyRenderProps {
+  client?: boolean;
+  server?: boolean;
+}
+
+const ConditionallyRender: React.FC<ConditionallyRenderProps> = (props) => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => setIsMounted(true), []);
+
+  if(!isMounted && props.client) {
+      return null;
+  }
+
+  if(isMounted && props.server) {
+      return null;
+  }
+
+  return props.children as React.ReactElement;
+};
 
 const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
   // Map some data for stats blocks
@@ -106,6 +127,15 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
       </Head>
       <Flex alignItems="center" flexDirection="column" flex="1" width={"100%"} maxWidth="1440px" margin="auto">
         <Header />
+        <Alert status="error" my={3} maxWidth={1040} flexDirection="column" px={10} py={5} mx={3} textAlign="center" borderRadius="4px">
+          <Flex>
+            <AlertIcon mt={3} />
+            <AlertTitle mr={2} ml={0} mt={3} mb={5}>HUOM! Testaustavan muutos vaikeuttaa tilannekuvan saamista</AlertTitle>
+          </Flex>
+          <Flex>
+            <AlertDescription>Lukujen luotettavuuteen vaikuttaa mm. pääkaupunkiseudun sairaanhoitopiirin Husin päätös rajoittaa testaamista vain tiettyihin tärkeisiin avainryhmiin. Entistä pienempi osa Husin alueella sairastuneista varmistetaan laboratoriossa.<br /><br /> <Link color="teal.500" href="https://www.hs.fi/kotimaa/art-2000006440293.html" isExternal>Lue lisää</Link></AlertDescription>
+          </Flex>
+        </Alert>
         <Flex flexWrap="wrap" flexDirection="row" justifyContent="center" alignItems="stretch" flex="1" width={"100%"}>
           <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
             <Block title="Tartunnat" textAlign="center" extraInfo={`Uudet tartunnat tänään ${infectionsToday}kpl`} footer={`Viimeisin tartunta ${latestInfection} (${latestInfectionDistrict})`}>
