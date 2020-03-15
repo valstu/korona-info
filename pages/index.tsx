@@ -116,7 +116,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
   return (
     <Layout>
       <Head>
-        <title>{t('finland corona status')} - {t('cases')} : {confirmed.length || 0} - {t('recovered')}: {recovered.length || 0} - {t('dead')}: {deaths.length || 0}</title>
+        <title>{t('finland corona status')} - {t('cases')} : {confirmed.length || 0} - {t('recovered')}: {recovered.length || 0} - {t('deaths')}: {deaths.length || 0}</title>
         <meta name="description" content={`Suomen koronavirus-tartuntatilanne – tartunnat: ${confirmed.length || 0} - parantuneet: ${recovered.length || 0} - menehtyneet: ${deaths.length || 0}`} />
         <meta property="og:title" content={t('finland corona status')} />
         <meta property="og:description" content={`Tartuntoja tällä hetkellä: ${confirmed.length || 0} - parantuneet: ${recovered.length || 0} - menehtyneet: ${deaths.length || 0}`} />
