@@ -24,7 +24,8 @@ Other technologies used:
 ## Contributors
 Following people have also contributed to this project: 
   - [miikkajs](https://github.com/valstu/korona-info/pulls/miikkajs) (infection predictions)
-
+  - [albacoretuna](https://github.com/albacoretuna) (translation logic + translations to en/fa)
+  - [jonijuup](https://github.com/jonijuup) (translations)
 
 ## License
 
