@@ -2,7 +2,7 @@ import { Box, Link } from '@chakra-ui/core';
 import { supportedLanguages } from '../utils/translation';
 
 const LanguageMenu: React.FC = () => (
-  <Box p={[2, 4, 5]} width={['100%', '100%', '100%', '100%']} textAlign="right" mb={-50}>
+  <Box p={[2, 4, 5]} width={['100%', '100%', '100%', '100%']} textAlign="right" mb={-50} zIndex={1}>
     {supportedLanguages.map(language => (
       <Link
         key={language.code}
