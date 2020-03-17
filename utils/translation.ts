@@ -127,7 +127,7 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     recovered: 'Recuperados',
     deaths: 'Mortes',
     'New cases today': 'Novos casos hoje',
-    person: 'pessoa(s)',
+    person: 'casos',
     'no death': 'Nenhuma morte',
     'latest recovery': 'Último caso recuperado',
     'latest case': 'Último caso',
