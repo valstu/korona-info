@@ -39,7 +39,8 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     'log': 'Tartuntaloki',
     'logFooter': 'Kaikki suomen tartunnat listana, uusimmat ensin. Jokin id saattaa puuttua välistä',
     'infectionNetwork': 'Tartuntaverkosto',
-    'infectionNetworkFooter': 'Kuvio esittää tartunnat verkostona. Numero on tartunnan järjestysnumero. Mikäli suoraa tartuttajaa ei tiedetä linkitetään tartunta alkuperämaahan. Kuvasta on jätetty pois tartunnat joiden suoraa aiheuttajaa tai alkuperämaata ei ole tiedossa. Suomeen merkatut tartunnat liittyvät suurella todennäköisyydellä muihin tartuntaverkostoihin. Solun väri kertoo maan jossa tartunta on todennäköisesti tapahtunut.'
+    'infectionNetworkFooter': 'Kuvio esittää tartunnat verkostona. Numero on tartunnan järjestysnumero. Mikäli suoraa tartuttajaa ei tiedetä linkitetään tartunta alkuperämaahan. Kuvasta on jätetty pois tartunnat joiden suoraa aiheuttajaa tai alkuperämaata ei ole tiedossa. Suomeen merkatut tartunnat liittyvät suurella todennäköisyydellä muihin tartuntaverkostoihin. Solun väri kertoo maan jossa tartunta on todennäköisesti tapahtunut.',
+    'unknown': 'tuntematon'
 },
   en: {
     language: 'English',
@@ -78,7 +79,8 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     'log': 'Infection Log',
     'logFooter': 'All cases in Finland as a list, latest first. Id is not a running number.',
     'infectionNetwork': 'Infection network graph',
-    'infectionNetworkFooter': 'Number is the id of the case. Cases withouth origin are left out.'
+    'infectionNetworkFooter': 'Number is the id of the case. Cases withouth origin are left out.',
+    'unknown': 'unknown'
   },
   fa: {
     language: 'فارسی',
@@ -117,7 +119,8 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     'log': 'Infection Log',
     'logFooter': 'All cases in Finland as a list, latest first. Id is not a running number.',
     'infectionNetwork': 'Infection network graph',
-    'infectionNetworkFooter': 'Number is the id of the case. Cases withouth origin are left out.'
+    'infectionNetworkFooter': 'Number is the id of the case. Cases withouth origin are left out.',
+    'unknown': 'ناشناخته'
   }
 };
 

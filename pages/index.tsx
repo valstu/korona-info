@@ -141,7 +141,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
         </Alert>
         <Flex flexWrap="wrap" flexDirection="row" justifyContent="center" alignItems="stretch" flex="1" width={"100%"}>
           <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
-      <Block title={t('cases')} textAlign="center" extraInfo={`${t('New cases today')} ${infectionsToday} ${t('person')}`} footer={`${t('latest case')} ${latestInfection} (${latestInfectionDistrict})`}>
+      <Block title={t('cases')} textAlign="center" extraInfo={`${t('New cases today')} ${infectionsToday} ${t('person')}`} footer={`${t('latest case')} ${latestInfection} (${latestInfectionDistrict ?? t('unknown')})`}>
               <StatBlock count={confirmed.length} helpText={`${t('New cases today')}: ${infectionsToday} ${t('person')}`} />
             </Block>
           </Box>
