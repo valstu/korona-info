@@ -198,11 +198,11 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
     maxValues.infections,
     maxValues.infections
   );
-  const dataMinValue = Math.min(
-    minValues.deaths || 1,
-    minValues.infections || 1,
-    minValues.infections || 1
-  );
+  const dataMinValue =
+    Math.min(minValues.deaths, minValues.infections, minValues.infections) ||
+    cumulativeChartScale === 'log'  // logarithmic scale can't handle zero values
+      ? 1
+      : 0;
 
   const {
     infectionsByDistrict,
