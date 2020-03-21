@@ -5,30 +5,30 @@ export const infectionColumns = [
     Header: 'Jär.nro',
     accessor: 'index',
     Cell: ({ cell: { value } }: any) => {
-      return value
+      return value;
     }
   },
   {
     Header: 'Id',
     accessor: 'id',
     Cell: ({ cell }: any) => {
-      return `#0${cell.value}`
+      return `#0${cell.value}`;
     }
-      
   },
   {
     Header: 'Päiväys',
     accessor: 'date',
     minWidth: '20%',
-    Cell: ({ cell: { value } }: any) => format(new Date(value), 'dd.MM.yyyy - HH:mm')
+    Cell: ({ cell: { value } }: any) =>
+      format(new Date(value), 'dd.MM.yyyy - HH:mm')
   },
   {
     Header: 'Sair.hoitopiiri',
-    accessor: 'healthCareDistrict',
+    accessor: 'healthCareDistrict'
   },
   {
     Header: 'Maa',
-    accessor: 'infectionSourceCountry',
+    accessor: 'infectionSourceCountry'
   },
   {
     Header: 'Tartunnan lähde',
@@ -38,9 +38,9 @@ export const infectionColumns = [
         return 'Ei tiedossa';
       }
       if (value === 'related to earlier') {
-        return 'Liityy aiempaan'
+        return 'Liityy aiempaan';
       }
-      return `#0${value}`
+      return `#0${value}`;
     }
-  },
-]
+  }
+];
