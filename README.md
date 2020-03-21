@@ -27,6 +27,7 @@ Following people have also contributed to this project:
   - [albacoretuna](https://github.com/albacoretuna) (translation logic + translations to en/fa)
   - [jonijuup](https://github.com/jonijuup) (translations)
   - [villesau](https://github.com/villesau) (filter chart by healthcare district, code quality)
+  - [nghitrum](https://github.com/nghitrum) (bug fixes)
 
 ## License
 
