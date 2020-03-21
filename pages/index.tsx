@@ -115,7 +115,10 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
   const { infectionDevelopmentData, infectionDevelopmentData30Days } = getTimeSeriesData(confirmed, recovered, deaths, districtFilter);
   const { prediction60Days, today } = getPredictionData(confirmed, deaths, recovered, districtFilter);
   const maxValues = infectionDevelopmentData30Days[infectionDevelopmentData30Days.length - 1];
-  const dataMaxValue = Math.max(maxValues.deaths, maxValues.infections, maxValues.infections);
+  const minValues = infectionDevelopmentData30Days[0];
+  const dataMaxValue = Math.max(maxValues.deaths ?? 0, maxValues.infections ?? 0, maxValues.infections ?? 0);
+  const dataMinValue = Math.min(minValues.deaths ?? 1, minValues.infections ?? 1, minValues.infections ?? 1);
+
   const { infectionsByDistrict, infectionsByDistrictPercentage, areas } = getTnfectionsByDistrict(confirmed);
   const { infectionsBySourceCountry } = getInfectionsBySourceCountry(confirmed);
   const networkGraphData = getNetworkGraphData(confirmed);
@@ -208,7 +211,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
                     </linearGradient>
                   </defs>
                   <XAxis tickFormatter={d => format(new Date(d), 'd.M.')} tick={<CustomizedAxisTick isDate />} dataKey="date" domain={['dataMin', 'dataMax']} type="number" scale="time" />
-                  <YAxis scale={cumulativeChartScale} dataKey="infections" domain={['dataMin', dataMaxValue + 10]} unit={' ' + t('person') } tick={{ fontSize: 12 }} name={t("cases")} />
+                  <YAxis scale={cumulativeChartScale} dataKey="infections" domain={[dataMinValue, dataMaxValue + 10]} unit={' ' + t('person') } tick={{ fontSize: 12 }} name={t("cases")} />
                   <CartesianGrid opacity={0.2} />
                   <Tooltip labelFormatter={v => format(new Date(v), 'dd.MM.yyyy')} />
                   <Bar fill={colors[1]} opacity={0.4} dataKey="infectionsDaily" name={t('cases of the day')} unit={' ' + t('person') } />

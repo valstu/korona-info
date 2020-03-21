@@ -44,10 +44,10 @@ const peopleTotal = healtCareDistricts.reduce((acc, curr) => curr.people + acc, 
 
 interface InfectionDevelopmentDataItem {
   date: number;
-  infections: number;
-  deaths: number;
-  recovered: number;
-  infectionsDaily: number;
+  infections: number | null;
+  deaths: number | null;
+  recovered: number | null;
+  infectionsDaily: number | null;
 };
 
 interface InfectionDevelopment60DaysDataItem {
@@ -73,18 +73,18 @@ export const getTimeSeriesData = (confirmed: Confirmed[], recovered: Recovered[]
   const daysIntervalSinceFirstInfection = eachDayOfInterval({ start: new Date(sortedData[0].date), end: new Date(sortedData[sortedData.length - 1].date) });
 
   const infectionDevelopmentData: InfectionDevelopmentDataItem[] = []
-  daysIntervalSinceFirstInfection.reduce((acc, curr) => {
+  daysIntervalSinceFirstInfection.reduce((acc: { recovered: number | null; infections: number | null; deaths: number | null; }, curr) => {
     const items = sortedData.filter(item => isSameDay(new Date(item.date), curr) && filter(item));
     const itemsRecovered = sortedDataRecoverd.filter(item => isSameDay(new Date(item.date), curr) && filter(item));
     const itemsDeaths = sortedDataDeaths.filter(item => isSameDay(new Date(item.date), curr) && filter(item));
-    acc.deaths = acc.deaths + itemsDeaths.length;
-    acc.infections = acc.infections + items.length;
-    acc.recovered = acc.recovered + itemsRecovered.length;
+    acc.deaths = ((acc.deaths ?? 0) + itemsDeaths.length) || null;
+    acc.infections = ((acc.infections ?? 0) + items.length) || null;
+    acc.recovered = ((acc.recovered ?? 0) + itemsRecovered.length) || null;
     
     infectionDevelopmentData.push({date: curr.getTime(), infectionsDaily: items.length,...acc})
 
     return acc
-  }, {infections: 0, deaths: 0, recovered: 0})
+  }, {infections: null, deaths: null, recovered: null})
 
   const thirtyDaysAgo = sub(new Date(), { days: 30 });
   const infectionDevelopmentData30Days = infectionDevelopmentData.filter(item => item.date > thirtyDaysAgo.getTime());
