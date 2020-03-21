@@ -192,17 +192,11 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
   );
   const maxValues =
     infectionDevelopmentData30Days[infectionDevelopmentData30Days.length - 1];
-  const minValues = infectionDevelopmentData30Days[0];
   const dataMaxValue = Math.max(
     maxValues.deaths,
     maxValues.infections,
     maxValues.infections
   );
-  const dataMinValue =
-    Math.min(minValues.deaths, minValues.infections, minValues.infections) ||
-    cumulativeChartScale === 'log' // logarithmic scale can't handle zero values
-      ? 1
-      : 0;
 
   const {
     infectionsByDistrict,
@@ -480,7 +474,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
                   <YAxis
                     scale={cumulativeChartScale}
                     dataKey="infections"
-                    domain={[dataMinValue, dataMaxValue + 10]}
+                    domain={[cumulativeChartScale === 'log' ? 1 : 0, dataMaxValue + 10]}
                     unit={' ' + t('person')}
                     tick={{ fontSize: 12 }}
                     name={t('cases')}
