@@ -31,7 +31,7 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     'note the testing strategy change':
       'HUOM! Testaustavan muutos vaikeuttaa tilannekuvan saamista',
     'less people will be tested':
-      'Lukujen luotettavuuteen vaikuttaa mm. pääkaupunkiseudun sairaanhoitopiirin Husin päätös rajoittaa testaamista vain tiettyihin tärkeisiin avainryhmiin. Entistä pienempi osa Husin alueella sairastuneista varmistetaan laboratoriossa mikä näkyy vähentyneenä tartuntojen lukumääränä.',
+      'Lukujen luotettavuuteen vaikuttaa 14. maaliskuuta tehty valtakunnallinen testausstrategian muutos. Testausta rajoitettiin vain tiettyihin avainryhmiin. Entistä pienempi osa sairastuneista varmistetaan laboratoriossa mikä näkyy vähentyneenä tartuntojen lukumääränä. Myös tiedottamiskäytännöissä on tapahtunut muutoksia minkä johdosta alueellisissa tiedoissa saattaa ilmetä puutteita tai eroja.',
     'read more': 'Lue lisää',
     'The data is based on':
       'Sivun tiedot pohjautuvat Helsingin Sanomien julkaisemaan ',
