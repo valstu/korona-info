@@ -47,10 +47,10 @@ const peopleTotal = healtCareDistricts.reduce(
 
 interface InfectionDevelopmentDataItem {
   date: number;
-  infections: number | null;
-  deaths: number | null;
-  recovered: number | null;
-  infectionsDaily: number | null;
+  infections: number;
+  deaths: number;
+  recovered: number;
+  infectionsDaily: number;
 }
 
 interface InfectionDevelopment60DaysDataItem {
@@ -62,6 +62,14 @@ interface InfectionDevelopmentDataObj {
   prediction60Days: InfectionDevelopment60DaysDataItem[];
   today: number;
 }
+
+export const zerosToNulls = (item: InfectionDevelopmentDataItem) => ({
+  ...item,
+  deaths: item.deaths || null,
+  infections: item.infections || null,
+  recovered: item.recovered || null,
+  infectionsDaily: item.infectionsDaily || null
+});
 
 export const getTimeSeriesData = (
   confirmed: Confirmed[],
@@ -94,9 +102,9 @@ export const getTimeSeriesData = (
   daysIntervalSinceFirstInfection.reduce(
     (
       acc: {
-        recovered: number | null;
-        infections: number | null;
-        deaths: number | null;
+        recovered: number;
+        infections: number;
+        deaths: number;
       },
       curr
     ) => {
@@ -109,9 +117,9 @@ export const getTimeSeriesData = (
       const itemsDeaths = sortedDataDeaths.filter(
         item => isSameDay(new Date(item.date), curr) && filter(item)
       );
-      acc.deaths = (acc.deaths ?? 0) + itemsDeaths.length || null;
-      acc.infections = (acc.infections ?? 0) + items.length || null;
-      acc.recovered = (acc.recovered ?? 0) + itemsRecovered.length || null;
+      acc.deaths = acc.deaths + itemsDeaths.length;
+      acc.infections = acc.infections + items.length;
+      acc.recovered = acc.recovered + itemsRecovered.length;
 
       infectionDevelopmentData.push({
         date: curr.getTime(),
@@ -121,7 +129,7 @@ export const getTimeSeriesData = (
 
       return acc;
     },
-    { infections: null, deaths: null, recovered: null }
+    { infections: 0, deaths: 0, recovered: 0 }
   );
 
   const thirtyDaysAgo = sub(new Date(), { days: 30 });

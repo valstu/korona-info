@@ -52,7 +52,8 @@ import {
   getNetworkGraphData,
   colors,
   getInfectionsToday,
-  healtCareDistricts
+  healtCareDistricts,
+  zerosToNulls
 } from '../utils/chartDataHelper';
 
 export interface KoronaData {
@@ -193,14 +194,14 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
     infectionDevelopmentData30Days[infectionDevelopmentData30Days.length - 1];
   const minValues = infectionDevelopmentData30Days[0];
   const dataMaxValue = Math.max(
-    maxValues.deaths ?? 0,
-    maxValues.infections ?? 0,
-    maxValues.infections ?? 0
+    maxValues.deaths,
+    maxValues.infections,
+    maxValues.infections
   );
   const dataMinValue = Math.min(
-    minValues.deaths ?? 1,
-    minValues.infections ?? 1,
-    minValues.infections ?? 1
+    minValues.deaths || 1,
+    minValues.infections || 1,
+    minValues.infections || 1
   );
 
   const {
@@ -404,7 +405,11 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
 
               <ResponsiveContainer width={'100%'} height={380}>
                 <ComposedChart
-                  data={infectionDevelopmentData30Days}
+                  data={
+                    cumulativeChartScale === 'log'
+                      ? infectionDevelopmentData30Days.map(zerosToNulls)
+                      : infectionDevelopmentData30Days
+                  }
                   margin={{ top: 20, right: 30, left: 0, bottom: 30 }}
                 >
                   <defs>
