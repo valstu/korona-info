@@ -2,7 +2,7 @@ import { format, sub, eachDayOfInterval, isSameDay, isToday } from 'date-fns';
 import groupBy from 'lodash.groupby'
 import sortBy from 'lodash.sortby'
 import ExponentialRegression from 'ml-regression-exponential'
-import { Confirmed, Recovered, Deaths } from '../pages';
+import { Confirmed, Recovered, Deaths, Filter } from '../pages';
 
 // Map data to show development of infections
 export const colors = [
@@ -60,7 +60,7 @@ interface InfectionDevelopmentDataObj {
   today: number;
 }
 
-export const getTimeSeriesData = (confirmed: Confirmed[], recovered: Recovered[], deaths: Deaths[]): {
+export const getTimeSeriesData = (confirmed: Confirmed[], recovered: Recovered[], deaths: Deaths[], filter: Filter): {
   infectionDevelopmentData: InfectionDevelopmentDataItem[]
   infectionDevelopmentData30Days: InfectionDevelopmentDataItem[]
 } => {
@@ -74,9 +74,9 @@ export const getTimeSeriesData = (confirmed: Confirmed[], recovered: Recovered[]
 
   const infectionDevelopmentData: InfectionDevelopmentDataItem[] = []
   daysIntervalSinceFirstInfection.reduce((acc, curr) => {
-    const items = sortedData.filter(item => isSameDay(new Date(item.date), curr));
-    const itemsRecovered = sortedDataRecoverd.filter(item => isSameDay(new Date(item.date), curr));
-    const itemsDeaths = sortedDataDeaths.filter(item => isSameDay(new Date(item.date), curr));
+    const items = sortedData.filter(item => isSameDay(new Date(item.date), curr) && filter(item));
+    const itemsRecovered = sortedDataRecoverd.filter(item => isSameDay(new Date(item.date), curr) && filter(item));
+    const itemsDeaths = sortedDataDeaths.filter(item => isSameDay(new Date(item.date), curr) && filter(item));
     acc.deaths = acc.deaths + itemsDeaths.length;
     acc.infections = acc.infections + items.length;
     acc.recovered = acc.recovered + itemsRecovered.length;
@@ -97,9 +97,9 @@ export const getTimeSeriesData = (confirmed: Confirmed[], recovered: Recovered[]
 
 }
 
-export const getPredictionData = (confirmed: Confirmed[], deaths: Deaths[], recovered: Recovered[]): InfectionDevelopmentDataObj => {
+export const getPredictionData = (confirmed: Confirmed[], deaths: Deaths[], recovered: Recovered[], filter: Filter): InfectionDevelopmentDataObj => {
 
-  const currentData30Days = getTimeSeriesData(confirmed, recovered, deaths).infectionDevelopmentData30Days
+  const currentData30Days = getTimeSeriesData(confirmed, recovered, deaths, filter).infectionDevelopmentData30Days
 
   const indexes = currentData30Days.map((d,i) => i + 1);
   const infections = currentData30Days.map(d => d.infections);

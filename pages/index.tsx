@@ -5,7 +5,7 @@ import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
 import { format, utcToZonedTime } from 'date-fns-tz';
 import { Area, AreaChart, ReferenceLine, ComposedChart, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, BarChart, Bar, Cell, LabelList, Legend } from 'recharts';
-import { Flex, Box, Button, ButtonGroup, Alert, AlertIcon, AlertTitle, AlertDescription, CloseButton, Link } from '@chakra-ui/core';
+import { Flex, Box, Button, ButtonGroup, Alert, AlertIcon, AlertTitle, AlertDescription, CloseButton, Link, Select } from '@chakra-ui/core';
 
 import Layout from '../components/Layout';
 import StatBlock from '../components/StatBlock';
@@ -17,7 +17,16 @@ import Table from '../components/Table';
 import { infectionColumns } from '../components/TableColumns'
 import { UserContext } from './_app';
 
-import { getTimeSeriesData, getPredictionData, getTnfectionsByDistrict, getInfectionsBySourceCountry, getNetworkGraphData, colors, getInfectionsToday } from '../utils/chartDataHelper';
+import {
+  getTimeSeriesData,
+  getPredictionData,
+  getTnfectionsByDistrict,
+  getInfectionsBySourceCountry,
+  getNetworkGraphData,
+  colors,
+  getInfectionsToday,
+  healtCareDistricts
+} from '../utils/chartDataHelper';
 
 export interface KoronaData {
   confirmed: Confirmed[];
@@ -25,25 +34,27 @@ export interface KoronaData {
   deaths: any[];
 }
 
-export interface Confirmed {
+
+interface BaseItem {healthCareDistrict: string}
+
+export interface Confirmed extends BaseItem {
   id: string;
   date: Date;
-  healthCareDistrict: string;
   infectionSource: InfectionSourceEnum | number;
   infectionSourceCountry: string | null;
 }
 
-export interface Deaths {
+export interface Deaths extends BaseItem {
   id: string;
   date: Date;
-  healthCareDistrict: string;
 }
 
-export interface Recovered {
+export interface Recovered extends BaseItem {
   id: number;
   date: Date;
-  healthCareDistrict: string;
 }
+
+export type Filter = (item: BaseItem) => boolean;
 
 export enum InfectionSourceEnum {
   RelatedToEarlier = "related to earlier",
@@ -61,8 +72,6 @@ const CustomizedAxisTick: React.FC<any> = (props) => {
     </g>
   );
 }
-
-
 
 const timeZone = 'Europe/Helsinki';
 
@@ -99,11 +108,12 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
   const infectionsToday = getInfectionsToday(confirmed);
 
   const [cumulativeChartScale, setCumulativeChartScale] = useState<'linear' | 'log'>('linear')
+  const [selectedHealthCareDistrict, selectHealthCareDistrict] = useState<string | null>(null)
   const [forecastChartScale, setForecaseChartScale] = useState<'linear' | 'log'>('linear')
-
+  const districtFilter = (item: BaseItem) => selectedHealthCareDistrict ? item.healthCareDistrict === selectedHealthCareDistrict : true;
   // Map data to show development of infections
-  const { infectionDevelopmentData, infectionDevelopmentData30Days } = getTimeSeriesData(confirmed, recovered, deaths);
-  const { prediction60Days, today } = getPredictionData(confirmed, deaths, recovered);
+  const { infectionDevelopmentData, infectionDevelopmentData30Days } = getTimeSeriesData(confirmed, recovered, deaths, districtFilter);
+  const { prediction60Days, today } = getPredictionData(confirmed, deaths, recovered, districtFilter);
   const maxValues = infectionDevelopmentData30Days[infectionDevelopmentData30Days.length - 1];
   const dataMaxValue = Math.max(maxValues.deaths, maxValues.infections, maxValues.infections);
   const { infectionsByDistrict, infectionsByDistrictPercentage, areas } = getTnfectionsByDistrict(confirmed);
@@ -112,7 +122,6 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
   const reversedConfirmed = confirmed.map((i, index) => ({index: index+1, ...i})).reverse()
   
   const { t } = useContext(UserContext);
-
   return (
     <Layout>
       <Head>
@@ -158,14 +167,27 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
           
           <Box width={['100%']} p={3}>
       <Block title={t('accumulated change')} footer={t("cases recovered and death in past 30 days")}>
-            <ButtonGroup spacing={0} alignSelf="center" display="flex" justifyContent="center" marginTop="-15px">
-              <Button size="xs" fontFamily="Space Grotesk Regular" px={3} letterSpacing="1px" borderRadius="4px 0px 0px 4px" borderWidth="0px" isActive={cumulativeChartScale === 'linear'} onClick={() => setCumulativeChartScale('linear')}>
-              {t('linear')}
-              </Button>
-              <Button size="xs" fontFamily="Space Grotesk Regular" px={3} letterSpacing="1px" borderRadius="0px 4px 4px 0px" borderWidth="0px" isActive={cumulativeChartScale === 'log'}  onClick={() => setCumulativeChartScale('log')}>
-                {t('logarithmic')}
-              </Button>
-            </ButtonGroup>
+              <Flex justify="space-between" mr={4} ml={4} mt={0} mb={0}>
+                <Flex>
+                  <Select placeholder={t('healthcare district')}
+                          value={selectedHealthCareDistrict ?? undefined}
+                          onChange={(event) => selectHealthCareDistrict(event.target.value)}>
+                    {healtCareDistricts.map(healthcareDistrict => <option key={healthcareDistrict.name}
+                                                                          value={healthcareDistrict.name}>{healthcareDistrict.name}</option>)}
+                  </Select>
+                </Flex>
+                <Flex>
+                  <ButtonGroup spacing={0} alignSelf="center" display="flex" justifyContent="center" marginTop="-15px">
+                    <Button size="xs" fontFamily="Space Grotesk Regular" px={3} letterSpacing="1px" borderRadius="4px 0px 0px 4px" borderWidth="0px" isActive={cumulativeChartScale === 'linear'} onClick={() => setCumulativeChartScale('linear')}>
+                      {t('linear')}
+                    </Button>
+                    <Button size="xs" fontFamily="Space Grotesk Regular" px={3} letterSpacing="1px" borderRadius="0px 4px 4px 0px" borderWidth="0px" isActive={cumulativeChartScale === 'log'}  onClick={() => setCumulativeChartScale('log')}>
+                      {t('logarithmic')}
+                    </Button>
+                  </ButtonGroup>
+                </Flex>
+              </Flex>
+
               <ResponsiveContainer width={'100%'} height={380}>
                 <ComposedChart
                   data={infectionDevelopmentData30Days}
