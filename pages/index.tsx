@@ -306,7 +306,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
               )}`}
               footer={`${t(
                 'latest case'
-              )} ${latestInfection} (${latestInfectionDistrict})`}
+              )} ${latestInfection} (${latestInfectionDistrict ?? t('unknown')})`}
             >
               <StatBlock
                 count={confirmed.length}
