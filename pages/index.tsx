@@ -200,7 +200,7 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
   );
   const dataMinValue =
     Math.min(minValues.deaths, minValues.infections, minValues.infections) ||
-    cumulativeChartScale === 'log'  // logarithmic scale can't handle zero values
+    cumulativeChartScale === 'log' // logarithmic scale can't handle zero values
       ? 1
       : 0;
 
@@ -306,7 +306,8 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
               )}`}
               footer={`${t(
                 'latest case'
-              )} ${latestInfection} (${latestInfectionDistrict ?? t('unknown')})`}
+              )} ${latestInfection} (${latestInfectionDistrict ??
+                t('unknown')})`}
             >
               <StatBlock
                 count={confirmed.length}
