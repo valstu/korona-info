@@ -211,9 +211,6 @@ const Index: NextPage<KoronaData> = ({
   } = getTnfectionsByDistrict(allConfirmed);
   const { infectionsBySourceCountry } = getInfectionsBySourceCountry(confirmed);
   const networkGraphData = getNetworkGraphData(confirmed);
-  const reversedConfirmed = confirmed
-    .map((i, index) => ({ index: index + 1, ...i }))
-    .reverse();
 
   const { t } = useContext(UserContext);
 
@@ -226,6 +223,10 @@ const Index: NextPage<KoronaData> = ({
       return district;
     }
   };
+
+  const reversedConfirmed = confirmed
+    .map((i, index) => ({ index: index + 1, ...i, healthCareDistrict: humanizeHealthcareDistrict(i.healthCareDistrict) }))
+    .reverse();
 
   const humanizedHealthCareDistrict = humanizeHealthcareDistrict(
     selectedHealthCareDistrict
@@ -352,8 +353,7 @@ const Index: NextPage<KoronaData> = ({
               )}`}
               footer={`${t(
                 'latest case'
-              )} ${latestInfection} (${latestInfectionDistrict ??
-                t('unknown')})`}
+              )} ${latestInfection} (${humanizeHealthcareDistrict(latestInfectionDistrict)})`}
             >
               <StatBlock
                 count={confirmed.length}
@@ -368,7 +368,7 @@ const Index: NextPage<KoronaData> = ({
               title={t('deaths') + ` (${humanizedHealthCareDistrict})`}
               footer={
                 latestDeath
-                  ? `${t('last death')} ${latestDeath} (${latestDeathDistrict})`
+                  ? `${t('last death')} ${latestDeath} (${humanizeHealthcareDistrict(latestDeathDistrict!)})`
                   : t('no death')
               }
             >
@@ -382,7 +382,7 @@ const Index: NextPage<KoronaData> = ({
                 latestRecovered
                   ? `${t(
                       'latest recovery'
-                    )} ${latestRecovered} (${latestRecoveredDistrict})`
+                    )} ${latestRecovered} (${humanizeHealthcareDistrict(latestRecoveredDistrict!)})`
                   : ' '
               }
             >
@@ -764,7 +764,7 @@ Index.getInitialProps = async function() {
     infectionSourceCountry:
       i.infectionSourceCountry === '' ? null : i.infectionSourceCountry,
     healthCareDistrict:
-      i.healthCareDistrict === '' ? 'unknown' : i.healthCareDistrict
+      i.healthCareDistrict ? i.healthCareDistrict : 'unknown' // there are empty strings and nulls
   }));
   return { ...data, confirmed };
 };
