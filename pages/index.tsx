@@ -218,7 +218,7 @@ const Index: NextPage<KoronaData> = ({
     if (district === 'all') {
       return t('All healthcare districts');
     } else if (district === 'unknown') {
-      return t('Unknown');
+      return t('unknown');
     } else {
       return district;
     }
@@ -322,7 +322,7 @@ const Index: NextPage<KoronaData> = ({
                 {t('All healthcare districts')}
               </option>
               <option key={'unknown'} value={'unknown'}>
-                {t('Unknown')}
+                {t('unknown')}
               </option>
               {healtCareDistricts.map(healthcareDistrict => (
                 <option
