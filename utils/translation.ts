@@ -17,6 +17,8 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     'last death': 'Viimeisin kuolema',
     'accumulated change': 'Kumulatiivinen kehitys (30 pv)',
     'healthcare district': 'Sairaanhoitopiiri',
+    Unknown: 'Ei julkistettu',
+    'All healthcare districts': 'Kaikki sairaanhoitopiirit',
     'cases recovered and death in past 30 days':
       'Tartuntojen, parantuneiden ja menehtyneiden kumulatiivinen kehitys viimeisen 30 päivän aikana',
     linear: 'Lineaarinen',

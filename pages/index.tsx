@@ -139,12 +139,12 @@ const Index: NextPage<KoronaData> = ({
   recovered: allRecovered
 }) => {
   const [selectedHealthCareDistrict, selectHealthCareDistrict] = useState<
-    string | null
-  >(null);
+    string
+  >('all');
   const districtFilter = (item: BaseItem) =>
-    selectedHealthCareDistrict
-      ? item.healthCareDistrict === selectedHealthCareDistrict
-      : true;
+    selectedHealthCareDistrict === 'all'
+      ? true
+      : item.healthCareDistrict === selectedHealthCareDistrict;
   const confirmed = allConfirmed.filter(districtFilter);
   const deaths = allDeaths.filter(districtFilter);
   const recovered = allRecovered.filter(districtFilter);
@@ -216,6 +216,21 @@ const Index: NextPage<KoronaData> = ({
     .reverse();
 
   const { t } = useContext(UserContext);
+
+  const humanizeHealthcareDistrict = (district: string) => {
+    if (district === 'all') {
+      return t('All healthcare districts');
+    } else if (district === 'unknown') {
+      return t('Unknown');
+    } else {
+      return district;
+    }
+  };
+
+  const humanizedHealthCareDistrict = humanizeHealthcareDistrict(
+    selectedHealthCareDistrict
+  );
+
   return (
     <Layout>
       <Head>
@@ -299,10 +314,15 @@ const Index: NextPage<KoronaData> = ({
         >
           <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
             <Select
-              placeholder={t('healthcare district')}
               value={selectedHealthCareDistrict ?? undefined}
               onChange={event => selectHealthCareDistrict(event.target.value)}
             >
+              <option key={'all'} value={'all'}>
+                {t('All healthcare districts')}
+              </option>
+              <option key={'unknown'} value={'unknown'}>
+                {t('Unknown')}
+              </option>
               {healtCareDistricts.map(healthcareDistrict => (
                 <option
                   key={healthcareDistrict.name}
@@ -310,6 +330,7 @@ const Index: NextPage<KoronaData> = ({
                 >
                   {healthcareDistrict.name}
                 </option>
+              ))}
               ))}
             </Select>
           </Box>
@@ -324,7 +345,7 @@ const Index: NextPage<KoronaData> = ({
         >
           <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
             <Block
-              title={t('cases') + ` (${selectedHealthCareDistrict})`}
+              title={t('cases') + ` (${humanizedHealthCareDistrict})`}
               textAlign="center"
               extraInfo={`${t('New cases today')} ${infectionsToday} ${t(
                 'person'
@@ -344,7 +365,7 @@ const Index: NextPage<KoronaData> = ({
           </Box>
           <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
             <Block
-              title={t('deaths') + ` (${selectedHealthCareDistrict})`}
+              title={t('deaths') + ` (${humanizedHealthCareDistrict})`}
               footer={
                 latestDeath
                   ? `${t('last death')} ${latestDeath} (${latestDeathDistrict})`
@@ -356,7 +377,7 @@ const Index: NextPage<KoronaData> = ({
           </Box>
           <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
             <Block
-              title={t('recovered') + ` (${selectedHealthCareDistrict})`}
+              title={t('recovered') + ` (${humanizedHealthCareDistrict})`}
               footer={
                 latestRecovered
                   ? `${t(
@@ -371,7 +392,9 @@ const Index: NextPage<KoronaData> = ({
 
           <Box width={['100%']} p={3}>
             <Block
-              title={t('accumulated change')  + ` (${selectedHealthCareDistrict})`}
+              title={
+                t('accumulated change') + ` (${humanizedHealthCareDistrict})`
+              }
               footer={t('cases recovered and death in past 30 days')}
             >
               <ButtonGroup
@@ -660,7 +683,10 @@ const Index: NextPage<KoronaData> = ({
           </Box>
           <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
             <Block
-              title={t('Origin country of the cases') + ` (${selectedHealthCareDistrict})`}
+              title={
+                t('Origin country of the cases') +
+                ` (${humanizedHealthCareDistrict})`
+              }
               footer={t('originCountryFooter')}
             >
               <ResponsiveContainer width={'100%'} height={350}>
@@ -699,7 +725,10 @@ const Index: NextPage<KoronaData> = ({
             </Block>
           </Box>
           <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
-            <Block title={t('log') + ` (${selectedHealthCareDistrict})`} footer={t('logFooter')}>
+            <Block
+              title={t('log') + ` (${humanizedHealthCareDistrict})`}
+              footer={t('logFooter')}
+            >
               <Table
                 height={350}
                 data={reversedConfirmed}
@@ -709,7 +738,9 @@ const Index: NextPage<KoronaData> = ({
           </Box>
           <Box width={['100%']} p={3}>
             <Block
-              title={t('infectionNetwork') + ` (${selectedHealthCareDistrict})`}
+              title={
+                t('infectionNetwork') + ` (${humanizedHealthCareDistrict})`
+              }
               footer={t('infectionNetworkFooter')}
             >
               <NetworkGraph data={networkGraphData} />
@@ -731,7 +762,9 @@ Index.getInitialProps = async function() {
   const confirmed = data.confirmed.map((i: Confirmed) => ({
     ...i,
     infectionSourceCountry:
-      i.infectionSourceCountry === '' ? null : i.infectionSourceCountry
+      i.infectionSourceCountry === '' ? null : i.infectionSourceCountry,
+    healthCareDistrict:
+      i.healthCareDistrict === '' ? 'unknown' : i.healthCareDistrict
   }));
   return { ...data, confirmed };
 };
