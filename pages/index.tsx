@@ -190,12 +190,11 @@ const Index: NextPage<KoronaData> = ({
   const {
     infectionDevelopmentData,
     infectionDevelopmentData30Days
-  } = getTimeSeriesData(confirmed, recovered, deaths, districtFilter);
+  } = getTimeSeriesData(confirmed, recovered, deaths);
   const { prediction60Days, today } = getPredictionData(
     confirmed,
     deaths,
-    recovered,
-    districtFilter
+    recovered
   );
   const maxValues =
     infectionDevelopmentData30Days[infectionDevelopmentData30Days.length - 1];
@@ -299,22 +298,21 @@ const Index: NextPage<KoronaData> = ({
           width={'100%'}
         >
           <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
-              <Select
-                placeholder={t('healthcare district')}
-                value={selectedHealthCareDistrict ?? undefined}
-                onChange={event => selectHealthCareDistrict(event.target.value)}
-              >
-                {healtCareDistricts.map(healthcareDistrict => (
-                  <option
-                    key={healthcareDistrict.name}
-                    value={healthcareDistrict.name}
-                  >
-                    {healthcareDistrict.name}
-                  </option>
-                ))}
-              </Select>
+            <Select
+              placeholder={t('healthcare district')}
+              value={selectedHealthCareDistrict ?? undefined}
+              onChange={event => selectHealthCareDistrict(event.target.value)}
+            >
+              {healtCareDistricts.map(healthcareDistrict => (
+                <option
+                  key={healthcareDistrict.name}
+                  value={healthcareDistrict.name}
+                >
+                  {healthcareDistrict.name}
+                </option>
+              ))}
+            </Select>
           </Box>
-
         </Flex>
         <Flex
           flexWrap="wrap"
