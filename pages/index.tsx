@@ -324,7 +324,7 @@ const Index: NextPage<KoronaData> = ({
         >
           <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
             <Block
-              title={t('cases')}
+              title={t('cases') + ` (${selectedHealthCareDistrict})`}
               textAlign="center"
               extraInfo={`${t('New cases today')} ${infectionsToday} ${t(
                 'person'
@@ -344,7 +344,7 @@ const Index: NextPage<KoronaData> = ({
           </Box>
           <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
             <Block
-              title={t('deaths')}
+              title={t('deaths') + ` (${selectedHealthCareDistrict})`}
               footer={
                 latestDeath
                   ? `${t('last death')} ${latestDeath} (${latestDeathDistrict})`
@@ -356,7 +356,7 @@ const Index: NextPage<KoronaData> = ({
           </Box>
           <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
             <Block
-              title={t('recovered')}
+              title={t('recovered') + ` (${selectedHealthCareDistrict})`}
               footer={
                 latestRecovered
                   ? `${t(
@@ -371,7 +371,7 @@ const Index: NextPage<KoronaData> = ({
 
           <Box width={['100%']} p={3}>
             <Block
-              title={t('accumulated change')}
+              title={t('accumulated change')  + ` (${selectedHealthCareDistrict})`}
               footer={t('cases recovered and death in past 30 days')}
             >
               <ButtonGroup
@@ -660,7 +660,7 @@ const Index: NextPage<KoronaData> = ({
           </Box>
           <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
             <Block
-              title={t('Origin country of the cases')}
+              title={t('Origin country of the cases') + ` (${selectedHealthCareDistrict})`}
               footer={t('originCountryFooter')}
             >
               <ResponsiveContainer width={'100%'} height={350}>
@@ -699,7 +699,7 @@ const Index: NextPage<KoronaData> = ({
             </Block>
           </Box>
           <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
-            <Block title={t('log')} footer={t('logFooter')}>
+            <Block title={t('log') + ` (${selectedHealthCareDistrict})`} footer={t('logFooter')}>
               <Table
                 height={350}
                 data={reversedConfirmed}
@@ -709,7 +709,7 @@ const Index: NextPage<KoronaData> = ({
           </Box>
           <Box width={['100%']} p={3}>
             <Block
-              title={t('infectionNetwork')}
+              title={t('infectionNetwork') + ` (${selectedHealthCareDistrict})`}
               footer={t('infectionNetworkFooter')}
             >
               <NetworkGraph data={networkGraphData} />
