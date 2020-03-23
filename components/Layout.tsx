@@ -4,9 +4,10 @@ import { Children } from 'react';
 const customTheme = {
   ...theme,
   fonts: {
-    heading: '"Space Grotesk Regular", sans-serif',
-    body: '"Space Grotesk Regular", sans-serif',
-    mono: 'Space Mono", Menlo, monospace'
+    ...theme.fonts,
+    heading: 'Space Grotesk Regular, sans-serif',
+    body: 'Space Grotesk Regular, sans-serif',
+    mono: 'Space Mono, Menlo, monospace',
   }
 };
 
