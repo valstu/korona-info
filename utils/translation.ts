@@ -68,7 +68,7 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     'accumulated change': 'Accumuluated change (30 days)',
     'healthcare district': 'Healthcare district',
     'cases recovered and death in past 30 days':
-      'Cases, revovered cases and deths in the past 30 days',
+      'Cases, recovered cases, and deaths in the past 30 days',
     linear: 'Linear',
     logarithmic: 'Logarithmic',
     'total cases': 'Total cases',
@@ -81,13 +81,13 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     'note the testing strategy change':
       'NOTE! The change in testing strategy might change stats',
     'less people will be tested':
-      'The stats reliability might change as in some districts for exmaple in Helsinki metropolian area has decided that only special groups like health system workers etc. will be tested for COVID-19',
+      'The stats reliability might change as in some districts, for example the Helsinki metropolian area, have decided that only special groups like health system workers etc. will be tested for COVID-19',
     'read more': 'Read more',
     'The data is based on':
       'Information on this page is based on open data provided by ',
     'open data': 'Helsingin Sanomat.',
     'HS has gathered these data from':
-      'Helsingin sanomat has gathered the information from multiple public sources: press conferences, other media and interviews. Data is updated whenever new information about the cases appear. More information below:',
+     'Helsingin Sanomat has gathered the information from multiple public sources: press conferences, other media and interviews. Data is updated whenever new information about the cases appear. More information below:',
     'What is corona virus': 'What is corona virus (in finnish)',
     'Corona virus prevention tips': 'Corona virus prevention tips (in finnish)',
     infectionsPerDisrictAndSize:
