@@ -28,6 +28,8 @@ Following people have also contributed to this project:
   - [jonijuup](https://github.com/jonijuup) (translations)
   - [villesau](https://github.com/villesau) (filter chart by healthcare district, code quality)
   - [nghitrum](https://github.com/nghitrum) (bug fixes)
+  - [msillanpaa](https://github.com/msillanpaa) (content fixes)
+  - [csaavedra](https://github.com/csaavedra) (translation fixes)
 
 ## License
 

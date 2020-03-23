@@ -5,29 +5,30 @@ const phrases: { [key: string]: { [key: string]: string } } = {
   fi: {
     language: 'Suomi',
     'finland corona status': 'Suomen koronavirus-tartuntatilanne',
-    cases: 'Tartunnat',
-    'cases of the day': 'Päivän tartunnat',
+    cases: 'Varmennetut tapaukset',
+    'cases of the day': 'Päivän varmennetut tapaukset',
     recovered: 'Parantuneet',
     deaths: 'Menehtyneet',
-    'New cases today': 'Uudet tartunnat tänään',
+    'New cases today': 'Uudet varmennetut tapaukset tänään',
     person: 'kpl',
     'no death': 'Ei menehtyneitä',
     'latest recovery': 'Viimeisin parantuminen',
-    'latest case': 'Viimeisin tartunta',
+    'latest case': 'Viimeisin varmennettu tapaus',
     'last death': 'Viimeisin kuolema',
     'accumulated change': 'Kumulatiivinen kehitys (30 pv)',
     'healthcare district': 'Sairaanhoitopiiri',
+    'All healthcare districts': 'Kaikki sairaanhoitopiirit',
     'cases recovered and death in past 30 days':
-      'Tartuntojen, parantuneiden ja menehtyneiden kumulatiivinen kehitys viimeisen 30 päivän aikana',
+      'Varmennettujen tapausten, parantuneiden ja menehtyneiden kumulatiivinen kehitys viimeisen 30 päivän aikana',
     linear: 'Lineaarinen',
     logarithmic: 'Logaritminen',
-    'total cases': 'Tartunnat yht.',
+    'total cases': 'Varmennetut tapaukset yht.',
     'total recovered': 'Parantuneet yht.',
     'total deaths': 'Menehtyneet yht.',
-    'Cases by district': 'Tartunnat sairaanhoitopiireittäin',
+    'Cases by district': 'Varmennetut tapaukset sairaanhoitopiireittäin',
     'Helsinki metropolitan area is shown as HUS':
       'Helsingin ja Uudenmaan sairaanhoitopiiri on esitetty muodossa HUS',
-    'Origin country of the cases': 'Tartuntojen alkuperämaat',
+    'Origin country of the cases': 'Varmennettujen tapausten alkuperämaat',
     'note the testing strategy change':
       'HUOM! Testaustavan muutos vaikeuttaa tilannekuvan saamista',
     'less people will be tested':
@@ -42,15 +43,16 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     'Corona virus prevention tips':
       'Toimintaohjeet koronaviruksen tartunnan ehkäisyyn',
     infectionsPerDisrictAndSize:
-      'Tartunnat sairaanhoitopiireittäin / sairaanhoitopiirin koko',
-    originCountryFooter: 'Suomen tartuntojen lukumäärät alkuperämaittain',
+      'Varmennetut tapaukset sairaanhoitopiireittäin / sairaanhoitopiirin koko',
+    originCountryFooter:
+      'Suomen varmennettujan tapausten lukumäärät alkuperämaittain',
     log: 'Tartuntaloki',
     logFooter:
-      'Kaikki suomen tartunnat listana, uusimmat ensin. Jokin id saattaa puuttua välistä',
+      'Kaikki Suomen varmennetut tapaukset listana, uusimmat ensin. Jokin id saattaa puuttua välistä',
     infectionNetwork: 'Tartuntaverkosto',
     infectionNetworkFooter:
-      'Kuvio esittää tartunnat verkostona. Numero on tartunnan järjestysnumero. Mikäli suoraa tartuttajaa ei tiedetä linkitetään tartunta alkuperämaahan. Kuvasta on jätetty pois tartunnat joiden suoraa aiheuttajaa tai alkuperämaata ei ole tiedossa. Suomeen merkatut tartunnat liittyvät suurella todennäköisyydellä muihin tartuntaverkostoihin. Solun väri kertoo maan jossa tartunta on todennäköisesti tapahtunut.',
-    'unknown': 'tuntematon'
+      'Kuvio esittää varmennetut tapaukset verkostona. Numero on tartunnan järjestysnumero. Mikäli suoraa tartuttajaa ei tiedetä linkitetään tartunta alkuperämaahan. Kuvasta on jätetty pois tartunnat joiden suoraa aiheuttajaa tai alkuperämaata ei ole tiedossa. Suomeen merkatut tartunnat liittyvät suurella todennäköisyydellä muihin tartuntaverkostoihin. Solun väri kertoo maan jossa tartunta on todennäköisesti tapahtunut.',
+    unknown: 'tuntematon'
   },
   en: {
     language: 'English',
@@ -68,7 +70,7 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     'accumulated change': 'Accumuluated change (30 days)',
     'healthcare district': 'Healthcare district',
     'cases recovered and death in past 30 days':
-      'Cases, revovered cases and deths in the past 30 days',
+      'Cases, recovered cases, and deaths in the past 30 days',
     linear: 'Linear',
     logarithmic: 'Logarithmic',
     'total cases': 'Total cases',
@@ -81,13 +83,13 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     'note the testing strategy change':
       'NOTE! The change in testing strategy might change stats',
     'less people will be tested':
-      'The stats reliability might change as in some districts for exmaple in Helsinki metropolian area has decided that only special groups like health system workers etc. will be tested for COVID-19',
+      'The stats reliability might change as in some districts, for example the Helsinki metropolian area, have decided that only special groups like health system workers etc. will be tested for COVID-19',
     'read more': 'Read more',
     'The data is based on':
       'Information on this page is based on open data provided by ',
     'open data': 'Helsingin Sanomat.',
     'HS has gathered these data from':
-      'Helsingin sanomat has gathered the information from multiple public sources: press conferences, other media and interviews. Data is updated whenever new information about the cases appear. More information below:',
+     'Helsingin Sanomat has gathered the information from multiple public sources: press conferences, other media and interviews. Data is updated whenever new information about the cases appear. More information below:',
     'What is corona virus': 'What is corona virus (in finnish)',
     'Corona virus prevention tips': 'Corona virus prevention tips (in finnish)',
     infectionsPerDisrictAndSize:
@@ -99,7 +101,7 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     infectionNetwork: 'Infection network graph',
     infectionNetworkFooter:
       'Number is the id of the case. Cases withouth origin are left out.',
-    'unknown': 'unknown'
+    unknown: 'unknown'
   },
   fa: {
     language: 'فارسی',
@@ -145,7 +147,7 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     infectionNetwork: 'Infection network graph',
     infectionNetworkFooter:
       'Number is the id of the case. Cases withouth origin are left out.',
-    'unknown': 'ناشناخته'
+    unknown: 'ناشناخته'
   }
 };
 

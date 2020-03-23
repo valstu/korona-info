@@ -38,7 +38,7 @@ export const infectionColumns = [
         return 'Ei tiedossa';
       }
       if (value === 'related to earlier') {
-        return 'Liityy aiempaan';
+        return 'Liittyy aiempaan';
       }
       return `#0${value}`;
     }
