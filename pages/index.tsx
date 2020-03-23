@@ -133,7 +133,21 @@ const ConditionallyRender: React.FC<ConditionallyRenderProps> = props => {
   return props.children as React.ReactElement;
 };
 
-const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
+const Index: NextPage<KoronaData> = ({
+  confirmed: allConfirmed,
+  deaths: allDeaths,
+  recovered: allRecovered
+}) => {
+  const [selectedHealthCareDistrict, selectHealthCareDistrict] = useState<
+    string
+  >('all');
+  const districtFilter = (item: BaseItem) =>
+    selectedHealthCareDistrict === 'all'
+      ? true
+      : item.healthCareDistrict === selectedHealthCareDistrict;
+  const confirmed = allConfirmed.filter(districtFilter);
+  const deaths = allDeaths.filter(districtFilter);
+  const recovered = allRecovered.filter(districtFilter);
   // Map some data for stats blocks
   const date = new Date('2018-09-01Z16:01:36.386Z');
   const latestInfection = format(
@@ -169,53 +183,55 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
   const [cumulativeChartScale, setCumulativeChartScale] = useState<
     'linear' | 'log'
   >('linear');
-  const [selectedHealthCareDistrict, selectHealthCareDistrict] = useState<
-    string | null
-  >(null);
   const [forecastChartScale, setForecaseChartScale] = useState<
     'linear' | 'log'
   >('linear');
-  const districtFilter = (item: BaseItem) =>
-    selectedHealthCareDistrict
-      ? item.healthCareDistrict === selectedHealthCareDistrict
-      : true;
   // Map data to show development of infections
   const {
     infectionDevelopmentData,
     infectionDevelopmentData30Days
-  } = getTimeSeriesData(confirmed, recovered, deaths, districtFilter);
+  } = getTimeSeriesData(confirmed, recovered, deaths);
   const { prediction60Days, today } = getPredictionData(
     confirmed,
     deaths,
-    recovered,
-    districtFilter
+    recovered
   );
   const maxValues =
     infectionDevelopmentData30Days[infectionDevelopmentData30Days.length - 1];
-  const minValues = infectionDevelopmentData30Days[0];
   const dataMaxValue = Math.max(
     maxValues.deaths,
     maxValues.infections,
     maxValues.infections
-  );
-  const dataMinValue = Math.min(
-    minValues.deaths || 1,
-    minValues.infections || 1,
-    minValues.infections || 1
   );
 
   const {
     infectionsByDistrict,
     infectionsByDistrictPercentage,
     areas
-  } = getTnfectionsByDistrict(confirmed);
+  } = getTnfectionsByDistrict(allConfirmed);
   const { infectionsBySourceCountry } = getInfectionsBySourceCountry(confirmed);
   const networkGraphData = getNetworkGraphData(confirmed);
-  const reversedConfirmed = confirmed
-    .map((i, index) => ({ index: index + 1, ...i }))
-    .reverse();
 
   const { t } = useContext(UserContext);
+
+  const humanizeHealthcareDistrict = (district: string) => {
+    if (district === 'all') {
+      return t('All healthcare districts');
+    } else if (district === 'unknown') {
+      return t('unknown');
+    } else {
+      return district;
+    }
+  };
+
+  const reversedConfirmed = confirmed
+    .map((i, index) => ({ index: index + 1, ...i, healthCareDistrict: humanizeHealthcareDistrict(i.healthCareDistrict) }))
+    .reverse();
+
+  const humanizedHealthCareDistrict = humanizeHealthcareDistrict(
+    selectedHealthCareDistrict
+  );
+
   return (
     <Layout>
       <Head>
@@ -292,6 +308,37 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
         <Flex
           flexWrap="wrap"
           flexDirection="row"
+          justifyContent="left"
+          alignItems="stretch"
+          flex="1"
+          width={'100%'}
+        >
+          <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
+            <Select
+              value={selectedHealthCareDistrict ?? undefined}
+              onChange={event => selectHealthCareDistrict(event.target.value)}
+            >
+              <option key={'all'} value={'all'}>
+                {t('All healthcare districts')}
+              </option>
+              <option key={'unknown'} value={'unknown'}>
+                {t('unknown')}
+              </option>
+              {healtCareDistricts.map(healthcareDistrict => (
+                <option
+                  key={healthcareDistrict.name}
+                  value={healthcareDistrict.name}
+                >
+                  {healthcareDistrict.name}
+                </option>
+              ))}
+              ))}
+            </Select>
+          </Box>
+        </Flex>
+        <Flex
+          flexWrap="wrap"
+          flexDirection="row"
           justifyContent="center"
           alignItems="stretch"
           flex="1"
@@ -299,14 +346,14 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
         >
           <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
             <Block
-              title={t('cases')}
+              title={t('cases') + ` (${humanizedHealthCareDistrict})`}
               textAlign="center"
               extraInfo={`${t('New cases today')} ${infectionsToday} ${t(
                 'person'
               )}`}
               footer={`${t(
                 'latest case'
-              )} ${latestInfection} (${latestInfectionDistrict ?? t('unknown')})`}
+              )} ${latestInfection} (${humanizeHealthcareDistrict(latestInfectionDistrict)})`}
             >
               <StatBlock
                 count={confirmed.length}
@@ -318,10 +365,10 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
           </Box>
           <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
             <Block
-              title={t('deaths')}
+              title={t('deaths') + ` (${humanizedHealthCareDistrict})`}
               footer={
                 latestDeath
-                  ? `${t('last death')} ${latestDeath} (${latestDeathDistrict})`
+                  ? `${t('last death')} ${latestDeath} (${humanizeHealthcareDistrict(latestDeathDistrict!)})`
                   : t('no death')
               }
             >
@@ -330,12 +377,12 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
           </Box>
           <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
             <Block
-              title={t('recovered')}
+              title={t('recovered') + ` (${humanizedHealthCareDistrict})`}
               footer={
                 latestRecovered
                   ? `${t(
                       'latest recovery'
-                    )} ${latestRecovered} (${latestRecoveredDistrict})`
+                    )} ${latestRecovered} (${humanizeHealthcareDistrict(latestRecoveredDistrict!)})`
                   : ' '
               }
             >
@@ -345,64 +392,43 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
 
           <Box width={['100%']} p={3}>
             <Block
-              title={t('accumulated change')}
+              title={
+                t('accumulated change') + ` (${humanizedHealthCareDistrict})`
+              }
               footer={t('cases recovered and death in past 30 days')}
             >
-              <Flex justify="space-between" mr={4} ml={4} mt={0} mb={0}>
-                <Flex>
-                  <Select
-                    placeholder={t('healthcare district')}
-                    value={selectedHealthCareDistrict ?? undefined}
-                    onChange={event =>
-                      selectHealthCareDistrict(event.target.value)
-                    }
-                  >
-                    {healtCareDistricts.map(healthcareDistrict => (
-                      <option
-                        key={healthcareDistrict.name}
-                        value={healthcareDistrict.name}
-                      >
-                        {healthcareDistrict.name}
-                      </option>
-                    ))}
-                  </Select>
-                </Flex>
-                <Flex>
-                  <ButtonGroup
-                    spacing={0}
-                    alignSelf="center"
-                    display="flex"
-                    justifyContent="center"
-                    marginTop="-15px"
-                  >
-                    <Button
-                      size="xs"
-                      fontFamily="Space Grotesk Regular"
-                      px={3}
-                      letterSpacing="1px"
-                      borderRadius="4px 0px 0px 4px"
-                      borderWidth="0px"
-                      isActive={cumulativeChartScale === 'linear'}
-                      onClick={() => setCumulativeChartScale('linear')}
-                    >
-                      {t('linear')}
-                    </Button>
-                    <Button
-                      size="xs"
-                      fontFamily="Space Grotesk Regular"
-                      px={3}
-                      letterSpacing="1px"
-                      borderRadius="0px 4px 4px 0px"
-                      borderWidth="0px"
-                      isActive={cumulativeChartScale === 'log'}
-                      onClick={() => setCumulativeChartScale('log')}
-                    >
-                      {t('logarithmic')}
-                    </Button>
-                  </ButtonGroup>
-                </Flex>
-              </Flex>
-
+              <ButtonGroup
+                spacing={0}
+                alignSelf="center"
+                display="flex"
+                justifyContent="center"
+                marginTop="-15px"
+              >
+                <Button
+                  size="xs"
+                  fontFamily="Space Grotesk Regular"
+                  px={3}
+                  letterSpacing="1px"
+                  borderRadius="4px 0px 0px 4px"
+                  borderWidth="0px"
+                  isActive={cumulativeChartScale === 'linear'}
+                  onClick={() => setCumulativeChartScale('linear')}
+                >
+                  {t('linear')}
+                </Button>
+                <Button
+                  size="xs"
+                  fontFamily="Space Grotesk Regular"
+                  px={3}
+                  letterSpacing="1px"
+                  borderRadius="0px 4px 4px 0px"
+                  borderWidth="0px"
+                  isActive={cumulativeChartScale === 'log'}
+                  onClick={() => setCumulativeChartScale('log')}
+                >
+                  {t('logarithmic')}
+                </Button>
+              </ButtonGroup>
               <ResponsiveContainer width={'100%'} height={380}>
                 <ComposedChart
                   data={
@@ -479,7 +505,10 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
                   <YAxis
                     scale={cumulativeChartScale}
                     dataKey="infections"
-                    domain={[dataMinValue, dataMaxValue + 10]}
+                    domain={[
+                      cumulativeChartScale === 'log' ? 1 : 0,
+                      dataMaxValue + 10
+                    ]}
                     unit={' ' + t('person')}
                     tick={{ fontSize: 12 }}
                     name={t('cases')}
@@ -654,7 +683,10 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
           </Box>
           <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
             <Block
-              title={t('Origin country of the cases')}
+              title={
+                t('Origin country of the cases') +
+                ` (${humanizedHealthCareDistrict})`
+              }
               footer={t('originCountryFooter')}
             >
               <ResponsiveContainer width={'100%'} height={350}>
@@ -693,7 +725,10 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
             </Block>
           </Box>
           <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
-            <Block title={t('log')} footer={t('logFooter')}>
+            <Block
+              title={t('log') + ` (${humanizedHealthCareDistrict})`}
+              footer={t('logFooter')}
+            >
               <Table
                 height={350}
                 data={reversedConfirmed}
@@ -703,7 +738,9 @@ const Index: NextPage<KoronaData> = ({ confirmed, deaths, recovered }) => {
           </Box>
           <Box width={['100%']} p={3}>
             <Block
-              title={t('infectionNetwork')}
+              title={
+                t('infectionNetwork') + ` (${humanizedHealthCareDistrict})`
+              }
               footer={t('infectionNetworkFooter')}
             >
               <NetworkGraph data={networkGraphData} />
@@ -725,7 +762,9 @@ Index.getInitialProps = async function() {
   const confirmed = data.confirmed.map((i: Confirmed) => ({
     ...i,
     infectionSourceCountry:
-      i.infectionSourceCountry === '' ? null : i.infectionSourceCountry
+      i.infectionSourceCountry === '' ? null : i.infectionSourceCountry,
+    healthCareDistrict:
+      i.healthCareDistrict ? i.healthCareDistrict : 'unknown' // there are empty strings and nulls
   }));
   return { ...data, confirmed };
 };
