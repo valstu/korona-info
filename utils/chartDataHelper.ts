@@ -74,8 +74,7 @@ export const zerosToNulls = (item: InfectionDevelopmentDataItem) => ({
 export const getTimeSeriesData = (
   confirmed: Confirmed[],
   recovered: Recovered[],
-  deaths: Deaths[],
-  filter: Filter
+  deaths: Deaths[]
 ): {
   infectionDevelopmentData: InfectionDevelopmentDataItem[];
   infectionDevelopmentData30Days: InfectionDevelopmentDataItem[];
@@ -108,14 +107,14 @@ export const getTimeSeriesData = (
       },
       curr
     ) => {
-      const items = sortedData.filter(
-        item => isSameDay(new Date(item.date), curr) && filter(item)
+      const items = sortedData.filter(item =>
+        isSameDay(new Date(item.date), curr)
       );
-      const itemsRecovered = sortedDataRecoverd.filter(
-        item => isSameDay(new Date(item.date), curr) && filter(item)
+      const itemsRecovered = sortedDataRecoverd.filter(item =>
+        isSameDay(new Date(item.date), curr)
       );
-      const itemsDeaths = sortedDataDeaths.filter(
-        item => isSameDay(new Date(item.date), curr) && filter(item)
+      const itemsDeaths = sortedDataDeaths.filter(item =>
+        isSameDay(new Date(item.date), curr)
       );
       acc.deaths = acc.deaths + itemsDeaths.length;
       acc.infections = acc.infections + items.length;
@@ -146,15 +145,10 @@ export const getTimeSeriesData = (
 export const getPredictionData = (
   confirmed: Confirmed[],
   deaths: Deaths[],
-  recovered: Recovered[],
-  filter: Filter
+  recovered: Recovered[]
 ): InfectionDevelopmentDataObj => {
-  const currentData30Days = getTimeSeriesData(
-    confirmed,
-    recovered,
-    deaths,
-    filter
-  ).infectionDevelopmentData30Days;
+  const currentData30Days = getTimeSeriesData(confirmed, recovered, deaths)
+    .infectionDevelopmentData30Days;
 
   const indexes = currentData30Days.map((d, i) => i + 1);
   const infections = currentData30Days.map(d => d.infections);
