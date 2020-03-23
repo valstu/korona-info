@@ -5,30 +5,30 @@ const phrases: { [key: string]: { [key: string]: string } } = {
   fi: {
     language: 'Suomi',
     'finland corona status': 'Suomen koronavirus-tartuntatilanne',
-    cases: 'Tartunnat',
-    'cases of the day': 'Päivän tartunnat',
+    cases: 'Varmennetut tapaukset',
+    'cases of the day': 'Päivän varmennetut tapaukset',
     recovered: 'Parantuneet',
     deaths: 'Menehtyneet',
-    'New cases today': 'Uudet tartunnat tänään',
+    'New cases today': 'Uudet varmennetut tapaukset tänään',
     person: 'kpl',
     'no death': 'Ei menehtyneitä',
     'latest recovery': 'Viimeisin parantuminen',
-    'latest case': 'Viimeisin tartunta',
+    'latest case': 'Viimeisin varmennettu tapaus',
     'last death': 'Viimeisin kuolema',
     'accumulated change': 'Kumulatiivinen kehitys (30 pv)',
     'healthcare district': 'Sairaanhoitopiiri',
     'All healthcare districts': 'Kaikki sairaanhoitopiirit',
     'cases recovered and death in past 30 days':
-      'Tartuntojen, parantuneiden ja menehtyneiden kumulatiivinen kehitys viimeisen 30 päivän aikana',
+      'Varmennettujen tapausten, parantuneiden ja menehtyneiden kumulatiivinen kehitys viimeisen 30 päivän aikana',
     linear: 'Lineaarinen',
     logarithmic: 'Logaritminen',
-    'total cases': 'Tartunnat yht.',
+    'total cases': 'Varmennetut tapaukset yht.',
     'total recovered': 'Parantuneet yht.',
     'total deaths': 'Menehtyneet yht.',
-    'Cases by district': 'Tartunnat sairaanhoitopiireittäin',
+    'Cases by district': 'Varmennetut tapaukset sairaanhoitopiireittäin',
     'Helsinki metropolitan area is shown as HUS':
       'Helsingin ja Uudenmaan sairaanhoitopiiri on esitetty muodossa HUS',
-    'Origin country of the cases': 'Tartuntojen alkuperämaat',
+    'Origin country of the cases': 'Varmennettujen tapausten alkuperämaat',
     'note the testing strategy change':
       'HUOM! Testaustavan muutos vaikeuttaa tilannekuvan saamista',
     'less people will be tested':
@@ -43,14 +43,15 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     'Corona virus prevention tips':
       'Toimintaohjeet koronaviruksen tartunnan ehkäisyyn',
     infectionsPerDisrictAndSize:
-      'Tartunnat sairaanhoitopiireittäin / sairaanhoitopiirin koko',
-    originCountryFooter: 'Suomen tartuntojen lukumäärät alkuperämaittain',
+      'Varmennetut tapaukset sairaanhoitopiireittäin / sairaanhoitopiirin koko',
+    originCountryFooter:
+      'Suomen varmennettujan tapausten lukumäärät alkuperämaittain',
     log: 'Tartuntaloki',
     logFooter:
-      'Kaikki suomen tartunnat listana, uusimmat ensin. Jokin id saattaa puuttua välistä',
+      'Kaikki Suomen varmennetut tapaukset listana, uusimmat ensin. Jokin id saattaa puuttua välistä',
     infectionNetwork: 'Tartuntaverkosto',
     infectionNetworkFooter:
-      'Kuvio esittää tartunnat verkostona. Numero on tartunnan järjestysnumero. Mikäli suoraa tartuttajaa ei tiedetä linkitetään tartunta alkuperämaahan. Kuvasta on jätetty pois tartunnat joiden suoraa aiheuttajaa tai alkuperämaata ei ole tiedossa. Suomeen merkatut tartunnat liittyvät suurella todennäköisyydellä muihin tartuntaverkostoihin. Solun väri kertoo maan jossa tartunta on todennäköisesti tapahtunut.',
+      'Kuvio esittää varmennetut tapaukset verkostona. Numero on tartunnan järjestysnumero. Mikäli suoraa tartuttajaa ei tiedetä linkitetään tartunta alkuperämaahan. Kuvasta on jätetty pois tartunnat joiden suoraa aiheuttajaa tai alkuperämaata ei ole tiedossa. Suomeen merkatut tartunnat liittyvät suurella todennäköisyydellä muihin tartuntaverkostoihin. Solun väri kertoo maan jossa tartunta on todennäköisesti tapahtunut.',
     unknown: 'tuntematon'
   },
   en: {
