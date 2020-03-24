@@ -93,8 +93,8 @@ export const getTimeSeriesData = (
   }));
 
   const daysIntervalSinceFirstInfection = eachDayOfInterval({
-    start: new Date(sortedData[0].date),
-    end: new Date(sortedData[sortedData.length - 1].date)
+    start: new Date(sortedData[0]?.date ?? 0),
+    end: new Date(sortedData[sortedData.length - 1]?.date ?? 0)
   });
 
   const infectionDevelopmentData: InfectionDevelopmentDataItem[] = [];

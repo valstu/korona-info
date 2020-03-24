@@ -148,15 +148,14 @@ const Index: NextPage<KoronaData> = ({
   const confirmed = allConfirmed.filter(districtFilter);
   const deaths = allDeaths.filter(districtFilter);
   const recovered = allRecovered.filter(districtFilter);
-  // Map some data for stats blocks
-  const date = new Date('2018-09-01Z16:01:36.386Z');
-  const latestInfection = format(
+
+  const latestInfection = confirmed.length ? format(
     utcToZonedTime(new Date(confirmed[confirmed.length - 1].date), timeZone),
     'dd.MM.yyyy - HH:mm',
     { timeZone }
-  );
+  ) : null;
   const latestInfectionDistrict =
-    confirmed[confirmed.length - 1].healthCareDistrict;
+    confirmed[confirmed.length - 1]?.healthCareDistrict;
   const latestDeath = deaths.length
     ? format(
         utcToZonedTime(new Date(deaths[deaths.length - 1].date), timeZone),
@@ -191,17 +190,12 @@ const Index: NextPage<KoronaData> = ({
     infectionDevelopmentData,
     infectionDevelopmentData30Days
   } = getTimeSeriesData(confirmed, recovered, deaths);
-  const { prediction60Days, today } = getPredictionData(
-    confirmed,
-    deaths,
-    recovered
-  );
   const maxValues =
     infectionDevelopmentData30Days[infectionDevelopmentData30Days.length - 1];
   const dataMaxValue = Math.max(
-    maxValues.deaths,
-    maxValues.infections,
-    maxValues.infections
+    maxValues?.deaths ?? 0,
+    maxValues?.infections ?? 0,
+    maxValues?.infections ?? 0
   );
 
   const {
