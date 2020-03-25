@@ -373,12 +373,11 @@ const Index: NextPage<KoronaData> = ({
             <Block
               title={t('recovered') + ` (${humanizedHealthCareDistrict})`}
               footer={
-                latestRecovered
+                `${latestRecovered
                   ? `${t(
                       'latest recovery'
-                    )} ${latestRecovered} (${humanizeHealthcareDistrict(latestRecoveredDistrict!)})`
-                  : ' '
-              }
+                    )} ${latestRecovered} (${humanizeHealthcareDistrict(latestRecoveredDistrict!)}).`
+                  : ' '} ${t('recoveredNotice')}`}
             >
               <StatBlock count={recovered.length || 0} />
             </Block>
