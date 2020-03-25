@@ -122,7 +122,7 @@ const Header: React.FC = () => {
       >
         <img
           src="/images/corona-virus-small.png"
-          style={{ marginBottom: 0, width: 90, borderWidth: 0 }}
+          style={{ marginBottom: 0, marginLeft: 'auto', marginRight: 'auto', width: 90, borderWidth: 0 }}
           title="CDC/ Alissa Eckert, MS; Dan Higgins, MAM / Public domain"
           alt="Kuvituskuva koronaviruksesta"
         />
