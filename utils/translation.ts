@@ -24,7 +24,7 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     logarithmic: 'Logaritminen',
     'total cases': 'Varmennetut tapaukset yht.',
     'total recovered': 'Parantuneet yht.',
-    'recoveredNotice': 'Sisältää vaintapaukset joista HS on saanut tiedon, määrä on todellisuudessa suurempi',
+    'recoveredNotice': 'Sisältää vain tapaukset joista HS on saanut tiedon, määrä on todellisuudessa suurempi',
     'total deaths': 'Menehtyneet yht.',
     'Cases by district': 'Varmennetut tapaukset sairaanhoitopiireittäin',
     'Helsinki metropolitan area is shown as HUS':
