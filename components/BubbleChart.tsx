@@ -104,6 +104,7 @@ const BubbleChart = ({ data }: { data: GroupedData }) => {
                   <Tooltip
                     cursor={false}
                     wrapperStyle={{ zIndex: 100 }}
+                    isAnimationActive={false}
                     formatter={(value, name, props) => {
                       if (name === 'date') {
                         return format(
