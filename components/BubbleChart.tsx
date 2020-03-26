@@ -17,6 +17,7 @@ import Block from '../components/Block';
 import { UserContext } from '../pages/_app';
 import { InfectionDevelopmentDataItem } from '../utils/chartDataHelper';
 import { GroupedData } from '../pages';
+import { format, utcToZonedTime } from 'date-fns-tz';
 
 const BubbleChart = ({ data }: { data: GroupedData }) => {
   const [chartScale, setChartScale] = useState<'cumulative' | 'daily'>('daily');
@@ -92,6 +93,7 @@ const BubbleChart = ({ data }: { data: GroupedData }) => {
                   />
                   <ZAxis
                     type="number"
+                    name="infections"
                     dataKey={
                       chartScale === 'daily' ? 'infectionsDaily' : 'infections'
                     }
@@ -99,7 +101,23 @@ const BubbleChart = ({ data }: { data: GroupedData }) => {
                     // @ts-ignore
                     domain={[0, chartScale === 'daily' ? 50 : 350]}
                   />
-                  <Tooltip cursor={false} wrapperStyle={{ zIndex: 100 }} />
+                  <Tooltip
+                    cursor={false}
+                    wrapperStyle={{ zIndex: 100 }}
+                    formatter={(value, name, props) => {
+                      if (name === 'date') {
+                        return format(
+                          // @ts-ignore
+                          utcToZonedTime(value, 'Europe/Helsinki'),
+                          'd.M.yyyy'
+                        );
+                      } else if (name === 'infections') {
+                        return [value, name];
+                      } else {
+                        return [];
+                      }
+                    }}
+                  />
                   <Scatter
                     data={district.timeSeries.infectionDevelopmentData30Days.map(
                       (data: InfectionDevelopmentDataItem) => ({
