@@ -1,4 +1,10 @@
-import { format, sub, eachDayOfInterval, isSameDay, isToday } from 'date-fns';
+import {
+  format,
+  subDays,
+  eachDayOfInterval,
+  isSameDay,
+  isToday
+} from 'date-fns';
 import groupBy from 'lodash.groupby';
 import sortBy from 'lodash.sortby';
 import ExponentialRegression from 'ml-regression-exponential';
@@ -45,7 +51,7 @@ const peopleTotal = healtCareDistricts.reduce(
   0
 );
 
-interface InfectionDevelopmentDataItem {
+export interface InfectionDevelopmentDataItem {
   date: number;
   infections: number;
   deaths: number;
@@ -71,14 +77,16 @@ export const zerosToNulls = (item: InfectionDevelopmentDataItem) => ({
   infectionsDaily: item.infectionsDaily || null
 });
 
+export type TimeSeriesData = {
+  infectionDevelopmentData: InfectionDevelopmentDataItem[];
+  infectionDevelopmentData30Days: InfectionDevelopmentDataItem[];
+};
+
 export const getTimeSeriesData = (
   confirmed: Confirmed[],
   recovered: Recovered[],
   deaths: Deaths[]
-): {
-  infectionDevelopmentData: InfectionDevelopmentDataItem[];
-  infectionDevelopmentData30Days: InfectionDevelopmentDataItem[];
-} => {
+): TimeSeriesData => {
   const sortedData = sortBy(confirmed, 'date').map(item => ({
     ...item,
     dateString: format(new Date(item.date), 'yyyy-MM-dd')
@@ -91,10 +99,12 @@ export const getTimeSeriesData = (
     ...item,
     dateString: format(new Date(item.date), 'yyyy-MM-dd')
   }));
-
+  const today = new Date();
+  const startDate = new Date(sortedData[0]?.date ?? today);
+  const days30Ago = subDays(today, 30);
   const daysIntervalSinceFirstInfection = eachDayOfInterval({
-    start: new Date(sortedData[0]?.date ?? 0),
-    end: new Date(sortedData[sortedData.length - 1]?.date ?? 0)
+    start: startDate.getTime() > days30Ago.getTime() ? days30Ago : startDate,
+    end: today
   });
 
   const infectionDevelopmentData: InfectionDevelopmentDataItem[] = [];
@@ -131,7 +141,7 @@ export const getTimeSeriesData = (
     { infections: 0, deaths: 0, recovered: 0 }
   );
 
-  const thirtyDaysAgo = sub(new Date(), { days: 30 });
+  const thirtyDaysAgo = subDays(today, 30);
   const infectionDevelopmentData30Days = infectionDevelopmentData.filter(
     item => item.date > thirtyDaysAgo.getTime()
   );
