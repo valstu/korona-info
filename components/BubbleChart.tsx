@@ -23,7 +23,7 @@ const BubbleChart = ({ data }: { data: GroupedData }) => {
   const [chartScale, setChartScale] = useState<'cumulative' | 'daily'>('daily');
   const { t } = useContext(UserContext);
   return (
-    <Box width={['100%']} p={3}>
+    <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
       <Block
         title={t('accumulation by healthcare district')}
       >
@@ -62,7 +62,7 @@ const BubbleChart = ({ data }: { data: GroupedData }) => {
         <Box p={5}>
           {_.map(data, (district, key) => {
             return (
-              <ResponsiveContainer key={key} width={'60%'} height={42}>
+              <ResponsiveContainer key={key} width={'100%'} height={42}>
                 <ScatterChart
                   key={key}
                   margin={{
