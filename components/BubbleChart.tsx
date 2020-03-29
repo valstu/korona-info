@@ -26,7 +26,6 @@ const BubbleChart = ({ data }: { data: GroupedData }) => {
     <Box width={['100%']} p={3}>
       <Block
         title={t('accumulation by healthcare district')}
-        footer={t('cases recovered and death in past 30 days')}
       >
         <ButtonGroup
           spacing={0}
