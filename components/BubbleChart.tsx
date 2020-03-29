@@ -62,13 +62,12 @@ const BubbleChart = ({ data }: { data: GroupedData }) => {
         <Box p={5}>
           {_.map(data, (district, key) => {
             return (
-              <ResponsiveContainer key={key} width={'100%'} height={42}>
+              <ResponsiveContainer key={key} width={'100%'} height={25}>
                 <ScatterChart
-                  key={key}
                   margin={{
                     top: 0,
                     right: 0,
-                    bottom: 0,
+                    bottom: -17,
                     left: 0
                   }}
                 >
@@ -84,7 +83,8 @@ const BubbleChart = ({ data }: { data: GroupedData }) => {
                     type="number"
                     dataKey="y"
                     name={key}
-                    height={10}
+                    height={0}
+                    interval={0}
                     tick={false}
                     tickLine={false}
                     axisLine={false}
