@@ -34,6 +34,8 @@ import {
   Select
 } from '@chakra-ui/core';
 
+import _ from 'lodash';
+
 import Layout from '../components/Layout';
 import StatBlock from '../components/StatBlock';
 import Block from '../components/Block';
@@ -53,14 +55,11 @@ import {
   colors,
   getInfectionsToday,
   healtCareDistricts,
-  zerosToNulls
+  zerosToNulls,
+  InfectionDevelopmentDataItem,
+  TimeSeriesData
 } from '../utils/chartDataHelper';
-
-export interface KoronaData {
-  confirmed: Confirmed[];
-  recovered: Recovered[];
-  deaths: any[];
-}
+import BubbleChart from '../components/BubbleChart';
 
 interface BaseItem {
   healthCareDistrict: string;
@@ -89,6 +88,15 @@ export enum InfectionSourceEnum {
   RelatedToEarlier = 'related to earlier',
   Unknown = 'unknown'
 }
+
+export type GroupedData = {
+  [key: string]: {
+    confirmed: Confirmed[];
+    deaths: Deaths[];
+    recovered: Recovered[];
+    timeSeries: TimeSeriesData;
+  };
+};
 
 const CustomizedAxisTick: React.FC<any> = props => {
   const { x, y, stroke, payload, isDate } = props;
@@ -133,27 +141,29 @@ const ConditionallyRender: React.FC<ConditionallyRenderProps> = props => {
   return props.children as React.ReactElement;
 };
 
-const Index: NextPage<KoronaData> = ({
-  confirmed: allConfirmed,
-  deaths: allDeaths,
-  recovered: allRecovered
+const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
+  groupedCoronaData
+}: {
+  groupedCoronaData: GroupedData;
 }) => {
   const [selectedHealthCareDistrict, selectHealthCareDistrict] = useState<
     string
   >('all');
-  const districtFilter = (item: BaseItem) =>
-    selectedHealthCareDistrict === 'all'
-      ? true
-      : item.healthCareDistrict === selectedHealthCareDistrict;
-  const confirmed = allConfirmed.filter(districtFilter);
-  const deaths = allDeaths.filter(districtFilter);
-  const recovered = allRecovered.filter(districtFilter);
+  const confirmed = groupedCoronaData[selectedHealthCareDistrict].confirmed;
+  const deaths = groupedCoronaData[selectedHealthCareDistrict].deaths;
+  const recovered = groupedCoronaData[selectedHealthCareDistrict].recovered;
+  const allConfirmed = groupedCoronaData.all.confirmed;
 
-  const latestInfection = confirmed.length ? format(
-    utcToZonedTime(new Date(confirmed[confirmed.length - 1].date), timeZone),
-    'dd.MM.yyyy - HH:mm',
-    { timeZone }
-  ) : null;
+  const latestInfection = confirmed.length
+    ? format(
+        utcToZonedTime(
+          new Date(confirmed[confirmed.length - 1].date),
+          timeZone
+        ),
+        'dd.MM.yyyy - HH:mm',
+        { timeZone }
+      )
+    : null;
   const latestInfectionDistrict =
     confirmed[confirmed.length - 1]?.healthCareDistrict;
   const latestDeath = deaths.length
@@ -189,7 +199,7 @@ const Index: NextPage<KoronaData> = ({
   const {
     infectionDevelopmentData,
     infectionDevelopmentData30Days
-  } = getTimeSeriesData(confirmed, recovered, deaths);
+  } = groupedCoronaData[selectedHealthCareDistrict].timeSeries;
   const maxValues =
     infectionDevelopmentData30Days[infectionDevelopmentData30Days.length - 1];
   const dataMaxValue = Math.max(
@@ -219,7 +229,12 @@ const Index: NextPage<KoronaData> = ({
   };
 
   const reversedConfirmed = confirmed
-    .map((i, index) => ({ index: index + 1, ...i, healthCareDistrict: humanizeHealthcareDistrict(i.healthCareDistrict) }))
+    // @ts-ignore
+    .map((i, index) => ({
+      index: index + 1,
+      ...i,
+      healthCareDistrict: humanizeHealthcareDistrict(i.healthCareDistrict)
+    }))
     .reverse();
 
   const humanizedHealthCareDistrict = humanizeHealthcareDistrict(
@@ -347,7 +362,9 @@ const Index: NextPage<KoronaData> = ({
               )}`}
               footer={`${t(
                 'latest case'
-              )} ${latestInfection} (${humanizeHealthcareDistrict(latestInfectionDistrict)})`}
+              )} ${latestInfection} (${humanizeHealthcareDistrict(
+                latestInfectionDistrict
+              )})`}
             >
               <StatBlock
                 count={confirmed.length}
@@ -362,7 +379,11 @@ const Index: NextPage<KoronaData> = ({
               title={t('deaths') + ` (${humanizedHealthCareDistrict})`}
               footer={
                 latestDeath
-                  ? `${t('last death')} ${latestDeath} (${humanizeHealthcareDistrict(latestDeathDistrict!)})`
+                  ? `${t(
+                      'last death'
+                    )} ${latestDeath} (${humanizeHealthcareDistrict(
+                      latestDeathDistrict!
+                    )})`
                   : t('no death')
               }
             >
@@ -729,7 +750,8 @@ const Index: NextPage<KoronaData> = ({
               />
             </Block>
           </Box>
-          <Box width={['100%']} p={3}>
+          <BubbleChart data={groupedCoronaData} />
+          <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
             <Block
               title={
                 t('infectionNetwork') + ` (${humanizedHealthCareDistrict})`
@@ -752,14 +774,41 @@ Index.getInitialProps = async function() {
     'https://w3qa5ydb4l.execute-api.eu-west-1.amazonaws.com/prod/finnishCoronaData'
   );
   const data = await res.json();
-  const confirmed = data.confirmed.map((i: Confirmed) => ({
-    ...i,
-    infectionSourceCountry:
-      i.infectionSourceCountry === '' ? null : i.infectionSourceCountry,
-    healthCareDistrict:
-      i.healthCareDistrict ? i.healthCareDistrict : 'unknown' // there are empty strings and nulls
-  }));
-  return { ...data, confirmed };
+
+  const groupedConfirmed = _.groupBy(
+    data.confirmed,
+    data => data.healthCareDistrict
+  );
+  const groupedDeaths = _.groupBy(data.deaths, data => data.healthCareDistrict);
+  const groupedRecovered = _.groupBy(
+    data.recovered,
+    data => data.healthCareDistrict
+  );
+  const keys = Object.keys(groupedConfirmed);
+  const result: GroupedData = keys.reduce(
+    (previous, key) => {
+      return {
+        ...previous,
+        [key === 'null' ? 'unknown' : key]: {
+          confirmed: groupedConfirmed[key] ?? [],
+          recovered: groupedRecovered[key] ?? [],
+          deaths: groupedDeaths[key] ?? [],
+          timeSeries: getTimeSeriesData(
+            groupedConfirmed[key],
+            groupedRecovered[key],
+            groupedDeaths[key]
+          )
+        }
+      };
+    },
+    {
+      all: {
+        ...data,
+        timeSeries: getTimeSeriesData(data.confirmed, data.deaths, data.deaths)
+      }
+    }
+  );
+  return { groupedCoronaData: result };
 };
 
 export default Index;
