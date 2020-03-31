@@ -18,7 +18,7 @@ const NetworkGraph = ({ data }) => {
       width: 2,
       smooth: true,
     },
-    height: "600px",
+    height: "468px",
     nodes: {
       // shape: "dot",
       size: 30,

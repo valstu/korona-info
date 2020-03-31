@@ -751,7 +751,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
             </Block>
           </Box>
           <BubbleChart data={groupedCoronaData} />
-          <Box width={['100%']} p={3}>
+          <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
             <Block
               title={
                 t('infectionNetwork') + ` (${humanizedHealthCareDistrict})`
