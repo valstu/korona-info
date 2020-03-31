@@ -154,6 +154,58 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     infectionNetworkFooter:
       'Number is the id of the case. Cases withouth origin are left out.',
     unknown: 'ناشناخته'
+  },
+  ru: {
+    language: 'Русский',
+    'finland corona status': "Статус корона вируса в Финляндии",
+    cases: 'Случаев',
+    'cases of the day': 'Случаев за день',
+    recovered: 'Выздоровевших (подтвержденных)',
+    deaths: 'Смертей',
+    'New cases today': 'Новых случаев за сегодня',
+    person: '',
+    'no death': 'Не смертельный',
+    'latest recovery': 'Последний выздоровевший',
+    'latest case': 'Последний заразившийся',
+    'last death': 'Последний смертельный',
+    'accumulated change': 'Суммарные изменения (за 30 дней)',
+    'healthcare district': 'Регион',
+    'All healthcare districts': 'Все регионы',
+    'cases recovered and death in past 30 days':
+      'Зараженных, выздоровевших и смертельных случаев за последнии 30 дней',
+    linear: 'Линейный',
+    logarithmic: 'Логарифмический',
+    'total cases': 'Всего заразившихся',
+    'total recovered': 'Всего выздоровевших',
+    'recoveredNotice': 'Включает выздоровевших только по информации HS, настоящее значение выше.',
+    'total deaths': 'Всего смертельных случаев',
+    'Cases by district': 'Заразившихся по региону',
+    'Helsinki metropolitan area is shown as HUS':
+      'Регион Хельсинки обозначен как HUS',
+    'Origin country of the cases':
+      'Страна источник заражения',
+    'note the testing strategy change':
+      'ВНИМАНИЕ! Изменение в методах тестирования может изменить статистику',
+    'less people will be tested':
+      'Надежность статистики может меняться в некоторых районах, к примеру в районе Хельсинки было принято решение тестировать только некоторые группы, к примеру работников сферы мед.обслуживание, на COVID-19.',
+    'read more': 'Узнать больше',
+    'The data is based on':
+      'Информация на этой странице основана на данных предоставленных ',
+    'open data': 'Helsingin Sanomat.',
+    'HS has gathered these data from':
+     'Helsingin Sanomat собирает информацию из нескольких публичных источников: пресс конференции, медиа и интервью. Информаци обновляется как только появляются данные о новых заражениях. Больше информации ниже:',
+    'What is corona virus': 'Что такое корона вирус (на финском)',
+    'Corona virus prevention tips': 'Рекомендации по корона вирусу (на финском)',
+    infectionsPerDisrictAndSize:
+      'Заражений в регионе / размер региона',
+    originCountryFooter: 'Страны источники заражений в Финляндии',
+    log: 'Отчет по зараженным',
+    logFooter:
+      'Список заразившихся в Финляндии, новые сверху. Id не является номером заражения.',
+    infectionNetwork: 'Схематичный график-сеть заражений',
+    infectionNetworkFooter:
+      'Число является значением id заражения. Случае не имеющие подтвержденного происхождения не указаны',
+    unknown: 'неизвестный'
   }
 };
 
