@@ -26,7 +26,7 @@ Following people have also contributed to this project:
   - [miikkajs](https://github.com/valstu/korona-info/pulls/miikkajs) (infection predictions)
   - [albacoretuna](https://github.com/albacoretuna) (translation logic + translations to en/fa)
   - [jonijuup](https://github.com/jonijuup) (translations)
-  - [villesau](https://github.com/villesau) (filter chart by healthcare district, code quality)
+  - [villesau](https://github.com/villesau) (filter chart by healthcare district, bubble chart, code quality)
   - [nghitrum](https://github.com/nghitrum) (bug fixes)
   - [msillanpaa](https://github.com/msillanpaa) (content fixes)
   - [csaavedra](https://github.com/csaavedra) (translation fixes)
