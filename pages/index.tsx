@@ -31,7 +31,8 @@ import {
   AlertDescription,
   CloseButton,
   Link,
-  Select
+  Select,
+  useToast
 } from '@chakra-ui/core';
 
 import _ from 'lodash';
@@ -153,7 +154,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
   const deaths = groupedCoronaData[selectedHealthCareDistrict].deaths;
   const recovered = groupedCoronaData[selectedHealthCareDistrict].recovered;
   const allConfirmed = groupedCoronaData.all.confirmed;
-
+  const toast = useToast()
   const latestInfection = confirmed.length
     ? format(
         utcToZonedTime(
@@ -240,7 +241,32 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
   const humanizedHealthCareDistrict = humanizeHealthcareDistrict(
     selectedHealthCareDistrict
   );
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      setTimeout(() => {
+        toast({
+          position: 'top',
+          title: t('note the testing strategy change'),
+          description: t('less people will be tested'),
+          status: "warning",
+          isClosable: true,
+          duration: 14000,
+        });
+        toast({
+          position: 'top',
+          title: "HUOM!",
+          description: "HS:n tarjoaman datasetin päivittymisessä esiintyy viiveitä kunnes integraatio THL:n dataan on saatu valmiiksi",
+          status: "warning",
+          isClosable: true,
+          duration: 12000
+        });
+      }, 2000)
 
+
+    }
+
+  }, [])
+  
   return (
     <Layout>
       <Head>
@@ -282,38 +308,6 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
         margin="auto"
       >
         <Header />
-        <Alert
-          status="error"
-          my={3}
-          maxWidth={1040}
-          flexDirection="column"
-          px={10}
-          py={5}
-          mx={3}
-          textAlign="center"
-          borderRadius="4px"
-        >
-          <Flex>
-            <AlertIcon mt={3} />
-            <AlertTitle mr={2} ml={0} mt={3} mb={5}>
-              {t('note the testing strategy change')}
-            </AlertTitle>
-          </Flex>
-          <Flex>
-            <AlertDescription>
-              {t('less people will be tested')}
-              <br />
-              <br />{' '}
-              <Link
-                color="teal.500"
-                href="https://www.hs.fi/kotimaa/art-2000006440293.html"
-                isExternal
-              >
-                {t('read more')}
-              </Link>
-            </AlertDescription>
-          </Flex>
-        </Alert>
         <Flex
           flexWrap="wrap"
           flexDirection="row"
