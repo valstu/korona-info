@@ -798,7 +798,7 @@ Index.getInitialProps = async function() {
     {
       all: {
         ...data,
-        timeSeries: getTimeSeriesData(data.confirmed, data.deaths, data.deaths)
+        timeSeries: getTimeSeriesData(data.confirmed, data.recovered, data.deaths)
       }
     }
   );
