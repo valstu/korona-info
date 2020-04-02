@@ -691,51 +691,6 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
             </Box>
             <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
               <Block
-                title={
-                  t('Origin country of the cases') +
-                  ` (${humanizedHealthCareDistrict})`
-                }
-                footer={t('originCountryFooter')}
-              >
-                <ResponsiveContainer width={'100%'} height={350}>
-                  <BarChart
-                    
-                    data={infectionsBySourceCountry}
-                    margin={{
-                      top: 20,
-                      right: 30,
-                      left: 0,
-                      bottom: 85
-                    }}
-                  >
-                    <XAxis
-                      interval={0}
-                      dataKey="name"
-                      tick={<CustomizedAxisTick />}
-                    />
-                    <YAxis
-                      unit={' ' + t('person')}
-                      dataKey="infections"
-                      tick={{ fontSize: 12 }}
-                    />
-                    <Tooltip />
-                    <Bar
-                      isAnimationActive={false}
-                      dataKey="infections"
-                      name="Tartunnat"
-                      unit={' ' + t('person')}
-                    >
-                      {areas.map((area, index) => (
-                        <Cell key={area} fill={colors[index % colors.length]} />
-                      ))}
-                      <LabelList dataKey="infections" position="top" />
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </Block>
-            </Box>
-            <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
-              <Block
                 title={t('log') + ` (${humanizedHealthCareDistrict})`}
                 footer={t('logFooter')}
               >
