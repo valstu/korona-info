@@ -342,7 +342,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
             flex="1"
             width={'100%'}
           >
-            <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
+            <Box width={['100%', '100%', 1 / 2, 1 / 2]} p={3}>
               <Block
                 title={t('cases') + ` (${humanizedHealthCareDistrict})`}
                 textAlign="center"
@@ -363,7 +363,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
                 />
               </Block>
             </Box>
-            <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
+            <Box width={['100%', '100%', 1 / 2, 1 / 2]} p={3}>
               <Block
                 title={t('deaths') + ` (${humanizedHealthCareDistrict})`}
                 footer={
@@ -379,7 +379,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
                 <StatBlock count={deaths.length || 0} />
               </Block>
             </Box>
-            <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
+            {/* <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
               <Block
                 title={t('recovered') + ` (${humanizedHealthCareDistrict})`}
                 footer={
@@ -391,7 +391,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
               >
                 <StatBlock count={recovered.length || 0} />
               </Block>
-            </Box>
+            </Box> */}
 
             <Box width={['100%']} p={3}>
               <Block
@@ -538,7 +538,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
                       fillOpacity={1}
                       fill="url(#colorInfection)"
                     />
-                    <Area
+                    {/* <Area
                       isAnimationActive={false}
                       type="monotone"
                       unit={' ' + t('person')}
@@ -547,7 +547,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
                       stroke={colors[7]}
                       fillOpacity={1}
                       fill="url(#colorRecovered)"
-                    />
+                    /> */}
                     <Area
                       isAnimationActive={false}
                       type="monotone"
@@ -691,56 +691,11 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
             </Box>
             <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
               <Block
-                title={
-                  t('Origin country of the cases') +
-                  ` (${humanizedHealthCareDistrict})`
-                }
-                footer={t('originCountryFooter')}
-              >
-                <ResponsiveContainer width={'100%'} height={350}>
-                  <BarChart
-                    
-                    data={infectionsBySourceCountry}
-                    margin={{
-                      top: 20,
-                      right: 30,
-                      left: 0,
-                      bottom: 85
-                    }}
-                  >
-                    <XAxis
-                      interval={0}
-                      dataKey="name"
-                      tick={<CustomizedAxisTick />}
-                    />
-                    <YAxis
-                      unit={' ' + t('person')}
-                      dataKey="infections"
-                      tick={{ fontSize: 12 }}
-                    />
-                    <Tooltip />
-                    <Bar
-                      isAnimationActive={false}
-                      dataKey="infections"
-                      name="Tartunnat"
-                      unit={' ' + t('person')}
-                    >
-                      {areas.map((area, index) => (
-                        <Cell key={area} fill={colors[index % colors.length]} />
-                      ))}
-                      <LabelList dataKey="infections" position="top" />
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </Block>
-            </Box>
-            <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
-              <Block
                 title={t('log') + ` (${humanizedHealthCareDistrict})`}
                 footer={t('logFooter')}
               >
                 <Table
-                  height={350}
+                  height={500}
                   data={reversedConfirmed}
                   columns={useMemo(() => infectionColumns, [])}
                 />
@@ -792,7 +747,7 @@ Index.getInitialProps = async function () {
           deaths: groupedDeaths[key] ?? [],
           timeSeries: getTimeSeriesData(
             groupedConfirmed[key],
-            groupedRecovered[key],
+            // groupedRecovered[key],
             groupedDeaths[key]
           )
         }
@@ -801,7 +756,7 @@ Index.getInitialProps = async function () {
     {
       all: {
         ...data,
-        timeSeries: getTimeSeriesData(data.confirmed, data.recovered, data.deaths)
+        timeSeries: getTimeSeriesData(data.confirmed, data.deaths)
       }
     }
   );
