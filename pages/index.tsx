@@ -342,7 +342,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
             flex="1"
             width={'100%'}
           >
-            <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
+            <Box width={['100%', '100%', 1 / 2, 1 / 2]} p={3}>
               <Block
                 title={t('cases') + ` (${humanizedHealthCareDistrict})`}
                 textAlign="center"
@@ -363,7 +363,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
                 />
               </Block>
             </Box>
-            <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
+            <Box width={['100%', '100%', 1 / 2, 1 / 2]} p={3}>
               <Block
                 title={t('deaths') + ` (${humanizedHealthCareDistrict})`}
                 footer={
@@ -379,7 +379,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
                 <StatBlock count={deaths.length || 0} />
               </Block>
             </Box>
-            <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
+            {/* <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
               <Block
                 title={t('recovered') + ` (${humanizedHealthCareDistrict})`}
                 footer={
@@ -391,7 +391,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
               >
                 <StatBlock count={recovered.length || 0} />
               </Block>
-            </Box>
+            </Box> */}
 
             <Box width={['100%']} p={3}>
               <Block
@@ -538,7 +538,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
                       fillOpacity={1}
                       fill="url(#colorInfection)"
                     />
-                    <Area
+                    {/* <Area
                       isAnimationActive={false}
                       type="monotone"
                       unit={' ' + t('person')}
@@ -547,7 +547,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
                       stroke={colors[7]}
                       fillOpacity={1}
                       fill="url(#colorRecovered)"
-                    />
+                    /> */}
                     <Area
                       isAnimationActive={false}
                       type="monotone"
@@ -747,7 +747,7 @@ Index.getInitialProps = async function () {
           deaths: groupedDeaths[key] ?? [],
           timeSeries: getTimeSeriesData(
             groupedConfirmed[key],
-            groupedRecovered[key],
+            // groupedRecovered[key],
             groupedDeaths[key]
           )
         }
@@ -756,7 +756,7 @@ Index.getInitialProps = async function () {
     {
       all: {
         ...data,
-        timeSeries: getTimeSeriesData(data.confirmed, data.recovered, data.deaths)
+        timeSeries: getTimeSeriesData(data.confirmed, data.deaths)
       }
     }
   );
