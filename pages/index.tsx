@@ -689,7 +689,6 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
                 </ResponsiveContainer>
               </Block>
             </Box>
-
             <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
               <Block
                 title={t('log') + ` (${humanizedHealthCareDistrict})`}
