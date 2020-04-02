@@ -243,24 +243,17 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
   );
   useEffect(() => {
     if (typeof window !== undefined) {
-      setTimeout(() => {
-        toast({
-          position: 'top',
-          title: t('note the testing strategy change'),
-          description: t('less people will be tested'),
-          status: "warning",
-          isClosable: true,
-          duration: 14000,
-        });
-        toast({
-          position: 'top',
-          title: "HUOM!",
-          description: "HS:n tarjoaman datasetin päivittymisessä esiintyy viiveitä kunnes integraatio THL:n dataan on saatu valmiiksi",
-          status: "warning",
-          isClosable: true,
-          duration: 12000
-        });
-      }, 2000)
+      
+      toast({
+        position: 'top',
+        title: t('note the testing strategy change'),
+        description: t('less people will be tested'),
+        status: "warning",
+        isClosable: true,
+        duration: 14000,
+      });
+
+
 
 
     }
@@ -765,7 +758,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
 
 Index.getInitialProps = async function() {
   const res = await fetch(
-    'https://w3qa5ydb4l.execute-api.eu-west-1.amazonaws.com/prod/finnishCoronaData'
+    'https://w3qa5ydb4l.execute-api.eu-west-1.amazonaws.com/prod/finnishCoronaData/v2'
   );
   const data = await res.json();
 
