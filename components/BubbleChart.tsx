@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-
+import styled from '@emotion/styled';
 import {
   XAxis,
   YAxis,
@@ -18,6 +18,12 @@ import { UserContext } from '../pages/_app';
 import { InfectionDevelopmentDataItem } from '../utils/chartDataHelper';
 import { GroupedData } from '../pages';
 import { format, utcToZonedTime } from 'date-fns-tz';
+
+const TooltipWrapper = styled.div`
+  border: 1px solid rgba(102, 119, 136, 0.15);
+  background-color: #fff;
+  padding: 1rem;
+`;
 
 const BubbleChart = ({ data }: { data: GroupedData }) => {
   const [chartScale, setChartScale] = useState<'cumulative' | 'daily'>('daily');
@@ -88,7 +94,7 @@ const BubbleChart = ({ data }: { data: GroupedData }) => {
                     tick={false}
                     tickLine={false}
                     axisLine={false}
-                    label={{ value: key, position: 'insideLeft' }}
+                    label={{ value: key === 'all' ? t('total') : key, position: 'insideLeft' }}
                   />
                   <ZAxis
                     type="number"
@@ -104,19 +110,16 @@ const BubbleChart = ({ data }: { data: GroupedData }) => {
                     cursor={false}
                     wrapperStyle={{ zIndex: 100 }}
                     isAnimationActive={false}
-                    formatter={(value, name, props) => {
-                      if (name === 'date') {
-                        return format(
+                    content={(props: any) => (props.payload[0] &&
+                      <TooltipWrapper role='tooltip'>
+                        <h5>{format(
                           // @ts-ignore
-                          utcToZonedTime(value, 'Europe/Helsinki'),
+                          utcToZonedTime(props.payload[0].value, 'Europe/Helsinki'),
                           'd.M.yyyy'
-                        );
-                      } else if (name === 'infections') {
-                        return [value, name];
-                      } else {
-                        return [];
-                      }
-                    }}
+                        )}</h5>
+                        <p className="label">{t('cases')}: {props.payload[2].value}</p>
+                      </TooltipWrapper>
+                    )}
                   />
                   <Scatter
                     data={district.timeSeries.infectionDevelopmentData30Days.map(
