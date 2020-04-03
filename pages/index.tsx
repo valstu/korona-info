@@ -76,6 +76,7 @@ export interface Confirmed extends BaseItem {
 export interface Deaths extends BaseItem {
   id: string;
   date: Date;
+  area: string;
 }
 
 export interface Recovered extends BaseItem {
@@ -174,7 +175,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
     )
     : null;
   const latestDeathDistrict = deaths.length
-    ? deaths[deaths.length - 1].healthCareDistrict
+    ? deaths[deaths.length - 1].area
     : null;
   const latestRecoveredDistrict = recovered.length
     ? recovered[recovered.length - 1].healthCareDistrict
@@ -246,9 +247,9 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
 
       toast({
         position: 'bottom',
-        title: t('note the testing strategy change'),
-        description: t('less people will be tested'),
-        status: "warning",
+        title: 'Datan lähteenä nyt THL',
+        description: 'HS:n datan lähde on vaihtunut THL:ään. THL:n tiedotussyklistä johtuen tiedot päivittyvät aiempaa harvemmin. Myös vanhemmissa tapauksissa voi olla päivämääräkohtaisia eroja, johtuen muuttuneesta raportointitavasta.',
+        status: "info",
         isClosable: true,
         duration: 14000,
       });
