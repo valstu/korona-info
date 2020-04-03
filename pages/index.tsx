@@ -3,6 +3,7 @@ import { useMemo, useState, useEffect, useContext } from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
+import sortBy from 'lodash.sortby';
 import { format, utcToZonedTime } from 'date-fns-tz';
 import {
   Area,
@@ -727,6 +728,10 @@ Index.getInitialProps = async function () {
     'https://w3qa5ydb4l.execute-api.eu-west-1.amazonaws.com/prod/finnishCoronaData/v2'
   );
   const data = await res.json();
+
+  data.confirmed = sortBy(data.confirmed, 'date')
+  data.deaths = sortBy(data.deaths, 'date')
+  data.recovered = sortBy(data.recoverd, 'date')
 
   const groupedConfirmed = _.groupBy(
     data.confirmed,
