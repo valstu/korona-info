@@ -16,12 +16,16 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     'latest case': 'Viimeisin varmennettu tapaus',
     'last death': 'Viimeisin kuolema',
     'accumulated change': 'Kumulatiivinen kehitys (30 pv)',
+    'accumulation by healthcare district':
+      'Sairaanhoitopiirikohtainen kehitys  (30 pv)',
     'healthcare district': 'Sairaanhoitopiiri',
     'All healthcare districts': 'Kaikki sairaanhoitopiirit',
     'cases recovered and death in past 30 days':
       'Varmennettujen tapausten, parantuneiden ja menehtyneiden kumulatiivinen kehitys viimeisen 30 päivän aikana',
     linear: 'Lineaarinen',
     logarithmic: 'Logaritminen',
+    cumulative: 'Kumulatiivinen',
+    daily: 'Päivittäinen',
     'total cases': 'Varmennetut tapaukset yht.',
     'total recovered': 'Parantuneet yht.',
     'recoveredNotice': 'Sisältää vain tapaukset joista HS on saanut tiedon, määrä on todellisuudessa suurempi',
@@ -53,7 +57,8 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     infectionNetwork: 'Tartuntaverkosto',
     infectionNetworkFooter:
       'Kuvio esittää varmennetut tapaukset verkostona. Numero on tartunnan järjestysnumero. Mikäli suoraa tartuttajaa ei tiedetä linkitetään tartunta alkuperämaahan. Kuvasta on jätetty pois tartunnat joiden suoraa aiheuttajaa tai alkuperämaata ei ole tiedossa. Suomeen merkatut tartunnat liittyvät suurella todennäköisyydellä muihin tartuntaverkostoihin. Solun väri kertoo maan jossa tartunta on todennäköisesti tapahtunut.',
-    unknown: 'tuntematon'
+    unknown: 'tuntematon',
+    total: 'Yht.'
   },
   en: {
     language: 'English',
@@ -69,12 +74,16 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     'latest case': 'Latest case',
     'last death': 'Latest death',
     'accumulated change': 'Accumuluated change (30 days)',
+    'accumulation by healthcare district':
+      'Accumuluated change by healthcare district (30 days)',
     'healthcare district': 'Healthcare district',
     'All healthcare districts': 'All healthcare districts',
     'cases recovered and death in past 30 days':
       'Cases, recovered cases, and deaths in the past 30 days',
     linear: 'Linear',
     logarithmic: 'Logarithmic',
+    cumulative: 'Cumulative',
+    daily: 'Daily',
     'total cases': 'Total cases',
     'total recovered': 'Total recovered',
     'recoveredNotice': 'Includes only recovered cases that HS has infomation about, true amount is higher.',
@@ -92,7 +101,7 @@ const phrases: { [key: string]: { [key: string]: string } } = {
       'Information on this page is based on open data provided by ',
     'open data': 'Helsingin Sanomat.',
     'HS has gathered these data from':
-     'Helsingin Sanomat has gathered the information from multiple public sources: press conferences, other media and interviews. Data is updated whenever new information about the cases appear. More information below:',
+      'Helsingin Sanomat has gathered the information from multiple public sources: press conferences, other media and interviews. Data is updated whenever new information about the cases appear. More information below:',
     'What is corona virus': 'What is corona virus (in finnish)',
     'Corona virus prevention tips': 'Corona virus prevention tips (in finnish)',
     infectionsPerDisrictAndSize:
@@ -104,7 +113,8 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     infectionNetwork: 'Infection network graph',
     infectionNetworkFooter:
       'Number is the id of the case. Cases withouth origin are left out.',
-    unknown: 'unknown'
+    unknown: 'unknown',
+    total: 'All'
   },
   fa: {
     language: 'فارسی',
@@ -153,7 +163,8 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     infectionNetwork: 'Infection network graph',
     infectionNetworkFooter:
       'Number is the id of the case. Cases withouth origin are left out.',
-    unknown: 'ناشناخته'
+    unknown: 'ناشناخته',
+    total: 'همه'
   },
   ru: {
     language: 'Русский',
@@ -187,7 +198,7 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     'note the testing strategy change':
       'ВНИМАНИЕ! Изменение в методах тестирования может изменить статистику',
     'less people will be tested':
-      'Надежность статистики может меняться в некоторых районах, к примеру в районе Хельсинки было принято решение тестировать только некоторые группы, к примеру работников сферы мед.обслуживание, на COVID-19.',
+      'Надежность статистики может меняться в некоторых районах, к примеру в районе Хельсинки было принято решение тестировать только некоторые группы,в частности работников сферы мед.обслуживание, на COVID-19.',
     'read more': 'Узнать больше',
     'The data is based on':
       'Информация на этой странице основана на данных предоставленных ',
@@ -205,7 +216,8 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     infectionNetwork: 'Схематичный график-сеть заражений',
     infectionNetworkFooter:
       'Число является значением id заражения. Случае не имеющие подтвержденного происхождения не указаны',
-    unknown: 'неизвестный'
+    unknown: 'неизвестный',
+    total: 'Всего'
   }
 };
 

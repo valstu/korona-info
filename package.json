@@ -25,6 +25,7 @@
     "@chakra-ui/core": "^0.6.1",
     "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27",
+    "@next/plugin-google-analytics": "^9.3.4",
     "date-fns": "^2.10.0",
     "date-fns-tz": "^1.0.10",
     "emotion-theming": "^10.0.27",
@@ -32,7 +33,7 @@
     "lodash.groupby": "^4.6.0",
     "lodash.sortby": "^4.7.0",
     "ml-regression-exponential": "^2.0.0",
-    "next": "^9.3.0",
+    "next": "^9.3.2",
     "next-fonts": "^1.0.3",
     "node-polyglot": "^2.4.0",
     "react": "^16.13.0",
@@ -52,7 +53,7 @@
     "prettier": "^1.19.1",
     "typescript": "^3.8.3"
   },
-  "prettier":{
+  "prettier": {
     "singleQuote": true
   }
 }

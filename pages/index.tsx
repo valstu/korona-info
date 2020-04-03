@@ -3,6 +3,7 @@ import { useMemo, useState, useEffect, useContext } from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import fetch from 'isomorphic-unfetch';
+import sortBy from 'lodash.sortby';
 import { format, utcToZonedTime } from 'date-fns-tz';
 import {
   Area,
@@ -31,8 +32,11 @@ import {
   AlertDescription,
   CloseButton,
   Link,
-  Select
+  Select,
+  useToast
 } from '@chakra-ui/core';
+
+import _ from 'lodash';
 
 import Layout from '../components/Layout';
 import StatBlock from '../components/StatBlock';
@@ -53,14 +57,11 @@ import {
   colors,
   getInfectionsToday,
   healtCareDistricts,
-  zerosToNulls
+  zerosToNulls,
+  InfectionDevelopmentDataItem,
+  TimeSeriesData
 } from '../utils/chartDataHelper';
-
-export interface KoronaData {
-  confirmed: Confirmed[];
-  recovered: Recovered[];
-  deaths: any[];
-}
+import BubbleChart from '../components/BubbleChart';
 
 interface BaseItem {
   healthCareDistrict: string;
@@ -76,6 +77,7 @@ export interface Confirmed extends BaseItem {
 export interface Deaths extends BaseItem {
   id: string;
   date: Date;
+  area: string;
 }
 
 export interface Recovered extends BaseItem {
@@ -89,6 +91,15 @@ export enum InfectionSourceEnum {
   RelatedToEarlier = 'related to earlier',
   Unknown = 'unknown'
 }
+
+export type GroupedData = {
+  [key: string]: {
+    confirmed: Confirmed[];
+    deaths: Deaths[];
+    recovered: Recovered[];
+    timeSeries: TimeSeriesData;
+  };
+};
 
 const CustomizedAxisTick: React.FC<any> = props => {
   const { x, y, stroke, payload, isDate } = props;
@@ -133,49 +144,51 @@ const ConditionallyRender: React.FC<ConditionallyRenderProps> = props => {
   return props.children as React.ReactElement;
 };
 
-const Index: NextPage<KoronaData> = ({
-  confirmed: allConfirmed,
-  deaths: allDeaths,
-  recovered: allRecovered
+const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
+  groupedCoronaData
+}: {
+  groupedCoronaData: GroupedData;
 }) => {
   const [selectedHealthCareDistrict, selectHealthCareDistrict] = useState<
     string
   >('all');
-  const districtFilter = (item: BaseItem) =>
-    selectedHealthCareDistrict === 'all'
-      ? true
-      : item.healthCareDistrict === selectedHealthCareDistrict;
-  const confirmed = allConfirmed.filter(districtFilter);
-  const deaths = allDeaths.filter(districtFilter);
-  const recovered = allRecovered.filter(districtFilter);
-
-  const latestInfection = confirmed.length ? format(
-    utcToZonedTime(new Date(confirmed[confirmed.length - 1].date), timeZone),
-    'dd.MM.yyyy - HH:mm',
-    { timeZone }
-  ) : null;
+  const confirmed = groupedCoronaData[selectedHealthCareDistrict].confirmed;
+  const deaths = groupedCoronaData[selectedHealthCareDistrict].deaths;
+  const recovered = groupedCoronaData[selectedHealthCareDistrict].recovered;
+  const allConfirmed = groupedCoronaData.all.confirmed;
+  const toast = useToast()
+  const latestInfection = confirmed.length
+    ? format(
+      utcToZonedTime(
+        new Date(confirmed[confirmed.length - 1].date),
+        timeZone
+      ),
+      'dd.MM.yyyy - HH:mm',
+      { timeZone }
+    )
+    : null;
   const latestInfectionDistrict =
     confirmed[confirmed.length - 1]?.healthCareDistrict;
   const latestDeath = deaths.length
     ? format(
-        utcToZonedTime(new Date(deaths[deaths.length - 1].date), timeZone),
-        'd.M.yyyy'
-      )
+      utcToZonedTime(new Date(deaths[deaths.length - 1].date), timeZone),
+      'd.M.yyyy'
+    )
     : null;
   const latestDeathDistrict = deaths.length
-    ? deaths[deaths.length - 1].healthCareDistrict
+    ? deaths[deaths.length - 1].area
     : null;
   const latestRecoveredDistrict = recovered.length
     ? recovered[recovered.length - 1].healthCareDistrict
     : null;
   const latestRecovered = recovered.length
     ? format(
-        utcToZonedTime(
-          new Date(recovered[recovered.length - 1].date),
-          timeZone
-        ),
-        'd.M.yyyy'
-      )
+      utcToZonedTime(
+        new Date(recovered[recovered.length - 1].date),
+        timeZone
+      ),
+      'd.M.yyyy'
+    )
     : null;
   const infectionsToday = getInfectionsToday(confirmed);
 
@@ -189,7 +202,7 @@ const Index: NextPage<KoronaData> = ({
   const {
     infectionDevelopmentData,
     infectionDevelopmentData30Days
-  } = getTimeSeriesData(confirmed, recovered, deaths);
+  } = groupedCoronaData[selectedHealthCareDistrict].timeSeries;
   const maxValues =
     infectionDevelopmentData30Days[infectionDevelopmentData30Days.length - 1];
   const dataMaxValue = Math.max(
@@ -219,15 +232,38 @@ const Index: NextPage<KoronaData> = ({
   };
 
   const reversedConfirmed = confirmed
-    .map((i, index) => ({ index: index + 1, ...i, healthCareDistrict: humanizeHealthcareDistrict(i.healthCareDistrict) }))
+    // @ts-ignore
+    .map((i, index) => ({
+      index: index + 1,
+      ...i,
+      healthCareDistrict: humanizeHealthcareDistrict(i.healthCareDistrict)
+    }))
     .reverse();
 
   const humanizedHealthCareDistrict = humanizeHealthcareDistrict(
     selectedHealthCareDistrict
   );
+  useEffect(() => {
+    if (typeof window !== undefined) {
+
+      toast({
+        position: 'bottom',
+        title: 'Datan lähteenä nyt THL',
+        description: 'HS:n datan lähde on vaihtunut THL:ään. THL:n tiedotussyklistä johtuen tiedot päivittyvät aiempaa harvemmin. Myös vanhemmissa tapauksissa voi olla päivämääräkohtaisia eroja, johtuen muuttuneesta raportointitavasta.',
+        status: "info",
+        isClosable: true,
+        duration: 14000,
+      });
+
+
+
+
+    }
+
+  }, [])
 
   return (
-    <Layout>
+    <>
       <Head>
         <title>
           {t('finland corona status')} - {t('cases')} : {confirmed.length || 0}{' '}
@@ -258,298 +294,278 @@ const Index: NextPage<KoronaData> = ({
         <meta property="og:image:height" content="1928" />
         <meta property="og:url" content="https://korona.kans.io" />
       </Head>
-      <Flex
-        alignItems="center"
-        flexDirection="column"
-        flex="1"
-        width={'100%'}
-        maxWidth="1440px"
-        margin="auto"
-      >
-        <Header />
-        <Alert
-          status="error"
-          my={3}
-          maxWidth={1040}
-          flexDirection="column"
-          px={10}
-          py={5}
-          mx={3}
-          textAlign="center"
-          borderRadius="4px"
-        >
-          <Flex>
-            <AlertIcon mt={3} />
-            <AlertTitle mr={2} ml={0} mt={3} mb={5}>
-              {t('note the testing strategy change')}
-            </AlertTitle>
-          </Flex>
-          <Flex>
-            <AlertDescription>
-              {t('less people will be tested')}
-              <br />
-              <br />{' '}
-              <Link
-                color="teal.500"
-                href="https://www.hs.fi/kotimaa/art-2000006440293.html"
-                isExternal
-              >
-                {t('read more')}
-              </Link>
-            </AlertDescription>
-          </Flex>
-        </Alert>
+      <Layout>
+
         <Flex
-          flexWrap="wrap"
-          flexDirection="row"
-          justifyContent="left"
-          alignItems="stretch"
+          alignItems="center"
+          flexDirection="column"
           flex="1"
           width={'100%'}
+          maxWidth="1440px"
+          margin="auto"
         >
-          <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
-            <Select
-              value={selectedHealthCareDistrict ?? undefined}
-              onChange={event => selectHealthCareDistrict(event.target.value)}
-            >
-              <option key={'all'} value={'all'}>
-                {t('All healthcare districts')}
-              </option>
-              <option key={'unknown'} value={'unknown'}>
-                {t('unknown')}
-              </option>
-              {healtCareDistricts.map(healthcareDistrict => (
-                <option
-                  key={healthcareDistrict.name}
-                  value={healthcareDistrict.name}
-                >
-                  {healthcareDistrict.name}
+          <Header />
+          <Flex
+            flexWrap="wrap"
+            flexDirection="row"
+            justifyContent="left"
+            alignItems="stretch"
+            flex="1"
+            width={'100%'}
+          >
+            <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
+              <Select
+                value={selectedHealthCareDistrict ?? undefined}
+                onChange={event => selectHealthCareDistrict(event.target.value)}
+              >
+                <option key={'all'} value={'all'}>
+                  {t('All healthcare districts')}
                 </option>
-              ))}
+                <option key={'unknown'} value={'unknown'}>
+                  {t('unknown')}
+                </option>
+                {healtCareDistricts.map(healthcareDistrict => (
+                  <option
+                    key={healthcareDistrict.name}
+                    value={healthcareDistrict.name}
+                  >
+                    {healthcareDistrict.name}
+                  </option>
+                ))}
               ))}
             </Select>
-          </Box>
-        </Flex>
-        <Flex
-          flexWrap="wrap"
-          flexDirection="row"
-          justifyContent="center"
-          alignItems="stretch"
-          flex="1"
-          width={'100%'}
-        >
-          <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
-            <Block
-              title={t('cases') + ` (${humanizedHealthCareDistrict})`}
-              textAlign="center"
-              extraInfo={`${t('New cases today')} ${infectionsToday} ${t(
-                'person'
-              )}`}
-              footer={`${t(
-                'latest case'
-              )} ${latestInfection} (${humanizeHealthcareDistrict(latestInfectionDistrict)})`}
-            >
-              <StatBlock
-                count={confirmed.length}
-                helpText={`${t('New cases today')}: ${infectionsToday} ${t(
+            </Box>
+          </Flex>
+          <Flex
+            flexWrap="wrap"
+            flexDirection="row"
+            justifyContent="center"
+            alignItems="stretch"
+            flex="1"
+            width={'100%'}
+          >
+            <Box width={['100%', '100%', 1 / 2, 1 / 2]} p={3}>
+              <Block
+                title={t('cases') + ` (${humanizedHealthCareDistrict})`}
+                textAlign="center"
+                extraInfo={`${t('New cases today')} ${infectionsToday} ${t(
                   'person'
                 )}`}
-              />
-            </Block>
-          </Box>
-          <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
-            <Block
-              title={t('deaths') + ` (${humanizedHealthCareDistrict})`}
-              footer={
-                latestDeath
-                  ? `${t('last death')} ${latestDeath} (${humanizeHealthcareDistrict(latestDeathDistrict!)})`
-                  : t('no death')
-              }
-            >
-              <StatBlock count={deaths.length || 0} />
-            </Block>
-          </Box>
-          <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
-            <Block
-              title={t('recovered') + ` (${humanizedHealthCareDistrict})`}
-              footer={
-                `${latestRecovered
-                  ? `${t(
+                footer={`${t(
+                  'latest case'
+                )} ${latestInfection} (${humanizeHealthcareDistrict(
+                  latestInfectionDistrict
+                )})`}
+              >
+                <StatBlock
+                  count={confirmed.length}
+                  helpText={`${t('New cases today')}: ${infectionsToday} ${t(
+                    'person'
+                  )}`}
+                />
+              </Block>
+            </Box>
+            <Box width={['100%', '100%', 1 / 2, 1 / 2]} p={3}>
+              <Block
+                title={t('deaths') + ` (${humanizedHealthCareDistrict})`}
+                footer={
+                  latestDeath
+                    ? `${t(
+                      'last death'
+                    )} ${latestDeath} (${humanizeHealthcareDistrict(
+                      latestDeathDistrict!
+                    )})`
+                    : t('no death')
+                }
+              >
+                <StatBlock count={deaths.length || 0} />
+              </Block>
+            </Box>
+            {/* <Box width={['100%', '100%', 1 / 3, 1 / 3]} p={3}>
+              <Block
+                title={t('recovered') + ` (${humanizedHealthCareDistrict})`}
+                footer={
+                  `${latestRecovered
+                    ? `${t(
                       'latest recovery'
                     )} ${latestRecovered} (${humanizeHealthcareDistrict(latestRecoveredDistrict!)}).`
-                  : ' '} ${t('recoveredNotice')}`}
-            >
-              <StatBlock count={recovered.length || 0} />
-            </Block>
-          </Box>
-
-          <Box width={['100%']} p={3}>
-            <Block
-              title={
-                t('accumulated change') + ` (${humanizedHealthCareDistrict})`
-              }
-              footer={t('cases recovered and death in past 30 days')}
-            >
-              <ButtonGroup
-                spacing={0}
-                alignSelf="center"
-                display="flex"
-                justifyContent="center"
-                marginTop="-15px"
+                    : ' '} ${t('recoveredNotice')}`}
               >
-                <Button
-                  size="xs"
-                  fontFamily="Space Grotesk Regular"
-                  px={3}
-                  letterSpacing="1px"
-                  borderRadius="4px 0px 0px 4px"
-                  borderWidth="0px"
-                  isActive={cumulativeChartScale === 'linear'}
-                  onClick={() => setCumulativeChartScale('linear')}
+                <StatBlock count={recovered.length || 0} />
+              </Block>
+            </Box> */}
+
+            <Box width={['100%']} p={3}>
+              <Block
+                title={
+                  t('accumulated change') + ` (${humanizedHealthCareDistrict})`
+                }
+                footer={t('cases recovered and death in past 30 days')}
+              >
+                <ButtonGroup
+                  spacing={0}
+                  alignSelf="center"
+                  display="flex"
+                  justifyContent="center"
+                  marginTop="-15px"
                 >
-                  {t('linear')}
-                </Button>
-                <Button
-                  size="xs"
-                  fontFamily="Space Grotesk Regular"
-                  px={3}
-                  letterSpacing="1px"
-                  borderRadius="0px 4px 4px 0px"
-                  borderWidth="0px"
-                  isActive={cumulativeChartScale === 'log'}
-                  onClick={() => setCumulativeChartScale('log')}
-                >
-                  {t('logarithmic')}
-                </Button>
-              </ButtonGroup>
-              <ResponsiveContainer width={'100%'} height={380}>
-                <ComposedChart
-                  data={
-                    cumulativeChartScale === 'log'
-                      ? infectionDevelopmentData30Days.map(zerosToNulls)
-                      : infectionDevelopmentData30Days
-                  }
-                  margin={{ top: 20, right: 30, left: 0, bottom: 30 }}
-                >
-                  <defs>
-                    <linearGradient
-                      id="colorInfection"
-                      x1="0"
-                      y1="0"
-                      x2="0"
-                      y2="1"
-                    >
-                      <stop
-                        offset="5%"
-                        stopColor={colors[8]}
-                        stopOpacity={0.6}
-                      />
-                      <stop
-                        offset="95%"
-                        stopColor={colors[8]}
-                        stopOpacity={0}
-                      />
-                    </linearGradient>
-                    <linearGradient
-                      id="colorRecovered"
-                      x1="0"
-                      y1="0"
-                      x2="0"
-                      y2="1"
-                    >
-                      <stop
-                        offset="5%"
-                        stopColor={colors[7]}
-                        stopOpacity={0.6}
-                      />
-                      <stop
-                        offset="95%"
-                        stopColor={colors[7]}
-                        stopOpacity={0}
-                      />
-                    </linearGradient>
-                    <linearGradient
-                      id="colorDeaths"
-                      x1="0"
-                      y1="0"
-                      x2="0"
-                      y2="1"
-                    >
-                      <stop
-                        offset="5%"
-                        stopColor={colors[0]}
-                        stopOpacity={0.6}
-                      />
-                      <stop
-                        offset="95%"
-                        stopColor={colors[0]}
-                        stopOpacity={0}
-                      />
-                    </linearGradient>
-                  </defs>
-                  <XAxis
-                    tickFormatter={d => format(new Date(d), 'd.M.')}
-                    tick={<CustomizedAxisTick isDate />}
-                    dataKey="date"
-                    domain={['dataMin', 'dataMax']}
-                    type="number"
-                    scale="time"
-                  />
-                  <YAxis
-                    scale={cumulativeChartScale}
-                    dataKey="infections"
-                    domain={[
-                      cumulativeChartScale === 'log' ? 1 : 0,
-                      dataMaxValue + 10
-                    ]}
-                    unit={' ' + t('person')}
-                    tick={{ fontSize: 12 }}
-                    name={t('cases')}
-                  />
-                  <CartesianGrid opacity={0.2} />
-                  <Tooltip
-                    labelFormatter={v => format(new Date(v), 'dd.MM.yyyy')}
-                  />
-                  <Bar
-                    fill={colors[1]}
-                    opacity={0.4}
-                    dataKey="infectionsDaily"
-                    name={t('cases of the day')}
-                    unit={' ' + t('person')}
-                  />
-                  <Area
-                    type="monotone"
-                    unit={' ' + t('person')}
-                    name={t('total cases')}
-                    dataKey="infections"
-                    stroke={colors[8]}
-                    fillOpacity={1}
-                    fill="url(#colorInfection)"
-                  />
-                  <Area
-                    type="monotone"
-                    unit={' ' + t('person')}
-                    name={t('total recovered')}
-                    dataKey="recovered"
-                    stroke={colors[7]}
-                    fillOpacity={1}
-                    fill="url(#colorRecovered)"
-                  />
-                  <Area
-                    type="monotone"
-                    unit={' ' + t('person')}
-                    name={t('total deaths')}
-                    dataKey="deaths"
-                    stroke={colors[0]}
-                    fillOpacity={1}
-                    fill="url(#colorDeaths)"
-                  />
-                  <Legend wrapperStyle={{ bottom: '10px' }} />
-                </ComposedChart>
-              </ResponsiveContainer>
-            </Block>
-          </Box>
-          {/*
+                  <Button
+                    size="xs"
+                    fontFamily="Space Grotesk Regular"
+                    px={3}
+                    letterSpacing="1px"
+                    borderRadius="4px 0px 0px 4px"
+                    borderWidth="0px"
+                    isActive={cumulativeChartScale === 'linear'}
+                    onClick={() => setCumulativeChartScale('linear')}
+                  >
+                    {t('linear')}
+                  </Button>
+                  <Button
+                    size="xs"
+                    fontFamily="Space Grotesk Regular"
+                    px={3}
+                    letterSpacing="1px"
+                    borderRadius="0px 4px 4px 0px"
+                    borderWidth="0px"
+                    isActive={cumulativeChartScale === 'log'}
+                    onClick={() => setCumulativeChartScale('log')}
+                  >
+                    {t('logarithmic')}
+                  </Button>
+                </ButtonGroup>
+                <ResponsiveContainer width={'100%'} height={380}>
+                  <ComposedChart
+                    data={
+                      cumulativeChartScale === 'log'
+                        ? infectionDevelopmentData30Days.map(zerosToNulls)
+                        : infectionDevelopmentData30Days
+                    }
+                    margin={{ top: 20, right: 30, left: 0, bottom: 30 }}
+                  >
+                    <defs>
+                      <linearGradient
+                        id="colorInfection"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop
+                          offset="5%"
+                          stopColor={colors[8]}
+                          stopOpacity={0.6}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor={colors[8]}
+                          stopOpacity={0}
+                        />
+                      </linearGradient>
+                      <linearGradient
+                        id="colorRecovered"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop
+                          offset="5%"
+                          stopColor={colors[7]}
+                          stopOpacity={0.6}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor={colors[7]}
+                          stopOpacity={0}
+                        />
+                      </linearGradient>
+                      <linearGradient
+                        id="colorDeaths"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop
+                          offset="5%"
+                          stopColor={colors[0]}
+                          stopOpacity={0.6}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor={colors[0]}
+                          stopOpacity={0}
+                        />
+                      </linearGradient>
+                    </defs>
+                    <XAxis
+                      tickFormatter={d => format(new Date(d), 'd.M.')}
+                      tick={<CustomizedAxisTick isDate />}
+                      dataKey="date"
+                      domain={['dataMin', 'dataMax']}
+                      type="number"
+                      scale="time"
+                    />
+                    <YAxis
+                      scale={cumulativeChartScale}
+                      dataKey="infections"
+                      domain={[
+                        cumulativeChartScale === 'log' ? 1 : 0,
+                        dataMaxValue + 10
+                      ]}
+                      unit={' ' + t('person')}
+                      tick={{ fontSize: 12 }}
+                      name={t('cases')}
+                    />
+                    <CartesianGrid opacity={0.2} />
+                    <Tooltip
+                      labelFormatter={v => format(new Date(v), 'dd.MM.yyyy')}
+                    />
+                    <Bar
+                      isAnimationActive={false}
+                      fill={colors[1]}
+                      opacity={0.4}
+                      dataKey="infectionsDaily"
+                      name={t('cases of the day')}
+                      unit={' ' + t('person')}
+                    />
+                    <Area
+                      isAnimationActive={false}
+                      type="monotone"
+                      unit={' ' + t('person')}
+                      name={t('total cases')}
+                      dataKey="infections"
+                      stroke={colors[8]}
+                      fillOpacity={1}
+                      fill="url(#colorInfection)"
+                    />
+                    {/* <Area
+                      isAnimationActive={false}
+                      type="monotone"
+                      unit={' ' + t('person')}
+                      name={t('total recovered')}
+                      dataKey="recovered"
+                      stroke={colors[7]}
+                      fillOpacity={1}
+                      fill="url(#colorRecovered)"
+                    /> */}
+                    <Area
+                      isAnimationActive={false}
+                      type="monotone"
+                      unit={' ' + t('person')}
+                      name={t('total deaths')}
+                      dataKey="deaths"
+                      stroke={colors[0]}
+                      fillOpacity={1}
+                      fill="url(#colorDeaths)"
+                    />
+                    <Legend wrapperStyle={{ bottom: '10px' }} />
+                  </ComposedChart>
+                </ResponsiveContainer>
+              </Block>
+            </Box>
+            {/*
           <Box width={['100%']} p={3}>
             <Block title="Tartuntojen kumulatiivinen ennustemalli" footer={`Tartuntojen kehityksen ennustemalli 60 päivää. Laskee ennustetun eksponentiaalisen kasvun käyttämällä aiemmin luotuja tietoja.  Käytetty <a style="color: #319795;" href="https://github.com/mljs/regression-exponential" target="_blank">exponential-regression</a> kirjastoa.`}>
               <ButtonGroup spacing={0} alignSelf="center" display="flex" justifyContent="center" marginTop="-15px">
@@ -588,178 +604,169 @@ const Index: NextPage<KoronaData> = ({
             </Block>
           </Box>
            */}
-          <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
-            <Block
-              title={t('Cases by district')}
-              footer={t('Helsinki metropolitan area is shown as HUS')}
-            >
-              <ResponsiveContainer width={'100%'} height={350}>
-                <BarChart
-                  data={infectionsByDistrict}
-                  margin={{
-                    top: 20,
-                    right: 30,
-                    left: 0,
-                    bottom: 85
-                  }}
-                >
-                  <XAxis
-                    interval={0}
-                    dataKey="name"
-                    tick={<CustomizedAxisTick />}
-                  />
-                  <YAxis
-                    yAxisId="left"
-                    unit={' ' + t('person')}
-                    dataKey="infections"
-                    tick={{ fontSize: 12 }}
-                  />
-                  <Tooltip />
-                  <Bar
-                    dataKey="infections"
-                    name={t('cases')}
-                    unit={' ' + t('person')}
-                    yAxisId="left"
+            <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
+              <Block
+                title={t('Cases by district')}
+                footer={t('Helsinki metropolitan area is shown as HUS')}
+              >
+                <ResponsiveContainer width={'100%'} height={350}>
+                  <BarChart
+                    data={infectionsByDistrict}
+                    margin={{
+                      top: 20,
+                      right: 30,
+                      left: 0,
+                      bottom: 85
+                    }}
                   >
-                    {areas.map((area, index) => (
-                      <Cell key={area} fill={colors[index % colors.length]} />
-                    ))}
-                    <LabelList
+                    <XAxis
+                      interval={0}
+                      dataKey="name"
+                      tick={<CustomizedAxisTick />}
+                    />
+                    <YAxis
+                      yAxisId="left"
+                      unit={' ' + t('person')}
                       dataKey="infections"
-                      position="top"
-                      formatter={e => e}
+                      tick={{ fontSize: 12 }}
                     />
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </Block>
-          </Box>
-          <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
-            <Block
-              title={t('infectionsPerDisrictAndSize')}
-              footer={t('infectionsPerDisrictAndSize')}
-            >
-              <ResponsiveContainer width={'100%'} height={350}>
-                <BarChart
-                  data={infectionsByDistrictPercentage}
-                  margin={{
-                    top: 20,
-                    right: 30,
-                    left: 0,
-                    bottom: 85
-                  }}
-                >
-                  <XAxis
-                    interval={0}
-                    dataKey="name"
-                    tick={<CustomizedAxisTick />}
-                  />
-                  <YAxis
-                    unit=" %"
-                    dataKey="perDistrict"
-                    tick={{ fontSize: 12 }}
-                  />
-                  <Tooltip />
-                  <Bar dataKey="perDistrict" name="%-osuus väestöstä" unit=" %">
-                    {areas.map((area, index) => (
-                      <Cell key={area} fill={colors[index % colors.length]} />
-                    ))}
-                    <LabelList
-                      dataKey="perDistict"
-                      position="top"
-                      formatter={e => e}
-                    />
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </Block>
-          </Box>
-          <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
-            <Block
-              title={
-                t('Origin country of the cases') +
-                ` (${humanizedHealthCareDistrict})`
-              }
-              footer={t('originCountryFooter')}
-            >
-              <ResponsiveContainer width={'100%'} height={350}>
-                <BarChart
-                  data={infectionsBySourceCountry}
-                  margin={{
-                    top: 20,
-                    right: 30,
-                    left: 0,
-                    bottom: 85
-                  }}
-                >
-                  <XAxis
-                    interval={0}
-                    dataKey="name"
-                    tick={<CustomizedAxisTick />}
-                  />
-                  <YAxis
-                    unit={' ' + t('person')}
-                    dataKey="infections"
-                    tick={{ fontSize: 12 }}
-                  />
-                  <Tooltip />
-                  <Bar
-                    dataKey="infections"
-                    name="Tartunnat"
-                    unit={' ' + t('person')}
+                    <Tooltip />
+                    <Bar
+                      isAnimationActive={false}
+                      dataKey="infections"
+                      name={t('cases')}
+                      unit={' ' + t('person')}
+                      yAxisId="left"
+                    >
+                      {areas.map((area, index) => (
+                        <Cell key={area} fill={colors[index % colors.length]} />
+                      ))}
+                      <LabelList
+                        dataKey="infections"
+                        position="top"
+                        formatter={e => e}
+                      />
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </Block>
+            </Box>
+            <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
+              <Block
+                title={t('infectionsPerDisrictAndSize')}
+                footer={t('infectionsPerDisrictAndSize')}
+              >
+                <ResponsiveContainer width={'100%'} height={350}>
+                  <BarChart
+                    data={infectionsByDistrictPercentage}
+                    margin={{
+                      top: 20,
+                      right: 30,
+                      left: 0,
+                      bottom: 85
+                    }}
                   >
-                    {areas.map((area, index) => (
-                      <Cell key={area} fill={colors[index % colors.length]} />
-                    ))}
-                    <LabelList dataKey="infections" position="top" />
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </Block>
-          </Box>
-          <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
-            <Block
-              title={t('log') + ` (${humanizedHealthCareDistrict})`}
-              footer={t('logFooter')}
-            >
-              <Table
-                height={350}
-                data={reversedConfirmed}
-                columns={useMemo(() => infectionColumns, [])}
-              />
-            </Block>
-          </Box>
-          <Box width={['100%']} p={3}>
-            <Block
-              title={
-                t('infectionNetwork') + ` (${humanizedHealthCareDistrict})`
-              }
-              footer={t('infectionNetworkFooter')}
-            >
-              <NetworkGraph data={networkGraphData} />
-            </Block>
-          </Box>
-        </Flex>
+                    <XAxis
+                      interval={0}
+                      dataKey="name"
+                      tick={<CustomizedAxisTick />}
+                    />
+                    <YAxis
+                      unit=" %"
+                      dataKey="perDistrict"
+                      tick={{ fontSize: 12 }}
+                    />
+                    <Tooltip />
+                    <Bar isAnimationActive={false} dataKey="perDistrict" name="%-osuus väestöstä" unit=" %">
+                      {areas.map((area, index) => (
+                        <Cell key={area} fill={colors[index % colors.length]} />
+                      ))}
+                      <LabelList
+                        dataKey="perDistict"
+                        position="top"
+                        formatter={e => e}
+                      />
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </Block>
+            </Box>
+            <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
+              <Block
+                title={t('log') + ` (${humanizedHealthCareDistrict})`}
+                footer={t('logFooter')}
+              >
+                <Table
+                  height={500}
+                  data={reversedConfirmed}
+                  columns={useMemo(() => infectionColumns, [])}
+                />
+              </Block>
+            </Box>
+            <BubbleChart data={groupedCoronaData} />
+            {/* <Box width={['100%', '100%', '100%', '100%', 1 / 2]} p={3}>
+              <Block
+                title={
+                  t('infectionNetwork') + ` (${humanizedHealthCareDistrict})`
+                }
+                footer={t('infectionNetworkFooter')}
+              >
+                <NetworkGraph data={networkGraphData} />
+              </Block>
+            </Box> */}
+          </Flex>
 
-        <Copyright />
-      </Flex>
-    </Layout>
+          <Copyright />
+        </Flex>
+      </Layout>
+    </>
   );
 };
 
-Index.getInitialProps = async function() {
+Index.getInitialProps = async function () {
   const res = await fetch(
-    'https://w3qa5ydb4l.execute-api.eu-west-1.amazonaws.com/prod/finnishCoronaData'
+    'https://w3qa5ydb4l.execute-api.eu-west-1.amazonaws.com/prod/finnishCoronaData/v2'
   );
   const data = await res.json();
-  const confirmed = data.confirmed.map((i: Confirmed) => ({
-    ...i,
-    infectionSourceCountry:
-      i.infectionSourceCountry === '' ? null : i.infectionSourceCountry,
-    healthCareDistrict:
-      i.healthCareDistrict ? i.healthCareDistrict : 'unknown' // there are empty strings and nulls
-  }));
-  return { ...data, confirmed };
+
+  data.confirmed = sortBy(data.confirmed, 'date')
+  data.deaths = sortBy(data.deaths, 'date')
+  data.recovered = sortBy(data.recoverd, 'date')
+
+  const groupedConfirmed = _.groupBy(
+    data.confirmed,
+    data => data.healthCareDistrict
+  );
+  const groupedDeaths = _.groupBy(data.deaths, data => data.healthCareDistrict);
+  const groupedRecovered = _.groupBy(
+    data.recovered,
+    data => data.healthCareDistrict
+  );
+  const keys = Object.keys(groupedConfirmed);
+  const result: GroupedData = keys.reduce(
+    (previous, key) => {
+      return {
+        ...previous,
+        [key === 'null' ? 'unknown' : key]: {
+          confirmed: groupedConfirmed[key] ?? [],
+          recovered: groupedRecovered[key] ?? [],
+          deaths: groupedDeaths[key] ?? [],
+          timeSeries: getTimeSeriesData(
+            groupedConfirmed[key],
+            // groupedRecovered[key],
+            groupedDeaths[key]
+          )
+        }
+      };
+    },
+    {
+      all: {
+        ...data,
+        timeSeries: getTimeSeriesData(data.confirmed, data.deaths)
+      }
+    }
+  );
+  return { groupedCoronaData: result };
 };
 
 export default Index;
