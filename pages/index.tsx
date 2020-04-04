@@ -101,6 +101,17 @@ export type GroupedData = {
   };
 };
 
+export interface HospitalData {
+  date: Date;
+  dateString: string;
+  area: string;
+  totalHospitalised: number;
+  inWard: number;
+  inIcu: number;
+  dead: number;
+};
+
+
 const CustomizedAxisTick: React.FC<any> = props => {
   const { x, y, stroke, payload, isDate } = props;
 
@@ -144,10 +155,11 @@ const ConditionallyRender: React.FC<ConditionallyRenderProps> = props => {
   return props.children as React.ReactElement;
 };
 
-const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
-  groupedCoronaData
+const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalData[] }> = ({
+  groupedCoronaData, hospitalised
 }: {
   groupedCoronaData: GroupedData;
+  hospitalised: HospitalData[];
 }) => {
   const [selectedHealthCareDistrict, selectHealthCareDistrict] = useState<
     string
@@ -320,9 +332,6 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
               >
                 <option key={'all'} value={'all'}>
                   {t('All healthcare districts')}
-                </option>
-                <option key={'unknown'} value={'unknown'}>
-                  {t('unknown')}
                 </option>
                 {healtCareDistricts.map(healthcareDistrict => (
                   <option
@@ -714,6 +723,57 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
                 <NetworkGraph data={networkGraphData} />
               </Block>
             </Box> */}
+            <Box width={['100%']} p={3}>
+              <Block
+                title={
+                  t('hospitalizedData') + ` (${t('All healthcare districts')})`
+                }
+              >
+                <ResponsiveContainer width={'100%'} height={350}>
+                  <BarChart
+                    data={hospitalised.slice(Math.max(hospitalised.length - 30, 0))}
+                    margin={{
+                      top: 20,
+                      right: 30,
+                      left: 0,
+                      bottom: 85
+                    }}
+                  >
+                    <XAxis
+                      interval={0}
+                      dataKey="dateString"
+                      tick={<CustomizedAxisTick />}
+                    />
+                    <YAxis
+                      unit={' ' + t('person')}
+                      dataKey="totalHospitalised"
+                      tick={{ fontSize: 12 }}
+                    />
+                    <Tooltip />
+                    <Bar
+                      dataKey="totalHospitalised"
+                      name="Sairaalahoidossa"
+                      unit={' ' + t('person')}
+                      fill="#2FAB8E"
+                    ></Bar>
+                    <Bar
+                      dataKey="inWard"
+                      name="Osastolla"
+                      unit={' ' + t('person')}
+                      fill="#FEA600"
+                    ></Bar>
+                    <Bar
+                      dataKey="inIcu"
+                      name="Tehohoidossa"
+                      unit={' ' + t('person')}
+                      fill="#F3858D"
+                    ></Bar>
+                    <Legend wrapperStyle={{ bottom: '15px' }} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </Block>
+            </Box>
+
           </Flex>
 
           <Copyright />
@@ -724,22 +784,42 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
 };
 
 Index.getInitialProps = async function () {
-  const res = await fetch(
-    'https://w3qa5ydb4l.execute-api.eu-west-1.amazonaws.com/prod/finnishCoronaData/v2'
-  );
-  const data = await res.json();
 
-  data.confirmed = sortBy(data.confirmed, 'date')
-  data.deaths = sortBy(data.deaths, 'date')
-  data.recovered = sortBy(data.recoverd, 'date')
+  const lambdaHost = 'https://w3qa5ydb4l.execute-api.eu-west-1.amazonaws.com';
+  const [generalDataRes, hospitalisedDataRes] = await Promise.all([
+    fetch(`${lambdaHost}/prod/finnishCoronaData/v2`),
+    fetch(`${lambdaHost}/prod/finnishCoronaHospitalData`)
+  ]);
+  const [generalData, hospitalisedData] = await Promise.all([
+    generalDataRes.json(),
+    hospitalisedDataRes.json()
+  ]);
+  const hospitalised: HospitalData[] = hospitalisedData.hospitalised
+    .map((data: HospitalData) => {
+      const date = new Date(data.date);
+      const dateString = `${date.getDate()}.${date.getMonth() + 1}.`;
+      return {
+        ...data,
+        date,
+        dateString
+      };
+    })
+    .filter((data: HospitalData) => data.area === 'Finland' && data.totalHospitalised > 0)
+    .sort(
+      (a: HospitalData, b: HospitalData) => a.date.getTime() - b.date.getTime()
+    );
+
+  generalData.confirmed = sortBy(generalData.confirmed, 'date')
+  generalData.deaths = sortBy(generalData.deaths, 'date')
+  generalData.recovered = sortBy(generalData.recoverd, 'date')
 
   const groupedConfirmed = _.groupBy(
-    data.confirmed,
+    generalData.confirmed,
     data => data.healthCareDistrict
   );
-  const groupedDeaths = _.groupBy(data.deaths, data => data.healthCareDistrict);
+  const groupedDeaths = _.groupBy(generalData.deaths, data => data.healthCareDistrict);
   const groupedRecovered = _.groupBy(
-    data.recovered,
+    generalData.recovered,
     data => data.healthCareDistrict
   );
   const keys = Object.keys(groupedConfirmed);
@@ -761,12 +841,12 @@ Index.getInitialProps = async function () {
     },
     {
       all: {
-        ...data,
-        timeSeries: getTimeSeriesData(data.confirmed, data.deaths)
+        ...generalData,
+        timeSeries: getTimeSeriesData(generalData.confirmed, generalData.deaths)
       }
     }
   );
-  return { groupedCoronaData: result };
+  return { groupedCoronaData: result, hospitalised };
 };
 
 export default Index;
