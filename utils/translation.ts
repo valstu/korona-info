@@ -58,7 +58,8 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     infectionNetworkFooter:
       'Kuvio esittää varmennetut tapaukset verkostona. Numero on tartunnan järjestysnumero. Mikäli suoraa tartuttajaa ei tiedetä linkitetään tartunta alkuperämaahan. Kuvasta on jätetty pois tartunnat joiden suoraa aiheuttajaa tai alkuperämaata ei ole tiedossa. Suomeen merkatut tartunnat liittyvät suurella todennäköisyydellä muihin tartuntaverkostoihin. Solun väri kertoo maan jossa tartunta on todennäköisesti tapahtunut.',
     unknown: 'tuntematon',
-    total: 'Yht.'
+    total: 'Yht.',
+    hospitalizedData: 'Sairaalahoidossa olevat'
   },
   en: {
     language: 'English',
@@ -114,7 +115,8 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     infectionNetworkFooter:
       'Number is the id of the case. Cases withouth origin are left out.',
     unknown: 'unknown',
-    total: 'All'
+    total: 'All',
+    hospitalizedData: 'Number of people in hospital care'
   },
   fa: {
     language: 'فارسی',
