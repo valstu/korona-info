@@ -321,9 +321,6 @@ const Index: NextPage<{ groupedCoronaData: GroupedData }> = ({
                 <option key={'all'} value={'all'}>
                   {t('All healthcare districts')}
                 </option>
-                <option key={'unknown'} value={'unknown'}>
-                  {t('unknown')}
-                </option>
                 {healtCareDistricts.map(healthcareDistrict => (
                   <option
                     key={healthcareDistrict.name}
