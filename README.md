@@ -31,6 +31,7 @@ Following people have also contributed to this project:
   - [msillanpaa](https://github.com/msillanpaa) (content fixes)
   - [csaavedra](https://github.com/csaavedra) (translation fixes)
   - [petetnt](https://github.com/petetnt) (UI fixes)
+  - [vkomulai](https://github.com/vkomulai) (Hospitalised data)
 
 ## License
 
