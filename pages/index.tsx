@@ -771,6 +771,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalDa
                       unit={' ' + t('person')}
                       fill="#F3858D"
                     ></Bar>
+                    <Legend wrapperStyle={{ bottom: '15px' }} />
                   </BarChart>
                 </ResponsiveContainer>
               </Block>
