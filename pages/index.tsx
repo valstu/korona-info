@@ -743,6 +743,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalDa
                       interval={0}
                       dataKey="dateString"
                       tick={<CustomizedAxisTick />}
+                      padding={{ left: 50, right: 50 }}
                     />
                     <YAxis
                       unit={' ' + t('person')}
@@ -751,23 +752,32 @@ const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalDa
                     />
                     <Tooltip />
                     <Bar
-                      dataKey="totalHospitalised"
-                      name="Sairaalahoidossa"
-                      unit={' ' + t('person')}
-                      fill="#2FAB8E"
-                    ></Bar>
-                    <Bar
+                      isAnimationActive={false}
+                      stackId="a"
                       dataKey="inWard"
                       name="Osastolla"
                       unit={' ' + t('person')}
-                      fill="#FEA600"
-                    ></Bar>
+                      fill="#2FAB8E"
+                    />
                     <Bar
+                      isAnimationActive={false}
+                      stackId="a"
                       dataKey="inIcu"
                       name="Tehohoidossa"
                       unit={' ' + t('person')}
                       fill="#F3858D"
-                    ></Bar>
+                    />
+                    <Bar
+                      isAnimationActive={false}
+                      stackId="a"
+                      dataKey="totalHospitalised"
+                      opacity={0}
+                      name="Sairaalahoidossa yht."
+                      unit={' ' + t('person')}
+                      fill="rgba(0,0,0,1)"
+                      strokeWidth={0}
+                      legendType="none"
+                    />
                     <Legend wrapperStyle={{ bottom: '15px' }} />
                   </BarChart>
                 </ResponsiveContainer>
