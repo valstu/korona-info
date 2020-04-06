@@ -755,7 +755,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalDa
                       isAnimationActive={false}
                       stackId="a"
                       dataKey="inWard"
-                      name="Osastolla"
+                      name={t("inWard")}
                       unit={' ' + t('person')}
                       fill="#2FAB8E"
                     />
@@ -763,7 +763,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalDa
                       isAnimationActive={false}
                       stackId="a"
                       dataKey="inIcu"
-                      name="Tehohoidossa"
+                      name={t("inIcu")}
                       unit={' ' + t('person')}
                       fill="#F3858D"
                     />
@@ -772,7 +772,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalDa
                       stackId="a"
                       dataKey="totalHospitalised"
                       opacity={0}
-                      name="Sairaalahoidossa yht."
+                      name={t("inHospital")}
                       unit={' ' + t('person')}
                       fill="rgba(0,0,0,1)"
                       strokeWidth={0}
