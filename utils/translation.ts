@@ -59,7 +59,10 @@ const phrases: { [key: string]: { [key: string]: string } } = {
       'Kuvio esittää varmennetut tapaukset verkostona. Numero on tartunnan järjestysnumero. Mikäli suoraa tartuttajaa ei tiedetä linkitetään tartunta alkuperämaahan. Kuvasta on jätetty pois tartunnat joiden suoraa aiheuttajaa tai alkuperämaata ei ole tiedossa. Suomeen merkatut tartunnat liittyvät suurella todennäköisyydellä muihin tartuntaverkostoihin. Solun väri kertoo maan jossa tartunta on todennäköisesti tapahtunut.',
     unknown: 'tuntematon',
     total: 'Yht.',
-    hospitalizedData: 'Sairaalahoidossa olevat'
+    hospitalizedData: 'Sairaalahoidossa olevat',
+    inWard: "Osastolla",
+    inIcu: "Tehohoidossa",
+    inHospital: "Sairaalahoidossa yht."
   },
   en: {
     language: 'English',
@@ -116,7 +119,10 @@ const phrases: { [key: string]: { [key: string]: string } } = {
       'Number is the id of the case. Cases withouth origin are left out.',
     unknown: 'unknown',
     total: 'All',
-    hospitalizedData: 'Number of people in hospital care'
+    hospitalizedData: 'Number of people in hospital care',
+    inWard: "In Ward",
+    inIcu: "In Intensive Care Unit",
+    inHospital: "Total Hospitalised"
   },
   fa: {
     language: 'فارسی',
@@ -166,7 +172,11 @@ const phrases: { [key: string]: { [key: string]: string } } = {
     infectionNetworkFooter:
       'Number is the id of the case. Cases withouth origin are left out.',
     unknown: 'ناشناخته',
-    total: 'همه'
+    total: 'همه',
+    hospitalizedData: 'Number of people in hospital care',
+    inWard: "In Ward",
+    inIcu: "In Intensive Care Unit",
+    inHospital: "Total Hospitalised"
   }
 };
 
