@@ -754,19 +754,20 @@ const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalDa
                     <Bar
                       isAnimationActive={false}
                       stackId="a"
-                      dataKey="inWard"
-                      name={t("inWard")}
-                      unit={' ' + t('person')}
-                      fill="#2FAB8E"
-                    />
-                    <Bar
-                      isAnimationActive={false}
-                      stackId="a"
                       dataKey="inIcu"
                       name={t("inIcu")}
                       unit={' ' + t('person')}
                       fill="#F3858D"
                     />
+                    <Bar
+                      isAnimationActive={false}
+                      stackId="a"
+                      dataKey="inWard"
+                      name={t("inWard")}
+                      unit={' ' + t('person')}
+                      fill="#2FAB8E"
+                    />
+
                     <Bar
                       isAnimationActive={false}
                       stackId="a"
