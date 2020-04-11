@@ -46,6 +46,33 @@ export const healtCareDistricts = [
   { name: 'Vaasa', people: 169741 }
 ];
 
+export const healthCareAreaToDistrictMap : { [key:string]:string; } = {
+  'HYKS': 'HUS',
+  '0001': 'Etelä-Karjala',
+  '0002': 'Kymenlaakso',
+  '0003': 'Päijät-Häme',
+  'KYS': 'Pohjois-Savo',
+  '0005': 'Etelä-Savo',
+  '0006': 'Itä-Savo',
+  '0007': 'Keski-Suomi',
+  '0008': 'Pohjois-Karjala',
+  'OYS': 'Pohjois-Pohjanmaa',
+  '0010': 'Kainuu',
+  '0011': 'Keski-Pohjanmaa',
+  '0012': 'Lappi',
+  '0013': 'Länsi-Pohja',
+  'TAYS': 'Pirkanmaa',
+  '0015': 'Etelä-Pohjanmaa',
+  '0016': 'Kanta-Häme',
+  'TYKS': 'Varsinais-Suomi',
+  '0018': 'Satakunta',
+  '0019': 'Vaasa'
+};
+
+export const getHealthCareDistrictByHealthCareArea = (area: string): string | null => {
+  return healthCareAreaToDistrictMap[area] || null
+};
+
 const peopleTotal = healtCareDistricts.reduce(
   (acc, curr) => curr.people + acc,
   0

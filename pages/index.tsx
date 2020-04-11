@@ -59,7 +59,8 @@ import {
   healtCareDistricts,
   zerosToNulls,
   InfectionDevelopmentDataItem,
-  TimeSeriesData
+  TimeSeriesData,
+  getHealthCareDistrictByHealthCareArea
 } from '../utils/chartDataHelper';
 import BubbleChart from '../components/BubbleChart';
 
@@ -819,6 +820,12 @@ Index.getInitialProps = async function () {
     .sort(
       (a: HospitalData, b: HospitalData) => a.date.getTime() - b.date.getTime()
     );
+
+  generalData.deaths.forEach((item: any) => {
+    if (!item.healthCareDistrict) {
+      item.healthCareDistrict = getHealthCareDistrictByHealthCareArea(item.area)
+    }
+  });
 
   generalData.confirmed = sortBy(generalData.confirmed, 'date')
   generalData.deaths = sortBy(generalData.deaths, 'date')
