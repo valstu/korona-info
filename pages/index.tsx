@@ -109,8 +109,7 @@ export interface HospitalData {
   inWard: number;
   inIcu: number;
   dead: number;
-};
-
+}
 
 const CustomizedAxisTick: React.FC<any> = props => {
   const { x, y, stroke, payload, isDate } = props;
@@ -155,8 +154,12 @@ const ConditionallyRender: React.FC<ConditionallyRenderProps> = props => {
   return props.children as React.ReactElement;
 };
 
-const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalData[] }> = ({
-  groupedCoronaData, hospitalised
+const Index: NextPage<{
+  groupedCoronaData: GroupedData;
+  hospitalised: HospitalData[];
+}> = ({
+  groupedCoronaData,
+  hospitalised
 }: {
   groupedCoronaData: GroupedData;
   hospitalised: HospitalData[];
@@ -168,24 +171,24 @@ const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalDa
   const deaths = groupedCoronaData[selectedHealthCareDistrict].deaths;
   const recovered = groupedCoronaData[selectedHealthCareDistrict].recovered;
   const allConfirmed = groupedCoronaData.all.confirmed;
-  const toast = useToast()
+  const toast = useToast();
   const latestInfection = confirmed.length
     ? format(
-      utcToZonedTime(
-        new Date(confirmed[confirmed.length - 1].date),
-        timeZone
-      ),
-      'dd.MM.yyyy - HH:mm',
-      { timeZone }
-    )
+        utcToZonedTime(
+          new Date(confirmed[confirmed.length - 1].date),
+          timeZone
+        ),
+        'dd.MM.yyyy - HH:mm',
+        { timeZone }
+      )
     : null;
   const latestInfectionDistrict =
     confirmed[confirmed.length - 1]?.healthCareDistrict;
   const latestDeath = deaths.length
     ? format(
-      utcToZonedTime(new Date(deaths[deaths.length - 1].date), timeZone),
-      'd.M.yyyy'
-    )
+        utcToZonedTime(new Date(deaths[deaths.length - 1].date), timeZone),
+        'd.M.yyyy'
+      )
     : null;
   const latestDeathDistrict = deaths.length
     ? deaths[deaths.length - 1].area
@@ -195,12 +198,12 @@ const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalDa
     : null;
   const latestRecovered = recovered.length
     ? format(
-      utcToZonedTime(
-        new Date(recovered[recovered.length - 1].date),
-        timeZone
-      ),
-      'd.M.yyyy'
-    )
+        utcToZonedTime(
+          new Date(recovered[recovered.length - 1].date),
+          timeZone
+        ),
+        'd.M.yyyy'
+      )
     : null;
   const infectionsToday = getInfectionsToday(confirmed);
 
@@ -257,22 +260,17 @@ const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalDa
   );
   useEffect(() => {
     if (typeof window !== undefined) {
-
       toast({
         position: 'bottom',
         title: 'Datan lähteenä nyt THL',
-        description: 'HS:n datan lähde on vaihtunut THL:ään. THL:n tiedotussyklistä johtuen tiedot päivittyvät aiempaa harvemmin. Myös vanhemmissa tapauksissa voi olla päivämääräkohtaisia eroja, johtuen muuttuneesta raportointitavasta.',
-        status: "info",
+        description:
+          'HS:n datan lähde on vaihtunut THL:ään. THL:n tiedotussyklistä johtuen tiedot päivittyvät aiempaa harvemmin. Myös vanhemmissa tapauksissa voi olla päivämääräkohtaisia eroja, johtuen muuttuneesta raportointitavasta.',
+        status: 'info',
         isClosable: true,
-        duration: 14000,
+        duration: 14000
       });
-
-
-
-
     }
-
-  }, [])
+  }, []);
 
   return (
     <>
@@ -307,7 +305,6 @@ const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalDa
         <meta property="og:url" content="https://korona.kans.io" />
       </Head>
       <Layout>
-
         <Flex
           alignItems="center"
           flexDirection="column"
@@ -341,8 +338,8 @@ const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalDa
                     {healthcareDistrict.name}
                   </option>
                 ))}
-              ))}
-            </Select>
+                ))}
+              </Select>
             </Box>
           </Flex>
           <Flex
@@ -380,10 +377,10 @@ const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalDa
                 footer={
                   latestDeath
                     ? `${t(
-                      'last death'
-                    )} ${latestDeath} (${humanizeHealthcareDistrict(
-                      latestDeathDistrict!
-                    )})`
+                        'last death'
+                      )} ${latestDeath} (${humanizeHealthcareDistrict(
+                        latestDeathDistrict!
+                      )})`
                     : t('no death')
                 }
               >
@@ -517,6 +514,8 @@ const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalDa
                       scale="time"
                     />
                     <YAxis
+                      // yAxisId="left"
+                      // orientation="left"
                       scale={cumulativeChartScale}
                       dataKey="infections"
                       domain={[
@@ -527,11 +526,18 @@ const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalDa
                       tick={{ fontSize: 12 }}
                       name={t('cases')}
                     />
+                    <YAxis
+                      yAxisId="right"
+                      orientation="right"
+                      stroke="#82ca9d"
+                    />
+
                     <CartesianGrid opacity={0.2} />
                     <Tooltip
                       labelFormatter={v => format(new Date(v), 'dd.MM.yyyy')}
                     />
                     <Bar
+                      yAxisId="right"
                       isAnimationActive={false}
                       fill={colors[1]}
                       opacity={0.4}
@@ -686,7 +692,12 @@ const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalDa
                       tick={{ fontSize: 12 }}
                     />
                     <Tooltip />
-                    <Bar isAnimationActive={false} dataKey="perDistrict" name="%-osuus väestöstä" unit=" %">
+                    <Bar
+                      isAnimationActive={false}
+                      dataKey="perDistrict"
+                      name="%-osuus väestöstä"
+                      unit=" %"
+                    >
                       {areas.map((area, index) => (
                         <Cell key={area} fill={colors[index % colors.length]} />
                       ))}
@@ -731,7 +742,9 @@ const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalDa
               >
                 <ResponsiveContainer width={'100%'} height={350}>
                   <BarChart
-                    data={hospitalised.slice(Math.max(hospitalised.length - 30, 0))}
+                    data={hospitalised.slice(
+                      Math.max(hospitalised.length - 30, 0)
+                    )}
                     margin={{
                       top: 20,
                       right: 30,
@@ -755,7 +768,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalDa
                       isAnimationActive={false}
                       stackId="a"
                       dataKey="inIcu"
-                      name={t("inIcu")}
+                      name={t('inIcu')}
                       unit={' ' + t('person')}
                       fill="#F3858D"
                     />
@@ -763,7 +776,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalDa
                       isAnimationActive={false}
                       stackId="a"
                       dataKey="inWard"
-                      name={t("inWard")}
+                      name={t('inWard')}
                       unit={' ' + t('person')}
                       fill="#2FAB8E"
                     />
@@ -773,7 +786,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalDa
                       stackId="a"
                       dataKey="totalHospitalised"
                       opacity={0}
-                      name={t("inHospital")}
+                      name={t('inHospital')}
                       unit={' ' + t('person')}
                       fill="rgba(0,0,0,1)"
                       strokeWidth={0}
@@ -784,7 +797,6 @@ const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalDa
                 </ResponsiveContainer>
               </Block>
             </Box>
-
           </Flex>
 
           <Copyright />
@@ -794,8 +806,7 @@ const Index: NextPage<{ groupedCoronaData: GroupedData, hospitalised: HospitalDa
   );
 };
 
-Index.getInitialProps = async function () {
-
+Index.getInitialProps = async function() {
   const lambdaHost = 'https://w3qa5ydb4l.execute-api.eu-west-1.amazonaws.com';
   const [generalDataRes, hospitalisedDataRes] = await Promise.all([
     fetch(`${lambdaHost}/prod/finnishCoronaData/v2`),
@@ -815,20 +826,26 @@ Index.getInitialProps = async function () {
         dateString
       };
     })
-    .filter((data: HospitalData) => data.area === 'Finland' && data.totalHospitalised > 0)
+    .filter(
+      (data: HospitalData) =>
+        data.area === 'Finland' && data.totalHospitalised > 0
+    )
     .sort(
       (a: HospitalData, b: HospitalData) => a.date.getTime() - b.date.getTime()
     );
 
-  generalData.confirmed = sortBy(generalData.confirmed, 'date')
-  generalData.deaths = sortBy(generalData.deaths, 'date')
-  generalData.recovered = sortBy(generalData.recoverd, 'date')
+  generalData.confirmed = sortBy(generalData.confirmed, 'date');
+  generalData.deaths = sortBy(generalData.deaths, 'date');
+  generalData.recovered = sortBy(generalData.recoverd, 'date');
 
   const groupedConfirmed = _.groupBy(
     generalData.confirmed,
     data => data.healthCareDistrict
   );
-  const groupedDeaths = _.groupBy(generalData.deaths, data => data.healthCareDistrict);
+  const groupedDeaths = _.groupBy(
+    generalData.deaths,
+    data => data.healthCareDistrict
+  );
   const groupedRecovered = _.groupBy(
     generalData.recovered,
     data => data.healthCareDistrict
