@@ -41,7 +41,7 @@
     "react-dom": "^16.13.0",
     "react-graph-vis": "^1.0.5",
     "react-table": "^7.0.0",
-    "recharts": "^2.0.0-beta.1"
+    "recharts": "^2.1.14"
   },
   "devDependencies": {
     "@types/lodash.groupby": "^4.6.6",
